@@ -24,8 +24,13 @@ public class TetrisGame extends JFrame {
 	private float mAutoDownTime;
 	private float mSumDeltaTime;
 
+	public TetrisGame() {
+		mGameBoard = new GameBoard();
+		mNextTetromino = new Tetromino();
+		mTimer = new Timer();
+	}
+
 	public void initialize() {
-		mGameBoard.initialize();
 		mNextTetromino.setRandomShapeAndColor();
 		mGameBoard.setTetromino(mNextTetromino);
 		mNextTetromino.setRandomShapeAndColor();
@@ -85,7 +90,9 @@ public class TetrisGame extends JFrame {
 			bCollWithFloor = mGameBoard.moveTet(eDirection.DOWN);
 			if (bCollWithFloor) {
 				mScore += mGameBoard.removeLine();
-				gameOverFlag = mGameBoard.setTetrominoAndCheckGameOver(mNextTetromino);
+
+				mGameBoard.setTetromino(mNextTetromino);
+				gameOverFlag = mGameBoard.checkGameOver();
 				mNextTetromino.setRandomShapeAndColor();
 
 				if (gameOverFlag == eGameOver.OVER) {
@@ -100,7 +107,9 @@ public class TetrisGame extends JFrame {
 		bCollWithFloor = mInput.GetCollWithFloor();
 		if (bCollWithFloor) {
 			mGameBoard.removeLine();
-			gameOverFlag = mGameBoard.setTetrominoAndCheckGameOver(mNextTetromino);
+
+			mGameBoard.setTetromino(mNextTetromino);
+			gameOverFlag = mGameBoard.checkGameOver();
 			mNextTetromino.setRandomShapeAndColor();
 
 			mInput.Update();
@@ -126,6 +135,7 @@ public class TetrisGame extends JFrame {
 		Tetromino tet = mGameBoard.getTetromino();
 		Position pos = tet.getPosition();
 
+		Block tmpBlock;
 		for (int i = 0; i < 20; i++) {
 			strBuf.append('X');
 			for (int j = 0; j < 10; j++) {
@@ -134,8 +144,8 @@ public class TetrisGame extends JFrame {
 						pos.mRow <= j && j < pos.mRow + Tetromino.SHAPE_ROW) {
 					bTetFilled = tet.isFilled(i - pos.mCol, j - pos.mRow);
 				}
-				BLOCK.deepCopy(mGameBoard.getBlock(i, j));
-				if (BLOCK.isFilled() || bTetFilled) {
+				tmpBlock = mGameBoard.getBlock(i, j);
+				if (tmpBlock != null || bTetFilled) {
 					strBuf.append('O');
 				} else {
 					strBuf.append(' ');
@@ -159,21 +169,8 @@ public class TetrisGame extends JFrame {
 	}
 
 	//
-	// Constructors
-	//
-	public TetrisGame() {
-		mGameBoard = new GameBoard();
-		mNextTetromino = new Tetromino();
-		mTimer = new Timer();
-	}
-
-	//
-	// Block for Draw
 	// TEMP
-	private static Block BLOCK = new Block();
 	//
-	// PrevTime for Draw
-	// TEMP
 	private float prevTime = 0.0f;
 
 	private JTextPane mPane;

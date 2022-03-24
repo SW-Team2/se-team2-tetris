@@ -1,40 +1,25 @@
 package tetrisgame;
 
-import java.awt.Color;
-
 class GameBoard {
 	private Block mBoard[][];
 	private Tetromino mTetromino;
 
 	public static final int BOARD_COL = 20;
 	public static final int BOARD_ROW = 10;
-	//
-	// Block for mapping Tetromino on Board
-	//
-	static final Block BLOCK = new Block(true);
 
-	public eResult initialize() {
-		eResult re = eResult.SUCCESS;
-
+	public GameBoard() {
 		mBoard = new Block[BOARD_COL][BOARD_ROW];
-		for (int c = 0; c < BOARD_COL; c++) {
-			for (int r = 0; r < BOARD_ROW; r++) {
-				mBoard[c][r] = new Block();
-			}
-		}
 		mTetromino = new Tetromino();
-		return re;
 	}
 
-	public void setTetromino(Tetromino in) {
-		mTetromino.deepCopy(in);
+	public void setTetromino(Tetromino tetIn) {
+		mTetromino.deepCopy(tetIn);
 	}
 
-	public eGameOver setTetrominoAndCheckGameOver(Tetromino in) {
+	public eGameOver checkGameOver() {
 		eGameOver gameOver = eGameOver.CONTINUE;
-		setTetromino(in);
 		eCollResult collResult = collisionTest();
-		if (collResult == eCollResult.Y) {
+		if (collResult == eCollResult.COLL) {
 			gameOver = eGameOver.OVER;
 		}
 		return gameOver;
@@ -42,12 +27,10 @@ class GameBoard {
 
 	public int removeLine() {
 		int removeLines = 0;
-		BLOCK.setFill(false);
-		BLOCK.setColor(Color.black);
 		boolean bRemovable = true;
 		for (int i = BOARD_COL - 1; i >= 0; i--) {
 			for (int j = 0; j < BOARD_ROW; j++) {
-				if (!mBoard[i][j].isFilled()) {
+				if (mBoard[i][j] == null) {
 					bRemovable = false;
 					break;
 				}
@@ -55,11 +38,11 @@ class GameBoard {
 			if (bRemovable) {
 				for (int c = i; c > 0; c--) {
 					for (int r = 0; r < BOARD_ROW; r++) {
-						mBoard[c][r].deepCopy(mBoard[c - 1][r]);
+						mBoard[c][r] = mBoard[c - 1][r];
 					}
 				}
 				for (int r = 0; r < BOARD_ROW; r++) {
-					mBoard[0][r].deepCopy(BLOCK);
+					mBoard[0][r] = null;
 				}
 				i++;
 			}
@@ -74,31 +57,27 @@ class GameBoard {
 		mTetromino.move(dir);
 		eCollResult collResult = collisionTest();
 		switch (collResult) {
-			case Y:
+			case COLL:
 				mTetromino.moveBack(dir);
 				if (dir == eDirection.DOWN) {
 					//
 					// Map current Tetromino on Board
 					//
 					Position pos = mTetromino.getPosition();
-					BLOCK.setFill(true);
-					BLOCK.setColor(mTetromino.getColor());
 					for (int c = 0; c < Tetromino.SHAPE_COL; c++) {
 						for (int r = 0; r < Tetromino.SHAPE_ROW; r++) {
 							if (mTetromino.isFilled(c, r)) {
 								int col = pos.mCol + c;
 								int row = pos.mRow + r;
-								mBoard[col][row].deepCopy(BLOCK);
+								mBoard[col][row] = mTetromino.getBlock(c, r);
 							}
 						}
 					}
 					bCollWithFloor = true;
 				}
 				break;
-
-			case N:
+			case NOT_COLL:
 				break;
-
 			default:
 				assert (false);
 				break;
@@ -108,34 +87,35 @@ class GameBoard {
 
 	public void rotateTet() {
 		mTetromino.rotate();
-
 		eCollResult collResult = collisionTest();
 		switch (collResult) {
-			case Y:
-				mTetromino.rotate();
-				mTetromino.rotate();
-				mTetromino.rotate();
+			case COLL:
+				mTetromino.rotateBack();
 				break;
-
-			case N:
+			case NOT_COLL:
 				break;
-
 			default:
 				assert (false);
 				break;
 		}
 	}
 
+	//
+	// FOR DRAWING
+	// TEMP
 	public Block getBlock(int c, int r) {
 		return mBoard[c][r];
 	}
 
+	//
+	// FOR DRAWING
+	// TEMP
 	public Tetromino getTetromino() {
 		return mTetromino;
 	}
 
 	private eCollResult collisionTest() {
-		eCollResult re = eCollResult.N;
+		eCollResult re = eCollResult.NOT_COLL;
 
 		Position pos = mTetromino.getPosition();
 		for (int c = 0; c < Tetromino.SHAPE_COL; c++) {
@@ -144,8 +124,8 @@ class GameBoard {
 					int col = pos.mCol + c;
 					int row = pos.mRow + r;
 					if (BOARD_COL <= col || row < 0 || BOARD_ROW <= row ||
-							mBoard[col][row].isFilled()) {
-						re = eCollResult.Y;
+							mBoard[col][row] != null) {
+						re = eCollResult.COLL;
 						return re;
 					}
 
