@@ -19,10 +19,18 @@ public class TetrisGame extends JFrame {
 	private GameBoard mGameBoard;
 	private Tetromino mNextTetromino;
 	private Timer mTimer;
+	private int mSpeed;
 	private long mScore;
 
 	private float mAutoDownTime;
 	private float mSumDeltaTime;
+	private static final float START_AUTO_DOWN_TIME = 1.0f;
+
+	private static final int SCORE_UNIT = 100;
+	private static final int MULTIPLE_BREAK_BONUS_2L = 30;
+	private static final int MULTIPLE_BREAK_BONUS_3L = 60;
+	private static final int MULTIPLE_BREAK_BONUS_4L = 100;
+	private static final float GAME_SPEED_ACCEL_UNIT = 0.1f;
 
 	public TetrisGame() {
 		mGameBoard = new GameBoard();
@@ -62,8 +70,8 @@ public class TetrisGame extends JFrame {
 		//
 		// Temp GUI
 		//
-
-		mAutoDownTime = 1.0f;
+		mSpeed = 1;
+		mAutoDownTime = START_AUTO_DOWN_TIME;
 		mSumDeltaTime = 0.0f;
 	}
 
@@ -84,41 +92,55 @@ public class TetrisGame extends JFrame {
 		mTimer.tick();
 		float dTime = mTimer.getDeltaTime();
 		mSumDeltaTime += dTime;
-		boolean bCollWithFloor = false;
 
+		boolean bCollWithFloor1 = false;
+		boolean bCollWithFloor2 = false;
+		bCollWithFloor1 = mInput.GetCollWithFloor();
 		if (mAutoDownTime <= mSumDeltaTime) {
-			bCollWithFloor = mGameBoard.moveTet(eDirection.DOWN);
-			if (bCollWithFloor) {
-				mScore += mGameBoard.removeLine();
-
-				mGameBoard.setTetromino(mNextTetromino);
-				gameOverFlag = mGameBoard.checkGameOver();
-				mNextTetromino.setRandomShapeAndColor();
-
-				if (gameOverFlag == eGameOver.OVER) {
-					return true;
-				}
-			}
+			bCollWithFloor2 = mGameBoard.moveTet(eDirection.DOWN);
 			mSumDeltaTime = 0.0f;
 		}
-		//
-		// Get User Input and React
-		//
-		bCollWithFloor = mInput.GetCollWithFloor();
-		if (bCollWithFloor) {
-			mGameBoard.removeLine();
-
+		if (bCollWithFloor1 || bCollWithFloor2) {
+			int numRemovedLines = mGameBoard.removeLine();
+			// Calculate Score
+			int addedScore = 0;
+			switch (numRemovedLines) {
+				case 0:
+					break;
+				case 1:
+					addedScore = SCORE_UNIT;
+					break;
+				case 2:
+					addedScore = SCORE_UNIT + MULTIPLE_BREAK_BONUS_2L;
+					break;
+				case 3:
+					addedScore = SCORE_UNIT + MULTIPLE_BREAK_BONUS_3L;
+					break;
+				case 4:
+					addedScore = SCORE_UNIT + MULTIPLE_BREAK_BONUS_4L;
+					break;
+				default:
+					assert (false) : "Unspecified";
+					break;
+			}
+			addedScore *= (float) (1 + (mSpeed - 1) / 10.0f);
+			mScore += addedScore;
+			mSpeed = (int) (mScore / (SCORE_UNIT * 10) + 1);
+			//
 			mGameBoard.setTetromino(mNextTetromino);
 			gameOverFlag = mGameBoard.checkGameOver();
 			mNextTetromino.setRandomShapeAndColor();
-
 			mInput.Update();
+			mSumDeltaTime = 0.0f;
+			mAutoDownTime = START_AUTO_DOWN_TIME;
+			for (int i = 0; i < mSpeed - 1; i++) {
+				mAutoDownTime = mAutoDownTime * (1.0f - GAME_SPEED_ACCEL_UNIT);
+			}
 
 			if (gameOverFlag == eGameOver.OVER) {
 				return true;
 			}
 		}
-
 		return false;
 	}
 
@@ -152,6 +174,7 @@ public class TetrisGame extends JFrame {
 					strBuf.append(' ');
 					strBuf.append(' ');
 				}
+				strBuf.append(' ');
 			}
 			strBuf.append('X');
 			strBuf.append('\n');
@@ -159,8 +182,11 @@ public class TetrisGame extends JFrame {
 		for (int t = 0; t < GameBoard.BOARD_ROW + 1; t++) {
 			strBuf.append('X');
 			strBuf.append(' ');
-
 		}
+		strBuf.append('\n');
+		strBuf.append('\n');
+		strBuf.append("SCORE : ");
+		strBuf.append(mScore);
 
 		mPane.setText(strBuf.toString());
 		StyledDocument doc = mPane.getStyledDocument();
@@ -183,18 +209,20 @@ public class TetrisGame extends JFrame {
 				case KeyEvent.VK_LEFT:
 					mGameBoard.moveTet(eDirection.LEFT);
 					break;
-
 				case KeyEvent.VK_RIGHT:
 					mGameBoard.moveTet(eDirection.RIGHT);
 					break;
-
 				case KeyEvent.VK_DOWN:
 					mbCollWithFloor = mGameBoard.moveTet(eDirection.DOWN);
 					break;
 				case KeyEvent.VK_SPACE:
 					mGameBoard.rotateTet();
 					break;
-
+				case KeyEvent.VK_UP:
+					while (!mbCollWithFloor) {
+						mbCollWithFloor = mGameBoard.moveTet(eDirection.DOWN);
+					}
+					break;
 				default:
 					break;
 			}
