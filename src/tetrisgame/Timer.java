@@ -24,6 +24,7 @@ class Timer {
 
 		if (mbPauseFlag) {
 			mPausedTime += mDeltaTime;
+			mDeltaTime = 0;
 		}
 	}
 

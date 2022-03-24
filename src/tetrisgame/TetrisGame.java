@@ -206,6 +206,7 @@ public class TetrisGame extends JFrame {
 	class myKeyListener implements KeyListener {
 		public void keyPressed(KeyEvent e) {
 			switch (e.getKeyCode()) {
+				// Game playing
 				case KeyEvent.VK_LEFT:
 					mGameBoard.moveTet(eDirection.LEFT);
 					break;
@@ -222,6 +223,15 @@ public class TetrisGame extends JFrame {
 					while (!mbCollWithFloor) {
 						mbCollWithFloor = mGameBoard.moveTet(eDirection.DOWN);
 					}
+					break;
+				// Pause & Unpause
+				case KeyEvent.VK_P:
+					// intentional fallthrough
+				case KeyEvent.VK_ESCAPE:
+					mTimer.pause();
+					break;
+				case KeyEvent.VK_U:
+					mTimer.unPause();
 					break;
 				default:
 					break;
