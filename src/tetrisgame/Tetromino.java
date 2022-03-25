@@ -120,7 +120,7 @@ class Tetromino {
 	}
 
 	public void setRandomShapeAndColor() {
-		int mCurrRandNum = mRandom.nextInt(0, 7);
+		int mCurrRandNum = mRandom.nextInt(7);
 		for (int col = 0; col < SHAPE_COL; col++) {
 			for (int row = 0; row < SHAPE_ROW; row++) {
 				if (TET_SHAPES[mCurrRandNum][col][row]) {
@@ -177,7 +177,7 @@ class Tetromino {
 		mShape[0][2] = mShape[2][3];
 		mShape[2][3] = mShape[3][1];
 		mShape[3][1] = mShape[1][0];
-		mShape[2][3] = tmpBlock;
+		mShape[1][0] = tmpBlock;
 
 		tmpBlock = mShape[1][1];
 		mShape[1][1] = mShape[1][2];
