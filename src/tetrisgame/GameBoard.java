@@ -44,6 +44,7 @@ class GameBoard {
 				for (int r = 0; r < BOARD_ROW; r++) {
 					mBoard[0][r] = null;
 				}
+				removeLines++;
 				i++;
 			}
 			bRemovable = true;
