@@ -1,8 +1,12 @@
 package graphics;
 
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+
+import graphics.screens.GameScreen;
+import graphics.screens.MainMenuScreen;
+import graphics.screens.ScoreBoardScreen;
+import graphics.screens.SettingMenuScreen;
+
 import javax.swing.JOptionPane;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -15,10 +19,6 @@ public class WindowManager {
 
     public JFrame mWindow;
     public CardLayout mCards;
-    public JPanel mMainMenu;
-    public JPanel mGameScreen;
-    public JPanel mSettingMenu;
-    public JPanel mScoreBoard;
 
     static final String BAR = new String("Bar");
 
@@ -32,15 +32,10 @@ public class WindowManager {
 
         mWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        makeMainMenu();
-        makeGameScreen();
-        makeSettingMenu();
-        makeScoreBoard();
-
-        mWindow.getContentPane().add("main", mMainMenu);
-        mWindow.getContentPane().add("game", mGameScreen);
-        mWindow.getContentPane().add("setting", mSettingMenu);
-        mWindow.getContentPane().add("score", mScoreBoard);
+        mWindow.getContentPane().add("main", new MainMenuScreen());
+        mWindow.getContentPane().add("game", new GameScreen());
+        mWindow.getContentPane().add("setting", new SettingMenuScreen());
+        mWindow.getContentPane().add("score", new ScoreBoardScreen());
 
         //
         // Define action when keybaord message occurs
@@ -101,39 +96,7 @@ public class WindowManager {
     }
 
     public void show(String name) {
+        // TODO: Catch wrong name exception and assert
         mCards.show(mWindow.getContentPane(), name);
-    }
-
-    private void makeMainMenu() {
-        mMainMenu = new JPanel();
-        mMainMenu.setBackground(Color.black);
-
-        JLabel mainLabel = new JLabel("Main");
-        mMainMenu.add(mainLabel);
-    }
-
-    private void makeGameScreen() {
-        mGameScreen = new JPanel();
-        mGameScreen.setBackground(Color.red);
-
-        JLabel mainLabel = new JLabel("Game");
-        mGameScreen.add(mainLabel);
-    }
-
-    private void makeSettingMenu() {
-        mSettingMenu = new JPanel();
-        mSettingMenu.setBackground(Color.blue);
-
-        JLabel mainLabel = new JLabel("Setting");
-        mSettingMenu.add(mainLabel);
-
-    }
-
-    private void makeScoreBoard() {
-        mScoreBoard = new JPanel();
-        mScoreBoard.setBackground(Color.yellow);
-
-        JLabel mainLabel = new JLabel("Score");
-        mScoreBoard.add(mainLabel);
     }
 }
