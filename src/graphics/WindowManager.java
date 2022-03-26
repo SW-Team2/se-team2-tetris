@@ -8,14 +8,17 @@ import graphics.screens.ScoreBoardScreen;
 import graphics.screens.SettingMenuScreen;
 
 import javax.swing.JOptionPane;
+
+import data.setting.SettingInfoDesc;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
-
+import java.util.Set;
 import java.awt.*;
 
 public class WindowManager {
-    static WindowManager mUniqueInstance = null;
+    private static WindowManager mUniqueInstance = null;
 
     public JFrame mWindow;
     public CardLayout mCards;
@@ -23,9 +26,12 @@ public class WindowManager {
     static final String BAR = new String("Bar");
 
     private WindowManager() {
+        SettingInfoDesc mSettingInfoDesc = SettingInfoDesc.getInstance();
         mWindow = new JFrame();
 
-        mWindow.setSize(800, 600);
+        int w = mSettingInfoDesc.mScreen.mWidth;
+        int h = mSettingInfoDesc.mScreen.mHeight;
+        mWindow.setSize(w, h);
         mWindow.setLocation(200, 200);
         mCards = new CardLayout(0, 0);
         mWindow.getContentPane().setLayout(mCards);
@@ -33,7 +39,7 @@ public class WindowManager {
         mWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         mWindow.getContentPane().add("main", new MainMenuScreen());
-        mWindow.getContentPane().add("game", new GameScreen());
+        mWindow.getContentPane().add("game", GameScreen.getInstance());
         mWindow.getContentPane().add("setting", new SettingMenuScreen());
         mWindow.getContentPane().add("score", new ScoreBoardScreen());
 

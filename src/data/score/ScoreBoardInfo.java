@@ -1,7 +1,7 @@
 package data.score;
 
 public class ScoreBoardInfo {
-    static ScoreBoardInfo mUniqueInstance = null;
+    private static ScoreBoardInfo mUniqueInstance = null;
 
     private ScoreInfo mScoreInfos[];
     private static final int mPersonnel = 10;

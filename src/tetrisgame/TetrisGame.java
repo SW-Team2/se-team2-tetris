@@ -1,18 +1,14 @@
 package tetrisgame;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
-import javax.swing.BorderFactory;
-import javax.swing.JFrame;
 import javax.swing.JTextPane;
-import javax.swing.border.CompoundBorder;
+import javax.swing.JLabel;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import graphics.screens.GameScreen;
 import tetrisgame.enumerations.eDirection;
 import tetrisgame.enumerations.eGameOver;
 import tetrisgame.parts.Block;
@@ -21,7 +17,7 @@ import tetrisgame.parts.Position;
 import tetrisgame.parts.Tetromino;
 import tetrisgame.parts.Timer;
 
-public class TetrisGame extends JFrame {
+public class TetrisGame {
 	private GameBoard mGameBoard;
 	private Tetromino mNextTetromino;
 	private Timer mTimer;
@@ -30,6 +26,8 @@ public class TetrisGame extends JFrame {
 
 	private float mAutoDownTime;
 	private float mSumDeltaTime;
+	private float mPrevTimeForDraw;
+
 	private static final float START_AUTO_DOWN_TIME = 1.0f;
 
 	private static final int SCORE_UNIT = 100;
@@ -37,6 +35,9 @@ public class TetrisGame extends JFrame {
 	private static final int MULTIPLE_BREAK_BONUS_3L = 60;
 	private static final int MULTIPLE_BREAK_BONUS_4L = 100;
 	private static final float GAME_SPEED_ACCEL_UNIT = 0.1f;
+
+	private static final char BORDER_CHAR = 'X';
+	private static final char BLOCK_CHAR = 'O';
 
 	public TetrisGame() {
 		mGameBoard = new GameBoard();
@@ -50,34 +51,10 @@ public class TetrisGame extends JFrame {
 		mNextTetromino.setRandomShapeAndColor();
 		mTimer.initialize();
 		mScore = 0;
-		//
-		// Temp GUI
-		//
-		mPane = new JTextPane();
-		mPane.setEditable(false);
-		mPane.setBackground(Color.BLACK);
-		CompoundBorder border = BorderFactory.createCompoundBorder(
-				BorderFactory.createLineBorder(Color.GRAY, 10),
-				BorderFactory.createLineBorder(Color.DARK_GRAY, 5));
-		mPane.setBorder(border);
-		this.getContentPane().add(mPane, BorderLayout.CENTER);
-
-		addKeyListener(mInput);
-		setFocusable(true);
-		requestFocus();
-
-		mStyleSet = new SimpleAttributeSet();
-		StyleConstants.setFontSize(mStyleSet, 18);
-		StyleConstants.setFontFamily(mStyleSet, "Courier");
-		StyleConstants.setBold(mStyleSet, true);
-		StyleConstants.setForeground(mStyleSet, Color.WHITE);
-		StyleConstants.setAlignment(mStyleSet, StyleConstants.ALIGN_CENTER);
-		//
-		// Temp GUI
-		//
 		mSpeed = 1;
 		mAutoDownTime = START_AUTO_DOWN_TIME;
 		mSumDeltaTime = 0.0f;
+		mPrevTimeForDraw = 0.0f;
 	}
 
 	public void run() {
@@ -97,7 +74,9 @@ public class TetrisGame extends JFrame {
 
 		boolean bCollWithFloor1 = false;
 		boolean bCollWithFloor2 = false;
-		bCollWithFloor1 = mInput.GetCollWithFloor();
+		// TODO:
+		bCollWithFloor1 = false;
+
 		if (mAutoDownTime <= mSumDeltaTime) {
 			bCollWithFloor2 = mGameBoard.moveTet(eDirection.DOWN);
 			mSumDeltaTime = 0.0f;
@@ -128,11 +107,10 @@ public class TetrisGame extends JFrame {
 			addedScore *= (float) (1 + (mSpeed - 1) / 10.0f);
 			mScore += addedScore;
 			mSpeed = (int) (mScore / (SCORE_UNIT * 10) + 1);
-			//
+
 			mGameBoard.setTetromino(mNextTetromino);
 			gameOverFlag = mGameBoard.checkGameOver();
 			mNextTetromino.setRandomShapeAndColor();
-			mInput.Update();
 			mSumDeltaTime = 0.0f;
 			mAutoDownTime = START_AUTO_DOWN_TIME;
 			for (int i = 0; i < mSpeed - 1; i++) {
@@ -147,122 +125,138 @@ public class TetrisGame extends JFrame {
 	}
 
 	private void draw() {
-		//
-		// TEMP
-		//
 		float currTime = mTimer.getGameTime();
-		float dTime = currTime - prevTime;
+		float dTime = currTime - mPrevTimeForDraw;
+		// TODO: Set frame
 		if (dTime < 0.1f) {
 			return;
 		}
-		prevTime = currTime;
+		mPrevTimeForDraw = currTime;
 
-		StringBuffer strBuf = new StringBuffer();
-
-		Tetromino tet = mGameBoard.getTetromino();
-		Position pos = tet.getPosition();
-
-		Block tmpBlock;
-		for (int i = 0; i < 20; i++) {
-			strBuf.append('X');
-			for (int j = 0; j < 10; j++) {
-				boolean bTetFilled = false;
-				if (pos.mCol <= i && i < pos.mCol + Tetromino.SHAPE_COL &&
-						pos.mRow <= j && j < pos.mRow + Tetromino.SHAPE_ROW) {
-					bTetFilled = tet.isFilled(i - pos.mCol, j - pos.mRow);
-				}
-				tmpBlock = mGameBoard.getBlock(i, j);
-				if (tmpBlock != null || bTetFilled) {
-					strBuf.append('O');
-				} else {
-					strBuf.append(' ');
-					strBuf.append(' ');
-					strBuf.append(' ');
-				}
-				strBuf.append(' ');
+		GameScreen gameScreen = GameScreen.getInstance();
+		// Game board pane
+		{
+			JTextPane gameBoardPane = gameScreen.getGameBoardTextPane();
+			StringBuffer gameBoardBuffer = new StringBuffer();
+			Tetromino tet = mGameBoard.getTetromino();
+			Position pos = tet.getPosition();
+			Block tmpBlock;
+			// Make string buffer
+			for (int t = 0; t < GameBoard.BOARD_ROW + 2; t++) {
+				gameBoardBuffer.append(BORDER_CHAR);
 			}
-			strBuf.append('X');
-			strBuf.append('\n');
-		}
-		for (int t = 0; t < GameBoard.BOARD_ROW + 1; t++) {
-			strBuf.append('X');
-			strBuf.append(' ');
-		}
-		strBuf.append('\n');
-		strBuf.append('\n');
-		strBuf.append("SCORE : ");
-		strBuf.append(mScore);
-
-		mPane.setText(strBuf.toString());
-		StyledDocument doc = mPane.getStyledDocument();
-		doc.setParagraphAttributes(0, doc.getLength(), mStyleSet, false);
-		mPane.setStyledDocument(doc);
-		//
-		// TEMP
-		//
-	}
-
-	//
-	// TEMP
-	//
-	private float prevTime = 0.0f;
-
-	private JTextPane mPane;
-	private SimpleAttributeSet mStyleSet;
-	private myKeyListener mInput = new myKeyListener();
-
-	class myKeyListener implements KeyListener {
-		public void keyPressed(KeyEvent e) {
-			switch (e.getKeyCode()) {
-				// Game playing
-				case KeyEvent.VK_LEFT:
-					mGameBoard.moveTet(eDirection.LEFT);
-					break;
-				case KeyEvent.VK_RIGHT:
-					mGameBoard.moveTet(eDirection.RIGHT);
-					break;
-				case KeyEvent.VK_DOWN:
-					mbCollWithFloor = mGameBoard.moveTet(eDirection.DOWN);
-					break;
-				case KeyEvent.VK_SPACE:
-					mGameBoard.rotateTet();
-					break;
-				case KeyEvent.VK_UP:
-					while (!mbCollWithFloor) {
-						mbCollWithFloor = mGameBoard.moveTet(eDirection.DOWN);
+			gameBoardBuffer.append('\n');
+			for (int c = 0; c < GameBoard.BOARD_COL; c++) {
+				gameBoardBuffer.append(BORDER_CHAR);
+				for (int r = 0; r < GameBoard.BOARD_ROW; r++) {
+					boolean bTetFilled = false;
+					if (pos.mCol <= c && c < pos.mCol + Tetromino.SHAPE_COL &&
+							pos.mRow <= r && r < pos.mRow + Tetromino.SHAPE_ROW) {
+						bTetFilled = tet.isFilled(c - pos.mCol, r - pos.mRow);
 					}
-					break;
-				// Pause & Unpause
-				case KeyEvent.VK_P:
-					// intentional fallthrough
-				case KeyEvent.VK_ESCAPE:
-					mTimer.pause();
-					break;
-				case KeyEvent.VK_U:
-					mTimer.unPause();
-					break;
-				default:
-					break;
+					tmpBlock = mGameBoard.getBlock(c, r);
+					if (tmpBlock != null || bTetFilled) {
+						gameBoardBuffer.append(BLOCK_CHAR);
+					} else {
+						gameBoardBuffer.append(' ');
+					}
+				}
+				gameBoardBuffer.append(BORDER_CHAR);
+				gameBoardBuffer.append('\n');
+			}
+			for (int t = 0; t < GameBoard.BOARD_ROW + 2; t++) {
+				gameBoardBuffer.append(BORDER_CHAR);
+			}
+			gameBoardPane.setText(gameBoardBuffer.toString());
+			// Make style set
+			StyledDocument doc = gameBoardPane.getStyledDocument();
+			SimpleAttributeSet styles = new SimpleAttributeSet();
+			int offset = GameBoard.BOARD_ROW + 3;
+			for (int c = 0; c < GameBoard.BOARD_COL; c++) {
+				offset++;
+				for (int r = 0; r < GameBoard.BOARD_ROW; r++) {
+					boolean bTetFilled = false;
+					if (pos.mCol <= c && c < pos.mCol + Tetromino.SHAPE_COL &&
+							pos.mRow <= r && r < pos.mRow + Tetromino.SHAPE_ROW) {
+						bTetFilled = tet.isFilled(c - pos.mCol, r - pos.mRow);
+					}
+					tmpBlock = mGameBoard.getBlock(c, r);
+					Color currColor;
+					if (tmpBlock != null) {
+						StyleConstants.setForeground(styles, tmpBlock.getColor());
+						doc.setCharacterAttributes(offset, 1, styles, true);
+						offset++;
+					} else if (bTetFilled) {
+						StyleConstants.setForeground(styles, tet.getColor());
+						doc.setCharacterAttributes(offset, 1, styles, true);
+						offset++;
+					} else {
+						offset++;
+					}
+				}
+				offset++;
+				offset++;
+			}
+			for (int t = 0; t < GameBoard.BOARD_ROW + 2; t++) {
+				gameBoardBuffer.append(BORDER_CHAR);
+			}
+			gameBoardPane.setStyledDocument(doc);
+		}
+		// Next tet board
+		{
+			JTextPane nextTetPane = gameScreen.getNextTetBoardTextPane();
+			StringBuffer nextTetBuffer = new StringBuffer();
+			Tetromino tet = mNextTetromino;
+			// Make string buffer
+			for (int c = 0; c < Tetromino.SHAPE_COL + 2; c++) {
+				nextTetBuffer.append(' ');
+			}
+			nextTetBuffer.append('\n');
+			for (int c = 0; c < Tetromino.SHAPE_COL; c++) {
+				nextTetBuffer.append(' ');
+				for (int r = 0; r < Tetromino.SHAPE_ROW; r++) {
+					if (tet.isFilled(c, r)) {
+						nextTetBuffer.append(BLOCK_CHAR);
+					} else {
+						nextTetBuffer.append(' ');
+					}
+				}
+				nextTetBuffer.append(' ');
+				nextTetBuffer.append('\n');
+			}
+			// for (int c = 0; c < Tetromino.SHAPE_COL + 2; c++) {
+			// nextTetBuffer.append(' ');
+			// }
+			nextTetPane.setText(nextTetBuffer.toString());
+			// Make style set
+			// TODO: Optimize by painting same color all
+			//
+			StyledDocument doc = nextTetPane.getStyledDocument();
+			SimpleAttributeSet styles = new SimpleAttributeSet();
+			int offset = Tetromino.SHAPE_ROW + 3;
+			Color tetColor = tet.getColor();
+			for (int c = 0; c < Tetromino.SHAPE_COL; c++) {
+				offset++;
+				for (int r = 0; r < Tetromino.SHAPE_ROW; r++) {
+					if (tet.isFilled(c, r)) {
+						StyleConstants.setForeground(styles, tetColor);
+						doc.setCharacterAttributes(offset, 1, styles, true);
+						offset++;
+					} else {
+						offset++;
+					}
+				}
+				offset++;
+				offset++;
+			}
+			// Draw score board
+			{
+				JLabel scoreBoard = gameScreen.getScoreBoardLabel();
+				StringBuffer scoreBuf = new StringBuffer();
+				scoreBuf.append("SCORE: ");
+				scoreBuf.append(Long.toString(mScore));
+				scoreBoard.setText(scoreBuf.toString());
 			}
 		}
-
-		public void keyReleased(KeyEvent e) {
-		}
-
-		public void keyTyped(KeyEvent e) {
-		}
-
-		public boolean GetCollWithFloor() {
-			return mbCollWithFloor;
-		}
-
-		public void Update() {
-			mbCollWithFloor = false;
-		}
-
-		private boolean mbCollWithFloor = false;
 	}
-	//
-	// TEMP
-	//
 }

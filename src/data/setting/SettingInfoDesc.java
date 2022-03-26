@@ -3,9 +3,15 @@ package data.setting;
 import java.awt.event.KeyEvent;
 
 public class SettingInfoDesc {
-    static SettingInfoDesc mUniqueInstance = null;
+    private static SettingInfoDesc mUniqueInstance = null;
 
-    public class Key {
+    public Key mKey;
+    public Screen mScreen;
+
+    class Key {
+        public Menu mMenu;
+        public Game mGame;
+
         public class Menu {
             public int mMoveUp = KeyEvent.VK_UP;
             public int mMoveDown = KeyEvent.VK_DOWN;
@@ -24,10 +30,16 @@ public class SettingInfoDesc {
         }
     }
 
+    public class Screen {
+        public int mWidth = 800;
+        public int mHeight = 1040;
+    }
+
     public int mColorBlindnessMod = 0;
 
     private SettingInfoDesc() {
-        // TODO:
+        mKey = new Key();
+        mScreen = new Screen();
     }
 
     public static SettingInfoDesc getInstance() {
