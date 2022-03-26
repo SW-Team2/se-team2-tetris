@@ -1,6 +1,10 @@
-package tetrisgame;
+package tetrisgame.parts;
 
-class GameBoard {
+import tetrisgame.enumerations.eCollResult;
+import tetrisgame.enumerations.eDirection;
+import tetrisgame.enumerations.eGameOver;
+
+public class GameBoard {
 	private Block mBoard[][];
 	private Tetromino mTetromino;
 

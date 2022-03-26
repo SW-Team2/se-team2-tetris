@@ -1,8 +1,8 @@
-package tetrisgame;
+package tetrisgame.parts;
 
 import java.awt.Color;
 
-class Block {
+public class Block {
 	private Color mColor;
 
 	public Block() {

@@ -1,6 +1,6 @@
-package tetrisgame;
+package tetrisgame.parts;
 
-class Position {
+public class Position {
     public int mCol;
     public int mRow;
 

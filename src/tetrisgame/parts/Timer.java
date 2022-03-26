@@ -1,6 +1,6 @@
-package tetrisgame;
+package tetrisgame.parts;
 
-class Timer {
+public class Timer {
 	private long mStartTime;
 	private long mTotalTime;
 	private long mPausedTime;
