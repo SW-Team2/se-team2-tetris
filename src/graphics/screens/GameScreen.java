@@ -20,11 +20,13 @@ public class GameScreen extends JPanel {
     private JTextPane mNextTetrominoBoard;
     private SimpleAttributeSet mTetStyleSet;
     private JLabel mScoreBoard;
+    // TODO: Show key setting
     private JLabel mKeySettingBoard;
 
     private SettingInfoDesc mSettingInfo;
 
     private GameScreen() {
+        // TODO: Reflect setting infos
         mSettingInfo = SettingInfoDesc.getInstance();
 
         mGameBoard = new JTextPane();
