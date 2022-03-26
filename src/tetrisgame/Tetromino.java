@@ -6,7 +6,7 @@ import java.util.Random;
 class Tetromino {
 	private Position mPosition;
 	private Block mShape[][];
-	private int mCurrRandNum;
+	private int mShapeANColorIndex;
 	private static Random mRandom;
 
 	public static final int SHAPE_COL = 4;
@@ -96,7 +96,7 @@ class Tetromino {
 				mShape[c][r] = source.mShape[c][r];
 			}
 		}
-		mCurrRandNum = source.mCurrRandNum;
+		mShapeANColorIndex = source.mShapeANColorIndex;
 	}
 
 	public Block getBlock(int c, int r) {
@@ -112,7 +112,7 @@ class Tetromino {
 	}
 
 	public Color getColor() {
-		return COLOR_BLOCK_ARR[mCurrRandNum].getColor();
+		return COLOR_BLOCK_ARR[mShapeANColorIndex].getColor();
 	}
 
 	public Position getPosition() {
@@ -120,11 +120,11 @@ class Tetromino {
 	}
 
 	public void setRandomShapeAndColor() {
-		int mCurrRandNum = mRandom.nextInt(0, 7);
+		mShapeANColorIndex = mRandom.nextInt(7);
 		for (int col = 0; col < SHAPE_COL; col++) {
 			for (int row = 0; row < SHAPE_ROW; row++) {
-				if (TET_SHAPES[mCurrRandNum][col][row]) {
-					mShape[col][row] = COLOR_BLOCK_ARR[mCurrRandNum];
+				if (TET_SHAPES[mShapeANColorIndex][col][row]) {
+					mShape[col][row] = COLOR_BLOCK_ARR[mShapeANColorIndex];
 				} else {
 					mShape[col][row] = null;
 				}
@@ -177,7 +177,7 @@ class Tetromino {
 		mShape[0][2] = mShape[2][3];
 		mShape[2][3] = mShape[3][1];
 		mShape[3][1] = mShape[1][0];
-		mShape[2][3] = tmpBlock;
+		mShape[1][0] = tmpBlock;
 
 		tmpBlock = mShape[1][1];
 		mShape[1][1] = mShape[1][2];

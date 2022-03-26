@@ -44,7 +44,6 @@ public class TetrisGame extends JFrame {
 		mNextTetromino.setRandomShapeAndColor();
 		mTimer.initialize();
 		mScore = 0;
-
 		//
 		// Temp GUI
 		//
@@ -83,9 +82,6 @@ public class TetrisGame extends JFrame {
 		}
 	}
 
-	//
-	// Private Functions
-	//
 	private boolean update() {
 		eGameOver gameOverFlag = eGameOver.CONTINUE;
 
@@ -145,6 +141,9 @@ public class TetrisGame extends JFrame {
 	}
 
 	private void draw() {
+		//
+		// TEMP
+		//
 		float currTime = mTimer.getGameTime();
 		float dTime = currTime - prevTime;
 		if (dTime < 0.1f) {
@@ -192,6 +191,9 @@ public class TetrisGame extends JFrame {
 		StyledDocument doc = mPane.getStyledDocument();
 		doc.setParagraphAttributes(0, doc.getLength(), mStyleSet, false);
 		mPane.setStyledDocument(doc);
+		//
+		// TEMP
+		//
 	}
 
 	//
@@ -254,4 +256,7 @@ public class TetrisGame extends JFrame {
 
 		private boolean mbCollWithFloor = false;
 	}
+	//
+	// TEMP
+	//
 }

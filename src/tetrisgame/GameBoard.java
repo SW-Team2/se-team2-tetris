@@ -108,9 +108,6 @@ class GameBoard {
 		return mBoard[c][r];
 	}
 
-	//
-	// FOR DRAWING
-	// TEMP
 	public Tetromino getTetromino() {
 		return mTetromino;
 	}
@@ -124,7 +121,7 @@ class GameBoard {
 				if (mTetromino.isFilled(c, r)) {
 					int col = pos.mCol + c;
 					int row = pos.mRow + r;
-					if (BOARD_COL <= col || row < 0 || BOARD_ROW <= row ||
+					if (BOARD_COL <= col || col < 0 || row < 0 || BOARD_ROW <= row ||
 							mBoard[col][row] != null) {
 						re = eCollResult.COLL;
 						return re;
