@@ -32,10 +32,10 @@ public class WindowManager {
 
         mWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        MakeMainMenu();
-        MakeGameScreen();
-        MakeSettingMenu();
-        MakeScoreBoard();
+        makeMainMenu();
+        makeGameScreen();
+        makeSettingMenu();
+        makeScoreBoard();
 
         mWindow.getContentPane().add("main", mMainMenu);
         mWindow.getContentPane().add("game", mGameScreen);
@@ -104,7 +104,7 @@ public class WindowManager {
         mCards.show(mWindow.getContentPane(), name);
     }
 
-    private void MakeMainMenu() {
+    private void makeMainMenu() {
         mMainMenu = new JPanel();
         mMainMenu.setBackground(Color.black);
 
@@ -112,7 +112,7 @@ public class WindowManager {
         mMainMenu.add(mainLabel);
     }
 
-    private void MakeGameScreen() {
+    private void makeGameScreen() {
         mGameScreen = new JPanel();
         mGameScreen.setBackground(Color.red);
 
@@ -120,7 +120,7 @@ public class WindowManager {
         mGameScreen.add(mainLabel);
     }
 
-    private void MakeSettingMenu() {
+    private void makeSettingMenu() {
         mSettingMenu = new JPanel();
         mSettingMenu.setBackground(Color.blue);
 
@@ -129,7 +129,7 @@ public class WindowManager {
 
     }
 
-    private void MakeScoreBoard() {
+    private void makeScoreBoard() {
         mScoreBoard = new JPanel();
         mScoreBoard.setBackground(Color.yellow);
 
