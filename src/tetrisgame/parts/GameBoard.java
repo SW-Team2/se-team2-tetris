@@ -29,31 +29,42 @@ public class GameBoard {
 		return gameOver;
 	}
 
-	public int removeLine() {
-		int removeLines = 0;
+	public int findRemovableLines(int outColArr[]) {
+		int size = 0;
 		boolean bRemovable = true;
-		for (int i = BOARD_COL - 1; i >= 0; i--) {
-			for (int j = 0; j < BOARD_ROW; j++) {
-				if (mBoard[i][j] == null) {
+		int posCol = mTetromino.getPosition().mCol;
+		int startCol = posCol + 3 < BOARD_COL ? posCol + 3 : BOARD_COL - 1;
+		for (int boardCol = startCol; boardCol >= posCol; boardCol--) {
+			for (Block currBolck : mBoard[boardCol]) {
+				if (currBolck == null) {
 					bRemovable = false;
 					break;
 				}
 			}
 			if (bRemovable) {
-				for (int c = i; c > 0; c--) {
-					for (int r = 0; r < BOARD_ROW; r++) {
-						mBoard[c][r] = mBoard[c - 1][r];
-					}
-				}
-				for (int r = 0; r < BOARD_ROW; r++) {
-					mBoard[0][r] = null;
-				}
-				removeLines++;
-				i++;
+				outColArr[size] = boardCol;
+				size++;
 			}
 			bRemovable = true;
 		}
-		return removeLines;
+		return size;
+	}
+
+	public void removeLines(int colArr[], int size) {
+		for (int index = 0; index < size; index++) {
+			int col = colArr[index];
+			for (int row = 0; row < BOARD_ROW; row++) {
+				mBoard[col][row] = null;
+			}
+			Block removedLine[] = mBoard[col];
+			for (int c = col; c > 0; c--) {
+				mBoard[c] = mBoard[c - 1];
+			}
+			for (int i = index; i < size; i++) {
+				colArr[i]++;
+			}
+			mBoard[0] = removedLine;
+		}
 	}
 
 	public boolean moveTet(eDirection dir) {
@@ -105,9 +116,6 @@ public class GameBoard {
 		}
 	}
 
-	//
-	// FOR DRAWING
-	// TEMP
 	public Block getBlock(int c, int r) {
 		return mBoard[c][r];
 	}

@@ -134,17 +134,17 @@ public class TetrisGame {
 		float dTime = mTimer.getDeltaTime();
 		mSumDeltaTime += dTime;
 
-		boolean bCollWithFloor1 = false;
+		boolean bCollWithFloor1 = mGameKeyListener.getCollWithFloor();
 		boolean bCollWithFloor2 = false;
-		// TODO:
-		bCollWithFloor1 = false;
-
 		if (mAutoDownTime <= mSumDeltaTime) {
 			bCollWithFloor2 = mGameBoard.moveTet(eDirection.DOWN);
 			mSumDeltaTime = 0.0f;
 		}
 		if (bCollWithFloor1 || bCollWithFloor2) {
-			int numRemovedLines = mGameBoard.removeLine();
+			int removeColArr[] = new int[4];
+			int numRemovedLines = 0;
+			numRemovedLines = mGameBoard.findRemovableLines(removeColArr);
+			mGameBoard.removeLines(removeColArr, numRemovedLines);
 			// Calculate Score
 			int addedScore = 0;
 			switch (numRemovedLines) {
@@ -154,13 +154,13 @@ public class TetrisGame {
 					addedScore = SCORE_UNIT;
 					break;
 				case 2:
-					addedScore = SCORE_UNIT + MULTIPLE_BREAK_BONUS_2L;
+					addedScore = SCORE_UNIT * 2 + MULTIPLE_BREAK_BONUS_2L;
 					break;
 				case 3:
-					addedScore = SCORE_UNIT + MULTIPLE_BREAK_BONUS_3L;
+					addedScore = SCORE_UNIT * 3 + MULTIPLE_BREAK_BONUS_3L;
 					break;
 				case 4:
-					addedScore = SCORE_UNIT + MULTIPLE_BREAK_BONUS_4L;
+					addedScore = SCORE_UNIT * 4 + MULTIPLE_BREAK_BONUS_4L;
 					break;
 				default:
 					assert (false) : "Unspecified";
