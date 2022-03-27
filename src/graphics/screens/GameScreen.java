@@ -13,8 +13,9 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 import data.setting.SettingInfoDesc;
+import graphics.screens.screen.IScreen;
 
-public class GameScreen extends JPanel {
+public class GameScreen extends JPanel implements IScreen {
     private static GameScreen mUniqueInstance = null;
 
     private JTextPane mGameBoard;
@@ -71,12 +72,14 @@ public class GameScreen extends JPanel {
         return mUniqueInstance;
     }
 
+    @Override
     public void setKeyListener(KeyListener kl) {
         super.addKeyListener(kl);
         super.setFocusable(true);
         super.requestFocus();
     }
 
+    @Override
     public void unsetKeyListener() {
         super.setFocusable(false);
     }
