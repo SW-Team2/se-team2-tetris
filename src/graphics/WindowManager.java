@@ -1,21 +1,18 @@
 package graphics;
 
-import javax.swing.JFrame;
+import java.awt.CardLayout;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
+import data.setting.SettingInfoDesc;
 import graphics.screens.GameScreen;
 import graphics.screens.MainMenuScreen;
 import graphics.screens.ScoreBoardScreen;
 import graphics.screens.SettingMenuScreen;
-
-import javax.swing.JOptionPane;
-
-import data.setting.SettingInfoDesc;
-
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.WindowAdapter;
-import java.util.Set;
-import java.awt.*;
 
 public class WindowManager {
     private static WindowManager mUniqueInstance = null;
@@ -75,6 +72,7 @@ public class WindowManager {
             public void keyTyped(KeyEvent e) {
             }
         });
+        mWindow.setFocusable(true);
 
         //
         // Define action when closing window message occurs

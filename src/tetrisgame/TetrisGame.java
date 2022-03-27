@@ -1,9 +1,11 @@
 package tetrisgame;
 
 import java.awt.Color;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
-import javax.swing.JTextPane;
 import javax.swing.JLabel;
+import javax.swing.JTextPane;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
@@ -18,6 +20,8 @@ import tetrisgame.parts.Tetromino;
 import tetrisgame.parts.Timer;
 
 public class TetrisGame {
+	private GameScreen mScreen;
+
 	private GameBoard mGameBoard;
 	private Tetromino mNextTetromino;
 	private Timer mTimer;
@@ -27,6 +31,60 @@ public class TetrisGame {
 	private float mAutoDownTime;
 	private float mSumDeltaTime;
 	private float mPrevTimeForDraw;
+
+	private GameKeyListener mGameKeyListener;
+
+	class GameKeyListener implements KeyListener {
+		public void keyPressed(KeyEvent e) {
+			switch (e.getKeyCode()) {
+				// Game playing
+				case KeyEvent.VK_LEFT:
+					mGameBoard.moveTet(eDirection.LEFT);
+					break;
+				case KeyEvent.VK_RIGHT:
+					mGameBoard.moveTet(eDirection.RIGHT);
+					break;
+				case KeyEvent.VK_DOWN:
+					mbCollWithFloor = mGameBoard.moveTet(eDirection.DOWN);
+					break;
+				case KeyEvent.VK_SPACE:
+					mGameBoard.rotateTet();
+					break;
+				case KeyEvent.VK_UP:
+					while (!mbCollWithFloor) {
+						mbCollWithFloor = mGameBoard.moveTet(eDirection.DOWN);
+					}
+					break;
+				// Pause & Unpause
+				case KeyEvent.VK_P:
+					// intentional fallthrough
+				case KeyEvent.VK_ESCAPE:
+					mTimer.pause();
+					break;
+				case KeyEvent.VK_U:
+					mTimer.unPause();
+					break;
+				default:
+					break;
+			}
+		}
+
+		public void keyReleased(KeyEvent e) {
+		}
+
+		public void keyTyped(KeyEvent e) {
+		}
+
+		public boolean getCollWithFloor() {
+			return mbCollWithFloor;
+		}
+
+		public void update() {
+			mbCollWithFloor = false;
+		}
+
+		private boolean mbCollWithFloor = false;
+	}
 
 	private static final float START_AUTO_DOWN_TIME = 1.0f;
 
@@ -46,6 +104,7 @@ public class TetrisGame {
 	}
 
 	public void initialize() {
+		mScreen = GameScreen.getInstance();
 		mNextTetromino.setRandomShapeAndColor();
 		mGameBoard.setTetromino(mNextTetromino);
 		mNextTetromino.setRandomShapeAndColor();
@@ -55,6 +114,8 @@ public class TetrisGame {
 		mAutoDownTime = START_AUTO_DOWN_TIME;
 		mSumDeltaTime = 0.0f;
 		mPrevTimeForDraw = 0.0f;
+		mGameKeyListener = new GameKeyListener();
+		mScreen.setKeyListener(mGameKeyListener);
 	}
 
 	public void run() {
@@ -63,6 +124,7 @@ public class TetrisGame {
 			bGameOverFlag = this.update();
 			this.draw();
 		}
+		mScreen.unsetKeyListener();
 	}
 
 	private boolean update() {
@@ -111,6 +173,7 @@ public class TetrisGame {
 			mGameBoard.setTetromino(mNextTetromino);
 			gameOverFlag = mGameBoard.checkGameOver();
 			mNextTetromino.setRandomShapeAndColor();
+			mGameKeyListener.update();
 			mSumDeltaTime = 0.0f;
 			mAutoDownTime = START_AUTO_DOWN_TIME;
 			for (int i = 0; i < mSpeed - 1; i++) {
@@ -133,10 +196,9 @@ public class TetrisGame {
 		}
 		mPrevTimeForDraw = currTime;
 
-		GameScreen gameScreen = GameScreen.getInstance();
 		// Game board pane
 		{
-			JTextPane gameBoardPane = gameScreen.getGameBoardTextPane();
+			JTextPane gameBoardPane = mScreen.getGameBoardTextPane();
 			StringBuffer gameBoardBuffer = new StringBuffer();
 			Tetromino tet = mGameBoard.getTetromino();
 			Position pos = tet.getPosition();
@@ -204,7 +266,7 @@ public class TetrisGame {
 		}
 		// Next tet board
 		{
-			JTextPane nextTetPane = gameScreen.getNextTetBoardTextPane();
+			JTextPane nextTetPane = mScreen.getNextTetBoardTextPane();
 			StringBuffer nextTetBuffer = new StringBuffer();
 			Tetromino tet = mNextTetromino;
 			// Make string buffer
@@ -251,7 +313,7 @@ public class TetrisGame {
 			}
 			// Draw score board
 			{
-				JLabel scoreBoard = gameScreen.getScoreBoardLabel();
+				JLabel scoreBoard = mScreen.getScoreBoardLabel();
 				StringBuffer scoreBuf = new StringBuffer();
 				scoreBuf.append("SCORE: ");
 				scoreBuf.append(Long.toString(mScore));

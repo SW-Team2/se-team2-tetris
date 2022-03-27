@@ -1,6 +1,7 @@
 package graphics.screens;
 
 import java.awt.Color;
+import java.awt.event.KeyListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -68,6 +69,16 @@ public class GameScreen extends JPanel {
             mUniqueInstance = new GameScreen();
         }
         return mUniqueInstance;
+    }
+
+    public void setKeyListener(KeyListener kl) {
+        super.addKeyListener(kl);
+        super.setFocusable(true);
+        super.requestFocus();
+    }
+
+    public void unsetKeyListener() {
+        super.setFocusable(false);
     }
 
     public JTextPane getGameBoardTextPane() {
