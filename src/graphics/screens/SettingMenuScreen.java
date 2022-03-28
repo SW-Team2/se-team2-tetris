@@ -1,6 +1,7 @@
 package graphics.screens;
 
 import java.awt.Color;
+import java.awt.event.KeyListener;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;

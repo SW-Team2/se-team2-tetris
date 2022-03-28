@@ -1,9 +1,11 @@
-package tetrisgame;
+package tetrisgame.parts;
 
 import java.awt.Color;
 import java.util.Random;
 
-class Tetromino {
+import tetrisgame.enumerations.eDirection;
+
+public class Tetromino {
 	private Position mPosition;
 	private Block mShape[][];
 	private int mShapeANColorIndex;
