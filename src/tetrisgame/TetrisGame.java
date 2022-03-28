@@ -10,6 +10,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import graphics.WindowManager;
 import graphics.screens.GameScreen;
 import tetrisgame.enumerations.eDirection;
 import tetrisgame.enumerations.eGameOver;
@@ -125,6 +126,7 @@ public class TetrisGame {
 			this.draw();
 		}
 		mScreen.unsetKeyListener();
+		WindowManager.getInstance().show("main");
 	}
 
 	private boolean update() {

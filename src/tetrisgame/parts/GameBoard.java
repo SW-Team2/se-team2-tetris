@@ -34,6 +34,7 @@ public class GameBoard {
 		boolean bRemovable = true;
 		int posCol = mTetromino.getPosition().mCol;
 		int startCol = posCol + 3 < BOARD_COL ? posCol + 3 : BOARD_COL - 1;
+		posCol = posCol >= 0 ? posCol : 0;
 		for (int boardCol = startCol; boardCol >= posCol; boardCol--) {
 			for (Block currBolck : mBoard[boardCol]) {
 				if (currBolck == null) {
