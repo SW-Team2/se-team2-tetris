@@ -1,9 +1,8 @@
 package graphics;
 
 import java.awt.CardLayout;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -17,10 +16,8 @@ import graphics.screens.SettingMenuScreen;
 public class WindowManager {
     private static WindowManager mUniqueInstance = null;
 
-    public JFrame mWindow;
-    public CardLayout mCards;
-
-    static final String BAR = new String("Bar");
+    private static JFrame mWindow;
+    private static CardLayout mCards;
 
     private WindowManager() {
         SettingInfoDesc mSettingInfoDesc = SettingInfoDesc.getInstance();
@@ -37,41 +34,9 @@ public class WindowManager {
 
         mWindow.getContentPane().add("main", new MainMenuScreen());
         mWindow.getContentPane().add("game", GameScreen.getInstance());
-        mWindow.getContentPane().add("setting", new SettingMenuScreen());
         mWindow.getContentPane().add("score", new ScoreBoardScreen());
+        mWindow.getContentPane().add("setting", new SettingMenuScreen());
 
-        //
-        // Define action when keybaord message occurs
-        //
-        mWindow.addKeyListener(new KeyListener() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                switch (e.getKeyCode()) {
-                    case KeyEvent.VK_Q:
-                        mCards.show(mWindow.getContentPane(), "main");
-                        break;
-                    case KeyEvent.VK_W:
-                        mCards.show(mWindow.getContentPane(), "game");
-                        break;
-                    case KeyEvent.VK_E:
-                        mCards.show(mWindow.getContentPane(), "setting");
-                        break;
-                    case KeyEvent.VK_R:
-                        mCards.show(mWindow.getContentPane(), "score");
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-            }
-
-            @Override
-            public void keyTyped(KeyEvent e) {
-            }
-        });
         mWindow.setFocusable(true);
 
         //
@@ -79,7 +44,7 @@ public class WindowManager {
         //
         mWindow.addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+            public void windowClosing(WindowEvent windowEvent) {
                 if (JOptionPane.showConfirmDialog(mWindow,
                         "Are you sure you want to close this window?", "Close Window?",
                         JOptionPane.YES_NO_OPTION,
@@ -99,7 +64,7 @@ public class WindowManager {
         return mUniqueInstance;
     }
 
-    public void show(String name) {
+    public static void show(String name) {
         // TODO: Catch wrong name exception and assert
         mCards.show(mWindow.getContentPane(), name);
     }
