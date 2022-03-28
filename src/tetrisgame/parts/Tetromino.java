@@ -73,7 +73,7 @@ public class Tetromino {
 		Color red = new Color(255, 0, 0);
 		Color orange = new Color(255, 102, 0);
 		Color blue = new Color(0, 0, 255);
-		Color purple = new Color(255, 255, 0);
+		Color purple = new Color(255, 0, 255);
 		COLOR_BLOCK_ARR = new Block[VAR_TETROMINOS];
 		COLOR_BLOCK_ARR[0] = new Block(yellow);
 		COLOR_BLOCK_ARR[1] = new Block(skyBlue);
