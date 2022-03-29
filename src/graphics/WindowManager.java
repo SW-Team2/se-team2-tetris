@@ -64,7 +64,7 @@ public class WindowManager {
         return mUniqueInstance;
     }
 
-    public static void show(String name) {
+    public void show(String name) {
         // TODO: Catch wrong name exception and assert
         mCards.show(mWindow.getContentPane(), name);
     }
