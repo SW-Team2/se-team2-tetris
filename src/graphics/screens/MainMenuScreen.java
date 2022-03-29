@@ -19,12 +19,12 @@ public class MainMenuScreen extends JPanel {
     private static MainMenuScreen uniqueInstance = null;
     private final JButton[] menuButton;
 
-    public MainMenuScreen() {
+    private MainMenuScreen() {
         JPanel buttonGroup = new JPanel();
         JLabel title = new JLabel("Main");
 
         menuButton = new JButton[4];
-        String[] buttonText = new String[] { "Start", "Show scoreboard", "Setting", "Exit" };
+        String[] buttonText = new String[]{"Start", "Show scoreboard", "Setting", "Exit"};
 
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.setBackground(Color.gray);
