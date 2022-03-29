@@ -8,7 +8,7 @@ public class SettingInfoDesc {
     public Key mKey;
     public Screen mScreen;
 
-    class Key {
+    public class Key {
         public Menu mMenu;
         public Game mGame;
 
