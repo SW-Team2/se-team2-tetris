@@ -17,8 +17,8 @@ import graphics.screens.SettingMenuScreen;
 public class WindowManager {
     private static WindowManager mUniqueInstance = null;
 
-    public JFrame mWindow;
-    public CardLayout mCards;
+    private JFrame mWindow;
+    private CardLayout mCards;
 
     static final String BAR = new String("Bar");
 
@@ -73,7 +73,7 @@ public class WindowManager {
             }
         });
         mWindow.setFocusable(true);
-
+        
         //
         // Define action when closing window message occurs
         //
