@@ -2,17 +2,19 @@ package data.setting;
 
 import java.awt.event.KeyEvent;
 
+import graphics.screens.MainMenuScreen;
+
 public class SettingInfoDesc {
     private static SettingInfoDesc mUniqueInstance = null;
 
     public Key mKey;
     public Screen mScreen;
 
-    class Key {
+    public static class Key {
         public Menu mMenu;
         public Game mGame;
 
-        public class Menu {
+        public static class Menu {
             public int mMoveUp = KeyEvent.VK_UP;
             public int mMoveDown = KeyEvent.VK_DOWN;
             public int mMoveRight = KeyEvent.VK_RIGHT;
@@ -20,7 +22,7 @@ public class SettingInfoDesc {
             public int mSelect = KeyEvent.VK_ENTER;
         }
 
-        public class Game {
+        public static class Game {
             public int mMoveDown = KeyEvent.VK_DOWN;
             public int mMoveRight = KeyEvent.VK_RIGHT;
             public int mMoveLeft = KeyEvent.VK_LEFT;
@@ -39,6 +41,8 @@ public class SettingInfoDesc {
 
     private SettingInfoDesc() {
         mKey = new Key();
+        mKey.mMenu = new Key.Menu();
+        mKey.mGame = new Key.Game();
         mScreen = new Screen();
     }
 

@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 
 import data.setting.SettingInfoDesc;
 import graphics.screens.GameScreen;
+import graphics.screens.KeySettingMenu;
 import graphics.screens.MainMenuScreen;
 import graphics.screens.ScoreBoardScreen;
 import graphics.screens.SettingMenuScreen;
@@ -39,6 +40,7 @@ public class WindowManager {
         mWindow.getContentPane().add("game", GameScreen.getInstance());
         mWindow.getContentPane().add("setting", new SettingMenuScreen());
         mWindow.getContentPane().add("score", new ScoreBoardScreen());
+        mWindow.getContentPane().add("keySetting", KeySettingMenu.getInstance());
 
         //
         // Define action when keybaord message occurs
@@ -59,6 +61,9 @@ public class WindowManager {
                     case KeyEvent.VK_R:
                         mCards.show(mWindow.getContentPane(), "score");
                         break;
+                    case KeyEvent.VK_T:
+                        mCards.show(mWindow.getContentPane(), "keySetting");
+                        break;
                     default:
                         break;
                 }
@@ -73,7 +78,7 @@ public class WindowManager {
             }
         });
         mWindow.setFocusable(true);
-        
+
         //
         // Define action when closing window message occurs
         //
