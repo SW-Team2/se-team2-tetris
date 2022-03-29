@@ -4,17 +4,15 @@ import graphics.WindowManager;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import javax.swing.*;
 
 public class MainMenuScreen extends JPanel {
-    private JPanel buttonGroup;
-    private JButton[] menuButton;
+    private static MainMenuScreen uniqueInstance = null;
+    private final JButton[] menuButton;
 
     public MainMenuScreen() {
-        buttonGroup = new JPanel();
+        JPanel buttonGroup = new JPanel();
         JLabel title = new JLabel("Main");
 
         menuButton = new JButton[4];
@@ -83,11 +81,22 @@ public class MainMenuScreen extends JPanel {
         this.add(buttonGroup);
     }
 
+    public static MainMenuScreen getInstance() {
+        if (uniqueInstance == null) {
+            uniqueInstance = new MainMenuScreen();
+        }
+        return uniqueInstance;
+    }
 
-//    private int getJButtonIndex(final Component component) {
-//        for (int i = 0; i < ButtonGroup.getComponentCount(); i++) {
-//            if (ButtonGroup.getComponent(i).equals(component)) return i;
-//        }
-//        return -1;
-//    }
+    public void setKeyListener(KeyListener kl) {
+        super.addKeyListener(kl);
+        super.setFocusable(true);
+        super.requestFocus();
+    }
+
+    public void unsetKeyListener() {
+        for (int i = 0; i < menuButton.length; i++)
+            menuButton[i].setFocusable(false);
+        super.setFocusable(false);
+    }
 }

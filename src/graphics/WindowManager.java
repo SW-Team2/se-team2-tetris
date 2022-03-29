@@ -32,7 +32,7 @@ public class WindowManager {
 
         mWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        mWindow.getContentPane().add("main", new MainMenuScreen());
+        mWindow.getContentPane().add("main", MainMenuScreen.getInstance());
         mWindow.getContentPane().add("game", GameScreen.getInstance());
         mWindow.getContentPane().add("score", new ScoreBoardScreen());
         mWindow.getContentPane().add("setting", new SettingMenuScreen());
