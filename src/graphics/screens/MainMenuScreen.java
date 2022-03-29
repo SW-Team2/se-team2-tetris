@@ -1,11 +1,19 @@
 package graphics.screens;
 
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+
 import graphics.WindowManager;
-
-import java.awt.*;
-import java.awt.event.*;
-
-import javax.swing.*;
 
 public class MainMenuScreen extends JPanel {
     private static MainMenuScreen uniqueInstance = null;
@@ -16,7 +24,7 @@ public class MainMenuScreen extends JPanel {
         JLabel title = new JLabel("Main");
 
         menuButton = new JButton[4];
-        String[] buttonText = new String[]{"Start", "Show scoreboard", "Setting", "Exit"};
+        String[] buttonText = new String[] { "Start", "Show scoreboard", "Setting", "Exit" };
 
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.setBackground(Color.gray);
@@ -29,13 +37,13 @@ public class MainMenuScreen extends JPanel {
 
             switch (buttonIndex) {
                 case 0:
-                    menuButton[buttonIndex].addActionListener(e -> WindowManager.show("game"));
+                    menuButton[buttonIndex].addActionListener(e -> WindowManager.getInstance().show("game"));
                     break;
                 case 1:
-                    menuButton[buttonIndex].addActionListener(e -> WindowManager.show("score"));
+                    menuButton[buttonIndex].addActionListener(e -> WindowManager.getInstance().show("score"));
                     break;
                 case 2:
-                    menuButton[buttonIndex].addActionListener(e -> WindowManager.show("setting"));
+                    menuButton[buttonIndex].addActionListener(e -> WindowManager.getInstance().show("setting"));
                     break;
                 case 3:
                     menuButton[buttonIndex].addActionListener(new ActionListener() {
@@ -68,10 +76,12 @@ public class MainMenuScreen extends JPanel {
                     super.keyPressed(e);
                     switch (e.getKeyCode()) {
                         case KeyEvent.VK_UP:
-                            if (buttonIndex > 0) menuButton[buttonIndex - 1].requestFocus();
+                            if (buttonIndex > 0)
+                                menuButton[buttonIndex - 1].requestFocus();
                             break;
                         case KeyEvent.VK_DOWN:
-                            if (buttonIndex < menuButton.length - 1) menuButton[buttonIndex + 1].requestFocus();
+                            if (buttonIndex < menuButton.length - 1)
+                                menuButton[buttonIndex + 1].requestFocus();
                             break;
                     }
                 }
