@@ -1,0 +1,27 @@
+name: Bug Report
+description: File a bug report
+title: "[Bug]: "
+labels: ["😢 bug"]
+assignees:
+  - 
+body:
+  - type: markdown
+    attributes:
+      value: |
+        버그에 대한 설명을 합니다.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: 버그 내용
+      description: 어떤 버그가 있는지 자세하게 설명합니다.(이미지, 동영상 등 사용가능)
+      placeholder: 설명
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: 해결책
+      description: 구상해둔 해결책이 있다면, 작성합니다.
+      placeholder: 설명
+    validations:
+      required: false
