@@ -15,14 +15,70 @@ import graphics.screens.ScoreBoardScreen;
 import graphics.screens.SettingMenuScreen;
 
 public class WindowManager {
-    private static WindowManager mUniqueInstance = null;
-
     private JFrame mWindow;
     private CardLayout mCards;
+    private MainMenuScreen mMain;
+    private GameScreen mGame;
+    private SettingMenuScreen mSetting;
+    private ScoreBoardScreen mScore;
+    private eScreenInfo meCurrScreen;
 
     static final String BAR = new String("Bar");
 
-    private WindowManager() {
+    public class MsgManager implements KeyListener {
+        @Override
+        public void keyPressed(KeyEvent e) {
+            eScreenInfo switchScreenTo = eScreenInfo.NONE;
+            switch (meCurrScreen) {
+                case MAIN:
+                    switchScreenTo = mMain.getUserInput(e);
+                    break;
+                case GAME:
+                    switchScreenTo = mGame.getUserInput(e);
+                    break;
+                case SETTING:
+                    switchScreenTo = mSetting.getUserInput(e);
+                    break;
+                case SCOREBOARD:
+                    switchScreenTo = mScore.getUserInput(e);
+                    break;
+                default:
+                    assert (false) : "Undefined eScreenInfo";
+                    break;
+            }
+            switch (switchScreenTo) {
+                case NONE:
+                    break;
+                case MAIN:
+                    showMain();
+                    break;
+                case GAME:
+                    showGame();
+                    break;
+                case SETTING:
+                    showSetting();
+                    break;
+                case SCOREBOARD:
+                    showScore();
+                    break;
+                default:
+                    assert (false) : "Undefined eScreenInfo";
+                    break;
+
+            }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+        }
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+        }
+
+    }
+
+    public WindowManager() {
         SettingInfoDesc mSettingInfoDesc = SettingInfoDesc.getInstance();
         mWindow = new JFrame();
 
@@ -35,45 +91,19 @@ public class WindowManager {
 
         mWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        mWindow.getContentPane().add("main", new MainMenuScreen());
-        mWindow.getContentPane().add("game", GameScreen.getInstance());
-        mWindow.getContentPane().add("setting", new SettingMenuScreen());
-        mWindow.getContentPane().add("score", new ScoreBoardScreen());
+        mMain = new MainMenuScreen();
+        mGame = new GameScreen();
+        mSetting = new SettingMenuScreen();
+        mScore = new ScoreBoardScreen();
+        mWindow.getContentPane().add("main", mMain);
+        mWindow.getContentPane().add("game", mGame);
+        mWindow.getContentPane().add("setting", mSetting);
+        mWindow.getContentPane().add("score", mScore);
 
-        //
-        // Define action when keybaord message occurs
-        //
-        mWindow.addKeyListener(new KeyListener() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                switch (e.getKeyCode()) {
-                    case KeyEvent.VK_Q:
-                        mCards.show(mWindow.getContentPane(), "main");
-                        break;
-                    case KeyEvent.VK_W:
-                        mCards.show(mWindow.getContentPane(), "game");
-                        break;
-                    case KeyEvent.VK_E:
-                        mCards.show(mWindow.getContentPane(), "setting");
-                        break;
-                    case KeyEvent.VK_R:
-                        mCards.show(mWindow.getContentPane(), "score");
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-            }
-
-            @Override
-            public void keyTyped(KeyEvent e) {
-            }
-        });
+        meCurrScreen = eScreenInfo.MAIN;
+        mWindow.addKeyListener(new MsgManager());
         mWindow.setFocusable(true);
-        
+
         //
         // Define action when closing window message occurs
         //
@@ -89,18 +119,27 @@ public class WindowManager {
             }
         });
 
+        this.showMain();
         mWindow.setVisible(true);
     }
 
-    public static WindowManager getInstance() {
-        if (mUniqueInstance == null) {
-            mUniqueInstance = new WindowManager();
-        }
-        return mUniqueInstance;
+    private void showMain() {
+        mCards.show(mWindow.getContentPane(), "main");
+        meCurrScreen = eScreenInfo.MAIN;
     }
 
-    public void show(String name) {
-        // TODO: Catch wrong name exception and assert
-        mCards.show(mWindow.getContentPane(), name);
+    private void showGame() {
+        mCards.show(mWindow.getContentPane(), "game");
+        meCurrScreen = eScreenInfo.GAME;
+    }
+
+    private void showSetting() {
+        mCards.show(mWindow.getContentPane(), "setting");
+        meCurrScreen = eScreenInfo.SETTING;
+    }
+
+    private void showScore() {
+        mCards.show(mWindow.getContentPane(), "score");
+        meCurrScreen = eScreenInfo.SCOREBOARD;
     }
 }
