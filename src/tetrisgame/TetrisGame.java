@@ -56,7 +56,6 @@ public class TetrisGame implements Runnable {
 		mGameBoard.setTetromino(mNextTetromino);
 		mNextTetromino.setRandomShapeAndColor();
 		mTimer.initialize();
-		mTimer.pause();
 		mScore = 0;
 		mSpeed = 1;
 		mAutoDownTime = START_AUTO_DOWN_TIME;
