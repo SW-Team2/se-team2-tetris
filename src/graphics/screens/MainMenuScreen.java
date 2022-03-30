@@ -10,7 +10,7 @@ import graphics.eScreenInfo;
 
 public class MainMenuScreen extends Screen {
     private JLabel mTemp;
-    private JLabel mBtns[];
+    private JLabel mButtons[];
     private static final int NUM_BTNS = 3;
     private int mBtnIndex;
 
@@ -19,17 +19,17 @@ public class MainMenuScreen extends Screen {
         super.setBackground(Color.gray);
         super.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        mBtns = new JLabel[NUM_BTNS];
-        mBtns[0] = new JLabel("GAME");
-        mBtns[1] = new JLabel("SETTING");
-        mBtns[2] = new JLabel("SCORE BOARD");
+        mButtons = new JLabel[NUM_BTNS];
+        mButtons[0] = new JLabel("GAME");
+        mButtons[1] = new JLabel("SETTING");
+        mButtons[2] = new JLabel("SCORE BOARD");
         mBtnIndex = 0;
 
         super.add(mTemp);
-        for (JLabel btn : mBtns) {
+        for (JLabel btn : mButtons) {
             super.add(btn);
         }
-        mBtns[mBtnIndex].setForeground(Color.red);
+        mButtons[mBtnIndex].setForeground(Color.red);
     }
 
     @Override
@@ -37,14 +37,14 @@ public class MainMenuScreen extends Screen {
         eScreenInfo sr = eScreenInfo.NONE;
         switch (e.getKeyCode()) {
             case KeyEvent.VK_DOWN:
-                mBtns[mBtnIndex].setForeground(Color.black);
+                mButtons[mBtnIndex].setForeground(Color.black);
                 mBtnIndex = mBtnIndex == NUM_BTNS - 1 ? mBtnIndex : mBtnIndex + 1;
-                mBtns[mBtnIndex].setForeground(Color.red);
+                mButtons[mBtnIndex].setForeground(Color.red);
                 break;
             case KeyEvent.VK_UP:
-                mBtns[mBtnIndex].setForeground(Color.black);
+                mButtons[mBtnIndex].setForeground(Color.black);
                 mBtnIndex = mBtnIndex == 0 ? mBtnIndex : mBtnIndex - 1;
-                mBtns[mBtnIndex].setForeground(Color.red);
+                mButtons[mBtnIndex].setForeground(Color.red);
                 break;
             case KeyEvent.VK_ENTER:
                 switch (mBtnIndex) {

@@ -21,9 +21,8 @@ public class GameScreen extends Screen {
     private SimpleAttributeSet mTetStyleSet;
     private JLabel mScoreBoard;
 
-    private TetrisGame mTetGame;
-
-    private boolean mbPlaying = false;
+    private TetrisGame mTetrisGame;
+    private boolean mbIsPlayingTetrisGame = false;
     // TODO: Show key setting
     private JLabel mKeySettingBoard;
 
@@ -68,18 +67,18 @@ public class GameScreen extends Screen {
     }
 
     private void startGame() {
-        mTetGame = new TetrisGame(this);
-        mTetGame.initialize();
-        mbPlaying = true;
-        Thread gameThread = new Thread(mTetGame);
+        mTetrisGame = new TetrisGame(this);
+        mTetrisGame.initialize();
+        mbIsPlayingTetrisGame = true;
+        Thread gameThread = new Thread(mTetrisGame);
         gameThread.start();
     }
 
     @Override
     public eScreenInfo getUserInput(KeyEvent e) {
         eScreenInfo sr = eScreenInfo.NONE;
-        if (mbPlaying) {
-            mTetGame.getUserInput(e);
+        if (mbIsPlayingTetrisGame) {
+            mTetrisGame.getUserInput(e);
         } else {
             startGame();
         }
