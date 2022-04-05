@@ -10,25 +10,25 @@ import graphics.eScreenInfo;
 
 public class SettingMenuScreen extends Screen {
     private JLabel mTemp;
-    private JLabel mBtns[];
-    private int mBtnIndex;
-    private static final int NUM_BTNS = 2;
+    private JLabel mButtons[];
+    private int mButtonIndex;
+    private static final int NUM_BUTTONS = 2;
 
     public SettingMenuScreen() {
         mTemp = new JLabel("Setting");
         super.setBackground(Color.orange);
         super.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        mBtns = new JLabel[NUM_BTNS];
-        mBtns[0] = new JLabel("MAIN");
-        mBtns[1] = new JLabel("SCREEN SIZE");
-        mBtnIndex = 0;
+        mButtons = new JLabel[NUM_BUTTONS];
+        mButtons[0] = new JLabel("MAIN");
+        mButtons[1] = new JLabel("SCREEN SIZE");
+        mButtonIndex = 0;
 
         super.add(mTemp);
-        for (JLabel btn : mBtns) {
+        for (JLabel btn : mButtons) {
             super.add(btn);
         }
-        mBtns[mBtnIndex].setForeground(Color.red);
+        mButtons[mButtonIndex].setForeground(Color.red);
     }
 
     @Override
@@ -36,17 +36,17 @@ public class SettingMenuScreen extends Screen {
         eScreenInfo sr = eScreenInfo.NONE;
         switch (e.getKeyCode()) {
             case KeyEvent.VK_DOWN:
-                mBtns[mBtnIndex].setForeground(Color.black);
-                mBtnIndex = mBtnIndex == NUM_BTNS - 1 ? mBtnIndex : mBtnIndex + 1;
-                mBtns[mBtnIndex].setForeground(Color.red);
+                mButtons[mButtonIndex].setForeground(Color.black);
+                mButtonIndex = mButtonIndex == NUM_BUTTONS - 1 ? mButtonIndex : mButtonIndex + 1;
+                mButtons[mButtonIndex].setForeground(Color.red);
                 break;
             case KeyEvent.VK_UP:
-                mBtns[mBtnIndex].setForeground(Color.black);
-                mBtnIndex = mBtnIndex == 0 ? mBtnIndex : mBtnIndex - 1;
-                mBtns[mBtnIndex].setForeground(Color.red);
+                mButtons[mButtonIndex].setForeground(Color.black);
+                mButtonIndex = mButtonIndex == 0 ? mButtonIndex : mButtonIndex - 1;
+                mButtons[mButtonIndex].setForeground(Color.red);
                 break;
             case KeyEvent.VK_ENTER:
-                switch (mBtnIndex) {
+                switch (mButtonIndex) {
                     case 0:
                         sr = eScreenInfo.MAIN;
                         break;
