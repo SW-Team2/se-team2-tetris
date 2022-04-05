@@ -2,7 +2,6 @@ package tetrisgame;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 import javax.swing.JLabel;
 import javax.swing.JTextPane;
@@ -10,7 +9,6 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-import graphics.WindowManager;
 import graphics.screens.GameScreen;
 import tetrisgame.enumerations.eDirection;
 import tetrisgame.enumerations.eGameOver;
@@ -20,7 +18,7 @@ import tetrisgame.parts.Position;
 import tetrisgame.parts.Tetromino;
 import tetrisgame.parts.Timer;
 
-public class TetrisGame {
+public class TetrisGame implements Runnable {
 	private GameScreen mScreen;
 
 	private GameBoard mGameBoard;
@@ -33,59 +31,7 @@ public class TetrisGame {
 	private float mSumDeltaTime;
 	private float mPrevTimeForDraw;
 
-	private GameKeyListener mGameKeyListener;
-
-	class GameKeyListener implements KeyListener {
-		public void keyPressed(KeyEvent e) {
-			switch (e.getKeyCode()) {
-				// Game playing
-				case KeyEvent.VK_LEFT:
-					mGameBoard.moveTet(eDirection.LEFT);
-					break;
-				case KeyEvent.VK_RIGHT:
-					mGameBoard.moveTet(eDirection.RIGHT);
-					break;
-				case KeyEvent.VK_DOWN:
-					mbCollWithFloor = mGameBoard.moveTet(eDirection.DOWN);
-					break;
-				case KeyEvent.VK_SPACE:
-					mGameBoard.rotateTet();
-					break;
-				case KeyEvent.VK_UP:
-					while (!mbCollWithFloor) {
-						mbCollWithFloor = mGameBoard.moveTet(eDirection.DOWN);
-					}
-					break;
-				// Pause & Unpause
-				case KeyEvent.VK_P:
-					// intentional fallthrough
-				case KeyEvent.VK_ESCAPE:
-					mTimer.pause();
-					break;
-				case KeyEvent.VK_U:
-					mTimer.unPause();
-					break;
-				default:
-					break;
-			}
-		}
-
-		public void keyReleased(KeyEvent e) {
-		}
-
-		public void keyTyped(KeyEvent e) {
-		}
-
-		public boolean getCollWithFloor() {
-			return mbCollWithFloor;
-		}
-
-		public void update() {
-			mbCollWithFloor = false;
-		}
-
-		private boolean mbCollWithFloor = false;
-	}
+	boolean mbCollWithFloor = false;
 
 	private static final float START_AUTO_DOWN_TIME = 1.0f;
 
@@ -98,14 +44,14 @@ public class TetrisGame {
 	private static final char BORDER_CHAR = 'X';
 	private static final char BLOCK_CHAR = 'O';
 
-	public TetrisGame() {
+	public TetrisGame(GameScreen gameScreen) {
+		mScreen = gameScreen;
 		mGameBoard = new GameBoard();
 		mNextTetromino = new Tetromino();
 		mTimer = new Timer();
 	}
 
 	public void initialize() {
-		mScreen = GameScreen.getInstance();
 		mNextTetromino.setRandomShapeAndColor();
 		mGameBoard.setTetromino(mNextTetromino);
 		mNextTetromino.setRandomShapeAndColor();
@@ -115,18 +61,49 @@ public class TetrisGame {
 		mAutoDownTime = START_AUTO_DOWN_TIME;
 		mSumDeltaTime = 0.0f;
 		mPrevTimeForDraw = 0.0f;
-		mGameKeyListener = new GameKeyListener();
-		mScreen.setKeyListener(mGameKeyListener);
 	}
 
+	@Override
 	public void run() {
 		boolean bGameOverFlag = false;
 		while (!bGameOverFlag) {
 			bGameOverFlag = this.update();
 			this.draw();
 		}
-		mScreen.unsetKeyListener();
-		WindowManager.getInstance().show("main");
+	}
+
+	public void getUserInput(KeyEvent e) {
+		switch (e.getKeyCode()) {
+			// Game playing
+			case KeyEvent.VK_LEFT:
+				mGameBoard.moveTet(eDirection.LEFT);
+				break;
+			case KeyEvent.VK_RIGHT:
+				mGameBoard.moveTet(eDirection.RIGHT);
+				break;
+			case KeyEvent.VK_DOWN:
+				mbCollWithFloor = mGameBoard.moveTet(eDirection.DOWN);
+				break;
+			case KeyEvent.VK_SPACE:
+				mGameBoard.rotateTet();
+				break;
+			case KeyEvent.VK_UP:
+				while (!mbCollWithFloor) {
+					mbCollWithFloor = mGameBoard.moveTet(eDirection.DOWN);
+				}
+				break;
+			// Pause & Unpause
+			case KeyEvent.VK_P:
+				// intentional fallthrough
+			case KeyEvent.VK_ESCAPE:
+				mTimer.pause();
+				break;
+			case KeyEvent.VK_U:
+				mTimer.unPause();
+				break;
+			default:
+				break;
+		}
 	}
 
 	private boolean update() {
@@ -136,13 +113,11 @@ public class TetrisGame {
 		float dTime = mTimer.getDeltaTime();
 		mSumDeltaTime += dTime;
 
-		boolean bCollWithFloor1 = mGameKeyListener.getCollWithFloor();
-		boolean bCollWithFloor2 = false;
 		if (mAutoDownTime <= mSumDeltaTime) {
-			bCollWithFloor2 = mGameBoard.moveTet(eDirection.DOWN);
+			mbCollWithFloor |= mGameBoard.moveTet(eDirection.DOWN);
 			mSumDeltaTime = 0.0f;
 		}
-		if (bCollWithFloor1 || bCollWithFloor2) {
+		if (mbCollWithFloor) {
 			int removeColArr[] = new int[4];
 			int numRemovedLines = 0;
 			numRemovedLines = mGameBoard.findRemovableLines(removeColArr);
@@ -175,7 +150,7 @@ public class TetrisGame {
 			mGameBoard.setTetromino(mNextTetromino);
 			gameOverFlag = mGameBoard.checkGameOver();
 			mNextTetromino.setRandomShapeAndColor();
-			mGameKeyListener.update();
+			mbCollWithFloor = false;
 			mSumDeltaTime = 0.0f;
 			mAutoDownTime = START_AUTO_DOWN_TIME;
 			for (int i = 0; i < mSpeed - 1; i++) {

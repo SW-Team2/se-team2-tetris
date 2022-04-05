@@ -1,11 +1,10 @@
 package graphics.screens;
 
 import java.awt.Color;
-import java.awt.event.KeyListener;
+import java.awt.event.KeyEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import javax.swing.border.CompoundBorder;
 import javax.swing.text.SimpleAttributeSet;
@@ -13,20 +12,23 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 import data.setting.SettingInfoDesc;
+import graphics.eScreenInfo;
+import tetrisgame.TetrisGame;
 
-public class GameScreen extends JPanel {
-    private static GameScreen mUniqueInstance = null;
-
+public class GameScreen extends Screen {
     private JTextPane mGameBoard;
     private JTextPane mNextTetrominoBoard;
     private SimpleAttributeSet mTetStyleSet;
     private JLabel mScoreBoard;
+
+    private TetrisGame mTetrisGame;
+    private boolean mbIsPlayingTetrisGame = false;
     // TODO: Show key setting
     private JLabel mKeySettingBoard;
 
     private SettingInfoDesc mSettingInfo;
 
-    private GameScreen() {
+    public GameScreen() {
         // TODO: Reflect setting infos
         mSettingInfo = SettingInfoDesc.getInstance();
 
@@ -64,21 +66,23 @@ public class GameScreen extends JPanel {
         super.setBackground(Color.gray);
     }
 
-    public static GameScreen getInstance() {
-        if (mUniqueInstance == null) {
-            mUniqueInstance = new GameScreen();
+    private void startGame() {
+        mTetrisGame = new TetrisGame(this);
+        mTetrisGame.initialize();
+        mbIsPlayingTetrisGame = true;
+        Thread gameThread = new Thread(mTetrisGame);
+        gameThread.start();
+    }
+
+    @Override
+    public eScreenInfo getUserInput(KeyEvent e) {
+        eScreenInfo sr = eScreenInfo.NONE;
+        if (mbIsPlayingTetrisGame) {
+            mTetrisGame.getUserInput(e);
+        } else {
+            startGame();
         }
-        return mUniqueInstance;
-    }
-
-    public void setKeyListener(KeyListener kl) {
-        super.addKeyListener(kl);
-        super.setFocusable(true);
-        super.requestFocus();
-    }
-
-    public void unsetKeyListener() {
-        super.setFocusable(false);
+        return sr;
     }
 
     public JTextPane getGameBoardTextPane() {
