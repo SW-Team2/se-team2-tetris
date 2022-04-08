@@ -29,6 +29,7 @@ public class TetrisGame implements Runnable {
 	private long mScore;
 	// TODO: Using Temp enum
 	private eDifficulty mDifficulty;
+	private float GAME_SPEED_ACCEL_UNIT = 0.1f;
 
 	private float mAutoDownTime;
 	private float mSumDeltaTime;
@@ -42,7 +43,6 @@ public class TetrisGame implements Runnable {
 	private static final int MULTIPLE_BREAK_BONUS_2L = 30;
 	private static final int MULTIPLE_BREAK_BONUS_3L = 60;
 	private static final int MULTIPLE_BREAK_BONUS_4L = 100;
-	private static final float GAME_SPEED_ACCEL_UNIT = 0.1f;
 
 	private static final char BORDER_CHAR = 'X';
 	private static final char BLOCK_CHAR = 'O';
@@ -62,8 +62,21 @@ public class TetrisGame implements Runnable {
 		mScore = 0;
 		mSpeed = 1;
 		// TODO: Using Temp value
-		mDifficulty = eDifficulty.EASY;
+		mDifficulty = eDifficulty.HARD;
 		Tetromino.setDifficulty(mDifficulty);
+		switch (mDifficulty) {
+			case EASY:
+				GAME_SPEED_ACCEL_UNIT *= 0.8f;
+				break;
+			case NORMAL:
+				break;
+			case HARD:
+				GAME_SPEED_ACCEL_UNIT *= 1.2f;
+				break;
+			default:
+				assert (false);
+				break;
+		}
 
 		mAutoDownTime = START_AUTO_DOWN_TIME;
 		mSumDeltaTime = 0.0f;
