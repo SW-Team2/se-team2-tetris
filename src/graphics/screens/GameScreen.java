@@ -1,14 +1,12 @@
 package graphics.screens;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.awt.geom.AffineTransform;
-import java.awt.Font;
-import java.awt.font.FontRenderContext;
 
 import javax.imageio.ImageIO;
 
@@ -16,8 +14,8 @@ import data.setting.SettingInfoDesc;
 import graphics.eScreenInfo;
 import tetrisgame.TetrisGame;
 import tetrisgame.parts.GameBoard;
-import tetrisgame.parts.Tetromino;
 import tetrisgame.parts.Position;
+import tetrisgame.parts.Tetromino;
 
 public class GameScreen extends Screen {
     private TetrisGame mTetrisGame;
