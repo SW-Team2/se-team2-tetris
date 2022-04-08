@@ -138,9 +138,9 @@ public class Tetromino {
 
 	public void deepCopy(Tetromino source) {
 		mPosition.deepCopy(source.mPosition);
-		for (int c = 0; c < SHAPE_COL; c++) {
-			for (int r = 0; r < SHAPE_ROW; r++) {
-				mShape[c][r] = source.mShape[c][r];
+		for (int col = 0; col < SHAPE_COL; col++) {
+			for (int row = 0; row < SHAPE_ROW; row++) {
+				mShape[col][row] = source.mShape[col][row];
 			}
 		}
 		mShapeNColorIndex = source.mShapeNColorIndex;
