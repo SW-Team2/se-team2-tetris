@@ -10,6 +10,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 import graphics.screens.GameScreen;
+import tetrisgame.enumerations.eDifficulty;
 import tetrisgame.enumerations.eDirection;
 import tetrisgame.enumerations.eGameOver;
 import tetrisgame.parts.Block;
@@ -26,12 +27,14 @@ public class TetrisGame implements Runnable {
 	private Timer mTimer;
 	private int mSpeed;
 	private long mScore;
+	// TODO: Using Temp enum
+	private eDifficulty mDifficulty;
 
 	private float mAutoDownTime;
 	private float mSumDeltaTime;
 	private float mPrevTimeForDraw;
 
-	boolean mbCollWithFloor = false;
+	private boolean mbCollWithFloor = false;
 
 	private static final float START_AUTO_DOWN_TIME = 1.0f;
 
@@ -58,6 +61,10 @@ public class TetrisGame implements Runnable {
 		mTimer.initialize();
 		mScore = 0;
 		mSpeed = 1;
+		// TODO: Using Temp value
+		mDifficulty = eDifficulty.EASY;
+		Tetromino.setDifficulty(mDifficulty);
+
 		mAutoDownTime = START_AUTO_DOWN_TIME;
 		mSumDeltaTime = 0.0f;
 		mPrevTimeForDraw = 0.0f;

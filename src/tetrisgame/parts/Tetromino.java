@@ -3,6 +3,7 @@ package tetrisgame.parts;
 import java.awt.Color;
 import java.util.Random;
 
+import tetrisgame.enumerations.eDifficulty;
 import tetrisgame.enumerations.eDirection;
 
 public class Tetromino {
@@ -10,6 +11,10 @@ public class Tetromino {
 	private Block mShape[][];
 	private int mShapeANColorIndex;
 	private static Random mRandom;
+
+	private static int mProbWeightArr[];
+	private static int mSumProbWeight;
+	private static final int DEFAULT_WEIGHT = 100;
 
 	public static final int SHAPE_COL = 4;
 	public static final int SHAPE_ROW = 4;
@@ -82,6 +87,12 @@ public class Tetromino {
 		COLOR_BLOCK_ARR[4] = new Block(orange);
 		COLOR_BLOCK_ARR[5] = new Block(blue);
 		COLOR_BLOCK_ARR[6] = new Block(purple);
+
+		mProbWeightArr = new int[VAR_TETROMINOS];
+		for (int i = 0; i < VAR_TETROMINOS; i++) {
+			mProbWeightArr[i] = DEFAULT_WEIGHT;
+		}
+		mSumProbWeight = DEFAULT_WEIGHT * VAR_TETROMINOS;
 	}
 
 	public Tetromino() {
@@ -89,6 +100,40 @@ public class Tetromino {
 		mShape = new Block[SHAPE_COL][SHAPE_ROW];
 		mRandom = new Random();
 		mRandom.setSeed(System.currentTimeMillis());
+	}
+
+	public static void setDifficulty(eDifficulty diff) {
+		int addWeight = (int) (DEFAULT_WEIGHT * 0.2f);
+		int subWeight = addWeight / 6;
+		switch (diff) {
+			case EASY:
+				mProbWeightArr[0] -= subWeight;
+				mProbWeightArr[1] += addWeight;
+				mProbWeightArr[2] -= subWeight;
+				mProbWeightArr[3] -= subWeight;
+				mProbWeightArr[4] -= subWeight;
+				mProbWeightArr[5] -= subWeight;
+				mProbWeightArr[6] -= subWeight;
+				break;
+			case NORMAL:
+				break;
+			case HARD:
+				mProbWeightArr[0] += subWeight;
+				mProbWeightArr[1] -= addWeight;
+				mProbWeightArr[2] += subWeight;
+				mProbWeightArr[3] += subWeight;
+				mProbWeightArr[4] += subWeight;
+				mProbWeightArr[5] += subWeight;
+				mProbWeightArr[6] += subWeight;
+				break;
+			default:
+				assert (false);
+				break;
+		}
+		mSumProbWeight = 0;
+		for (int pw : mProbWeightArr) {
+			mSumProbWeight += pw;
+		}
 	}
 
 	public void deepCopy(Tetromino source) {
@@ -122,7 +167,17 @@ public class Tetromino {
 	}
 
 	public void setRandomShapeAndColor() {
-		mShapeANColorIndex = mRandom.nextInt(7);
+		int randNum = mRandom.nextInt(mSumProbWeight);
+
+		int weight = 0;
+		for (int index = 0; index < VAR_TETROMINOS; index++) {
+			weight += mProbWeightArr[index];
+			if (randNum < weight) {
+				mShapeANColorIndex = index;
+				break;
+			}
+		}
+
 		for (int col = 0; col < SHAPE_COL; col++) {
 			for (int row = 0; row < SHAPE_ROW; row++) {
 				if (TET_SHAPES[mShapeANColorIndex][col][row]) {
