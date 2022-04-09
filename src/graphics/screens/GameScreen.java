@@ -86,6 +86,16 @@ public class GameScreen extends Screen {
     }
 
     @Override
+    public void repaint() {
+        super.repaint();
+    }
+
+    @Override
+    public void update(Graphics g) {
+        super.update(g);
+    }
+
+    @Override
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         super.paint(g2d);

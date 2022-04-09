@@ -8,6 +8,7 @@ import tetrisgame.enumerations.eDirection;
 import tetrisgame.enumerations.eGameOver;
 import tetrisgame.parts.GameBoard;
 import tetrisgame.parts.Tetromino;
+import tetrisgame.parts.Tile;
 import tetrisgame.parts.Timer;
 
 public class TetrisGame implements Runnable {
@@ -139,7 +140,7 @@ public class TetrisGame implements Runnable {
 
 		float dTime = mTimer.getDeltaTime();
 		mSumDeltaTime += dTime;
-		if (mAutoDownTime <= mSumDeltaTime) {
+		if (mbCollWithFloor == false && mAutoDownTime <= mSumDeltaTime) {
 			mbCollWithFloor |= mGameBoard.moveTet(eDirection.DOWN);
 			mSumDeltaTime = 0.0f;
 		}
@@ -148,6 +149,23 @@ public class TetrisGame implements Runnable {
 			int removeColArr[] = new int[4];
 			int numRemovedLines = 0;
 			numRemovedLines = mGameBoard.findRemovableLines(removeColArr);
+			if (numRemovedLines > 0) {
+				// Swap to removing tile
+				for (int i = 0; i < numRemovedLines; i++) {
+					int col = removeColArr[i];
+					Tile tileRemove = new Tile("tile_remove");
+					for (int row = 0; row < GameBoard.BOARD_ROW; row++) {
+						mGameBoard.mBoard[col][row] = tileRemove;
+					}
+				}
+				mGameBoard.getTetromino().setEmptyShapeAndColor();
+				mScreen.repaint();
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					assert (false);
+				}
+			}
 			mGameBoard.removeLines(removeColArr, numRemovedLines);
 			// Calculate Score
 			int addedScore = 0;

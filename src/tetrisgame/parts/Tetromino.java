@@ -69,6 +69,12 @@ public class Tetromino {
 					{ F, F, O, F },
 					{ F, F, F, F }
 			},
+			{
+					{ F, F, F, F },
+					{ F, F, F, F },
+					{ F, F, F, F },
+					{ F, F, F, F }
+			},
 	};
 
 	static {
@@ -149,6 +155,14 @@ public class Tetromino {
 
 	public Position getPosition() {
 		return mPosition;
+	}
+
+	public void setEmptyShapeAndColor() {
+		for (int col = 0; col < SHAPE_COL; col++) {
+			for (int row = 0; row < SHAPE_ROW; row++) {
+				mShape[col][row] = null;
+			}
+		}
 	}
 
 	public void setRandomShapeAndColor() {
