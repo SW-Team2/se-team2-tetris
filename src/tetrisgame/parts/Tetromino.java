@@ -1,6 +1,5 @@
 package tetrisgame.parts;
 
-import java.awt.Color;
 import java.util.Random;
 
 import tetrisgame.enumerations.eDifficulty;

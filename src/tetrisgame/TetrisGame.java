@@ -2,6 +2,9 @@ package tetrisgame;
 
 import java.awt.event.KeyEvent;
 
+import javax.swing.JOptionPane;
+
+import gamestarter.GameStarter;
 import graphics.screens.GameScreen;
 import tetrisgame.enumerations.eDifficulty;
 import tetrisgame.enumerations.eDirection;
@@ -18,18 +21,23 @@ public class TetrisGame implements Runnable {
 	private Tetromino mNextTetromino;
 	private Timer mTimer;
 	private int mSpeed;
-	private long mScore;
+	private int mScore;
 	// TODO: Using Temp enum
-	private eDifficulty mDifficulty;
+	private eDifficulty meDifficulty;
 	private float GAME_SPEED_ACCEL_UNIT = 0.1f;
 
 	private float mAutoDownTime;
-	private float mSumDeltaTime;
+	private float mAutoDownTimeTick;
 	// private float mPrevTimeForDraw;
+
+	private int mCurrKeyCode;
+	private float mKeyReactTimeTick;
 
 	private boolean mbCollWithFloor = false;
 
 	private static final float START_AUTO_DOWN_TIME = 1.0f;
+
+	private static final float KEY_REACT_TIME = 0.11f;
 
 	private static final int SCORE_UNIT = 100;
 	private static final int MULTIPLE_BREAK_BONUS_2L = 30;
@@ -44,17 +52,18 @@ public class TetrisGame implements Runnable {
 	}
 
 	public void initialize() {
+		mGameBoard.clear();
 		mNextTetromino.setRandomShapeAndColor();
 		mGameBoard.setTetromino(mNextTetromino);
 		mNextTetromino.setRandomShapeAndColor();
 		mTimer.initialize();
-		mTimer.pause();
+		// mTimer.pause();
 		mScore = 0;
 		mSpeed = 1;
 		// TODO: Using Temp value
-		mDifficulty = eDifficulty.EASY;
-		Tetromino.setDifficulty(mDifficulty);
-		switch (mDifficulty) {
+		meDifficulty = eDifficulty.EASY;
+		Tetromino.setDifficulty(meDifficulty);
+		switch (meDifficulty) {
 			case EASY:
 				GAME_SPEED_ACCEL_UNIT *= 0.8f;
 				break;
@@ -69,8 +78,11 @@ public class TetrisGame implements Runnable {
 		}
 
 		mAutoDownTime = START_AUTO_DOWN_TIME;
-		mSumDeltaTime = 0.0f;
+		mAutoDownTimeTick = 0.f;
 		// mPrevTimeForDraw = 0.0f;
+
+		mCurrKeyCode = -1;
+		mKeyReactTimeTick = 0.f;
 	}
 
 	@Override
@@ -80,6 +92,10 @@ public class TetrisGame implements Runnable {
 			bGameOverFlag = this.update();
 			this.draw();
 		}
+		// Save user record
+		String userName = JOptionPane.showInputDialog("Enter your name");
+		System.out.println(userName);
+		GameStarter.setOver();
 	}
 
 	public Tetromino getNextTetromion() {
@@ -91,41 +107,22 @@ public class TetrisGame implements Runnable {
 	}
 
 	public void getUserInput(KeyEvent e) {
-		int keyCode = e.getKeyCode();
-		if (mTimer.getPauseState()) {
-			keyCode &= KeyEvent.VK_U;
+		if (mCurrKeyCode == e.getKeyCode()) {
+			return;
 		}
-		switch (keyCode) {
-			// Game playing
-			case KeyEvent.VK_LEFT:
-				mGameBoard.moveTet(eDirection.LEFT);
-				break;
-			case KeyEvent.VK_RIGHT:
-				mGameBoard.moveTet(eDirection.RIGHT);
-				break;
-			case KeyEvent.VK_DOWN:
-				mSumDeltaTime = 0.f;
-				mbCollWithFloor = mGameBoard.moveTet(eDirection.DOWN);
-				break;
-			case KeyEvent.VK_SPACE:
-				mGameBoard.rotateTet();
-				break;
-			case KeyEvent.VK_UP:
-				while (!mbCollWithFloor) {
-					mbCollWithFloor = mGameBoard.moveTet(eDirection.DOWN);
-				}
-				break;
-			// Pause & Unpause
-			case KeyEvent.VK_P:
-				// intentional fallthrough
-			case KeyEvent.VK_ESCAPE:
-				mTimer.pause();
-				break;
-			case KeyEvent.VK_U:
-				mTimer.unPause();
-				break;
-			default:
-				break;
+
+		mCurrKeyCode = e.getKeyCode();
+		if (mTimer.getPauseState()) {
+			mCurrKeyCode &= KeyEvent.VK_U;
+		}
+		mKeyReactTimeTick = 0.f;
+		reactAtContinuousKeyInput();
+		reactAtDisContinuousKeyInput();
+	}
+
+	public void getUserInputKeyRealease(KeyEvent e) {
+		if (mCurrKeyCode == e.getKeyCode()) {
+			mCurrKeyCode = -1;
 		}
 	}
 
@@ -139,10 +136,18 @@ public class TetrisGame implements Runnable {
 		mTimer.tick();
 
 		float dTime = mTimer.getDeltaTime();
-		mSumDeltaTime += dTime;
-		if (mbCollWithFloor == false && mAutoDownTime <= mSumDeltaTime) {
+		mAutoDownTimeTick += dTime;
+		mKeyReactTimeTick += dTime;
+
+		// React at input
+		if (mKeyReactTimeTick >= KEY_REACT_TIME) {
+			mKeyReactTimeTick = 0.f;
+			reactAtContinuousKeyInput();
+		}
+
+		if (mbCollWithFloor == false && mAutoDownTime <= mAutoDownTimeTick) {
 			mbCollWithFloor |= mGameBoard.moveTet(eDirection.DOWN);
-			mSumDeltaTime = 0.0f;
+			mAutoDownTimeTick = 0.0f;
 		}
 
 		if (mbCollWithFloor) {
@@ -215,7 +220,7 @@ public class TetrisGame implements Runnable {
 			gameOverFlag = mGameBoard.checkGameOver();
 			mNextTetromino.setRandomShapeAndColor();
 			mbCollWithFloor = false;
-			mSumDeltaTime = 0.0f;
+			mAutoDownTimeTick = 0.0f;
 			mAutoDownTime = START_AUTO_DOWN_TIME;
 			for (int i = 0; i < mSpeed - 1; i++) {
 				mAutoDownTime = mAutoDownTime * (1.0f - GAME_SPEED_ACCEL_UNIT);
@@ -238,5 +243,44 @@ public class TetrisGame implements Runnable {
 		// return;
 		// }
 		// mPrevTimeForDraw = currTime;
+	}
+
+	private void reactAtDisContinuousKeyInput() {
+		switch (mCurrKeyCode) {
+			// Game Playing
+			case KeyEvent.VK_SPACE:
+				mGameBoard.rotateTet();
+				break;
+			case KeyEvent.VK_UP:
+				while (!mbCollWithFloor) {
+					mbCollWithFloor = mGameBoard.moveTet(eDirection.DOWN);
+				}
+				break;
+			// Pause and UnPause
+			case KeyEvent.VK_P:
+				mTimer.pause();
+				break;
+			case KeyEvent.VK_U:
+				mTimer.unPause();
+				break;
+		}
+	}
+
+	private void reactAtContinuousKeyInput() {
+		switch (mCurrKeyCode) {
+			// None
+			case -1:
+				break;
+			case KeyEvent.VK_LEFT:
+				mGameBoard.moveTet(eDirection.LEFT);
+				break;
+			case KeyEvent.VK_RIGHT:
+				mGameBoard.moveTet(eDirection.RIGHT);
+				break;
+			case KeyEvent.VK_DOWN:
+				mAutoDownTimeTick = 0.f;
+				mbCollWithFloor = mGameBoard.moveTet(eDirection.DOWN);
+				break;
+		}
 	}
 }

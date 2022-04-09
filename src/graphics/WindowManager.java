@@ -70,6 +70,14 @@ public class WindowManager {
 
         @Override
         public void keyReleased(KeyEvent e) {
+            switch (meCurrScreen) {
+                case GAME:
+                    mGame.getUserInputKeyRealease(e);
+                    break;
+                default:
+                    assert (false) : "Undefined eScreenInfo";
+                    break;
+            }
         }
 
         @Override
@@ -123,7 +131,7 @@ public class WindowManager {
         mWindow.setVisible(true);
     }
 
-    private void showMain() {
+    public void showMain() {
         mCards.show(mWindow.getContentPane(), "main");
         meCurrScreen = eScreenInfo.MAIN;
     }

@@ -10,7 +10,6 @@ public class TexManager {
     private static TexManager mUniqueInstance = null;
 
     private HashMap<String, BufferedImage> mTexHash;
-    private static final int SIZE = 9;
 
     private TexManager() {
         mTexHash = new HashMap<String, BufferedImage>();

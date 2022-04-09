@@ -16,6 +16,14 @@ public class GameBoard {
 		mTetromino = new Tetromino();
 	}
 
+	public void clear() {
+		for (int c = 0; c < BOARD_COL; c++) {
+			for (int r = 0; r < BOARD_ROW; r++) {
+				mBoard[c][r] = null;
+			}
+		}
+	}
+
 	public void setTetromino(Tetromino tetIn) {
 		mTetromino.deepCopy(tetIn);
 	}

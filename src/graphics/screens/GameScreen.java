@@ -6,11 +6,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
 
 import data.setting.SettingInfoDesc;
+import gamestarter.GameStarter;
 import graphics.eScreenInfo;
 import tetrisgame.TetrisGame;
 import tetrisgame.parts.GameBoard;
@@ -21,7 +19,6 @@ import tetrisgame.parts.TexManager;
 public class GameScreen extends Screen {
     private TetrisGame mTetrisGame;
     private GameBoard mGameBoard;
-    private boolean mbPlayingTetrisGame;
 
     private BufferedImage mPanelBackGroundImage;
     private BufferedImage mGameBoardBackGroundImage;
@@ -46,9 +43,7 @@ public class GameScreen extends Screen {
 
     public GameScreen() {
         mTetrisGame = new TetrisGame(this);
-        mTetrisGame.initialize();
         mGameBoard = mTetrisGame.getGameBoard();
-        mbPlayingTetrisGame = false;
 
         mPanelBackGroundImage = TexManager.getInstance().getTexture("background_panel");
         mGameBoardBackGroundImage = TexManager.getInstance().getTexture("background_board");
@@ -119,7 +114,7 @@ public class GameScreen extends Screen {
             }
         }
 
-        if (mbPlayingTetrisGame == false) {
+        if (GameStarter.getState() == false) {
             return;
         }
 
@@ -190,19 +185,24 @@ public class GameScreen extends Screen {
     }
 
     private void startGame() {
-        mbPlayingTetrisGame = true;
-        Thread gameThread = new Thread(mTetrisGame);
-        gameThread.start();
+        GameStarter.setGame(mTetrisGame);
+        GameStarter.setStart();
     }
 
     @Override
     public eScreenInfo getUserInput(KeyEvent e) {
         eScreenInfo sr = eScreenInfo.NONE;
-        if (mbPlayingTetrisGame) {
+        if (GameStarter.getState()) {
             mTetrisGame.getUserInput(e);
         } else {
             startGame();
         }
+        return sr;
+    }
+
+    public eScreenInfo getUserInputKeyRealease(KeyEvent e) {
+        eScreenInfo sr = eScreenInfo.NONE;
+        mTetrisGame.getUserInputKeyRealease(e);
         return sr;
     }
 }
