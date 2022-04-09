@@ -57,6 +57,12 @@ public class GameBoard {
 			for (int row = 0; row < BOARD_ROW; row++) {
 				mBoard[col][row] = null;
 			}
+		}
+	}
+
+	public void fallDownLines(int colArr[], int size) {
+		for (int index = 0; index < size; index++) {
+			int col = colArr[index];
 			Tile removedLine[] = mBoard[col];
 			for (int c = col; c > 0; c--) {
 				mBoard[c] = mBoard[c - 1];

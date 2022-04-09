@@ -146,27 +146,46 @@ public class TetrisGame implements Runnable {
 		}
 
 		if (mbCollWithFloor) {
+			mGameBoard.getTetromino().setEmptyShapeAndColor();
 			int removeColArr[] = new int[4];
 			int numRemovedLines = 0;
 			numRemovedLines = mGameBoard.findRemovableLines(removeColArr);
 			if (numRemovedLines > 0) {
-				// Swap to removing tile
+				// Swap to removing tile 1
 				for (int i = 0; i < numRemovedLines; i++) {
 					int col = removeColArr[i];
-					Tile tileRemove = new Tile("tile_remove");
+					Tile tileRemove = new Tile("tile_remove1");
 					for (int row = 0; row < GameBoard.BOARD_ROW; row++) {
 						mGameBoard.mBoard[col][row] = tileRemove;
 					}
 				}
-				mGameBoard.getTetromino().setEmptyShapeAndColor();
 				mScreen.repaint();
+
 				try {
-					Thread.sleep(500);
+					Thread.sleep(200);
 				} catch (InterruptedException e) {
 					assert (false);
 				}
+
+				// Swap to removing tile 1
+				for (int i = 0; i < numRemovedLines; i++) {
+					int col = removeColArr[i];
+					Tile tileRemove = new Tile("tile_remove2");
+					for (int row = 0; row < GameBoard.BOARD_ROW; row++) {
+						mGameBoard.mBoard[col][row] = tileRemove;
+					}
+				}
+				mScreen.repaint();
+				try {
+					Thread.sleep(300);
+				} catch (InterruptedException e) {
+					assert (false);
+				}
+
+				mGameBoard.removeLines(removeColArr, numRemovedLines);
+				mScreen.repaint();
 			}
-			mGameBoard.removeLines(removeColArr, numRemovedLines);
+			mGameBoard.fallDownLines(removeColArr, numRemovedLines);
 			// Calculate Score
 			int addedScore = 0;
 			switch (numRemovedLines) {

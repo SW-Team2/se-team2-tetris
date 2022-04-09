@@ -23,6 +23,7 @@ public class GameScreen extends Screen {
     private GameBoard mGameBoard;
     private boolean mbPlayingTetrisGame;
 
+    private BufferedImage mPanelBackGroundImage;
     private BufferedImage mGameBoardBackGroundImage;
     private BufferedImage mNextTetBoardBackGroundImage;
     private Font mScoreBoardFont;
@@ -51,17 +52,24 @@ public class GameScreen extends Screen {
 
         // Set Window back ground
         super.setBackground(Color.gray);
+        // Set panel background
+        try {
+            mPanelBackGroundImage = ImageIO
+                    .read(getClass().getResourceAsStream("../../res/background/background_panel.png"));
+        } catch (IOException e) {
+            assert (false) : "Open File";
+        }
         // Set game board back ground image
         try {
             mGameBoardBackGroundImage = ImageIO
-                    .read(getClass().getResourceAsStream("../../res/background/background.png"));
+                    .read(getClass().getResourceAsStream("../../res/background/background_board.png"));
         } catch (IOException e) {
             assert (false) : "Open File";
         }
         // Set next tetromino board back ground image
         try {
             mNextTetBoardBackGroundImage = ImageIO
-                    .read(getClass().getResourceAsStream("../../res/background/background.png"));
+                    .read(getClass().getResourceAsStream("../../res/background/background_nextboard.png"));
         } catch (IOException e) {
             assert (false) : "Open File";
         }
@@ -99,8 +107,18 @@ public class GameScreen extends Screen {
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         super.paint(g2d);
+        // TODO: Temp tile size
+        int tileSize = 40;
+        BufferedImage frameImage = TileManager.getInstance().getTexture("tile_frame");
+        BufferedImage image = null;
+        assert (frameImage != null);
+
         // Draw Screen Configs
         {
+            g2d.drawImage(mPanelBackGroundImage,
+                    0, 0,
+                    mScreenWidth, mScreenHeight,
+                    null);
             g2d.drawImage(mGameBoardBackGroundImage,
                     mGameBoardPosX, mGameBoardPosY,
                     mGameBoardWidth, mGameBoardHeight,
@@ -110,28 +128,33 @@ public class GameScreen extends Screen {
                     mNextTetBoardWidth, mNextTetBoardHeight,
                     null);
         }
+        // Draw board frames
+        {
+            for (int col = 0; col < GameBoard.BOARD_COL; col++) {
+                for (int row = 0; row < GameBoard.BOARD_ROW; row++) {
+                    image = frameImage;
+                    int posX = mGameBoardPosX + row * tileSize;
+                    int posY = mGameBoardPosY + col * tileSize;
+                    g2d.drawImage(image, posX, posY, tileSize, tileSize, null);
+                }
+            }
+        }
+
         if (mbPlayingTetrisGame == false) {
             return;
         }
 
-        // TODO: Temp tile size
-        int tileSize = 40;
         // Draw game board
-        BufferedImage frameImage = TileManager.getInstance().getTexture("tile_frame");
-        BufferedImage image = null;
-        assert (frameImage != null);
         {
             // Draw static blocks
             for (int col = 0; col < GameBoard.BOARD_COL; col++) {
                 for (int row = 0; row < GameBoard.BOARD_ROW; row++) {
-                    if (mGameBoard.mBoard[col][row] == null) {
-                        image = frameImage;
-                    } else {
+                    if (mGameBoard.mBoard[col][row] != null) {
                         image = mGameBoard.mBoard[col][row].getTexture();
+                        int posX = mGameBoardPosX + row * tileSize;
+                        int posY = mGameBoardPosY + col * tileSize;
+                        g2d.drawImage(image, posX, posY, tileSize, tileSize, null);
                     }
-                    int posX = mGameBoardPosX + row * tileSize;
-                    int posY = mGameBoardPosY + col * tileSize;
-                    g2d.drawImage(image, posX, posY, tileSize, tileSize, null);
                 }
             }
             // Map the focused tetromino
@@ -162,6 +185,20 @@ public class GameScreen extends Screen {
                 }
             }
         }
+
+        // Draw particles
+        {
+            // BufferedImage par = null;
+            // try {
+            // par = ImageIO
+            // .read(getClass().getResourceAsStream("../../res/particle/particle_whitecircles2r1.png"));
+            // } catch (IOException e) {
+            // assert (false) : "Open File";
+            // }
+            // // g2d.setXORMode(Color.black);
+            // g2d.drawImage(par, 200, 500, tileSize * 4, tileSize * 2, null);
+        }
+
         // Draw score board
         {
             StringBuffer scoreStrBuf = new StringBuffer();

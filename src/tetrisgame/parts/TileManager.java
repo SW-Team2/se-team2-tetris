@@ -23,7 +23,8 @@ public class TileManager {
         loadTex("tile_skyblue");
         loadTex("tile_white");
         loadTex("tile_yellow");
-        loadTex("tile_remove");
+        loadTex("tile_remove1");
+        loadTex("tile_remove2");
     }
 
     public static TileManager getInstance() {
