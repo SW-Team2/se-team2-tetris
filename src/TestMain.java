@@ -1,4 +1,3 @@
-import data.setting.SettingInfoDesc;
 import graphics.WindowManager;
 
 public class TestMain {
