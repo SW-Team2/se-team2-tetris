@@ -86,7 +86,7 @@ public class GameBoard {
 							if (mTetromino.isFilled(c, r)) {
 								int col = pos.mCol + c;
 								int row = pos.mRow + r;
-								mBoard[col][row] = mTetromino.getBlock(c, r);
+								mBoard[col][row] = mTetromino.mShape[c][r];
 							}
 						}
 					}

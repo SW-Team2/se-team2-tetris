@@ -16,6 +16,7 @@ import tetrisgame.TetrisGame;
 import tetrisgame.parts.GameBoard;
 import tetrisgame.parts.Position;
 import tetrisgame.parts.Tetromino;
+import tetrisgame.parts.TileManager;
 
 public class GameScreen extends Screen {
     private TetrisGame mTetrisGame;
@@ -53,14 +54,14 @@ public class GameScreen extends Screen {
         // Set game board back ground image
         try {
             mGameBoardBackGroundImage = ImageIO
-                    .read(getClass().getResourceAsStream("../../res/background/background.jpg"));
+                    .read(getClass().getResourceAsStream("../../res/background/background.png"));
         } catch (IOException e) {
             assert (false) : "Open File";
         }
         // Set next tetromino board back ground image
         try {
             mNextTetBoardBackGroundImage = ImageIO
-                    .read(getClass().getResourceAsStream("../../res/background/background.jpg"));
+                    .read(getClass().getResourceAsStream("../../res/background/background.png"));
         } catch (IOException e) {
             assert (false) : "Open File";
         }
@@ -106,28 +107,33 @@ public class GameScreen extends Screen {
         // TODO: Temp tile size
         int tileSize = 40;
         // Draw game board
+        BufferedImage frameImage = TileManager.getInstance().getTexture("tile_frame");
+        BufferedImage image = null;
+        assert (frameImage != null);
         {
+            // Draw static blocks
+            for (int col = 0; col < GameBoard.BOARD_COL; col++) {
+                for (int row = 0; row < GameBoard.BOARD_ROW; row++) {
+                    if (mGameBoard.mBoard[col][row] == null) {
+                        image = frameImage;
+                    } else {
+                        image = mGameBoard.mBoard[col][row].getTexture();
+                    }
+                    int posX = mGameBoardPosX + row * tileSize;
+                    int posY = mGameBoardPosY + col * tileSize;
+                    g2d.drawImage(image, posX, posY, tileSize, tileSize, null);
+                }
+            }
             // Map the focused tetromino
             Tetromino tet = mGameBoard.getTetromino();
             for (int col = 0; col < Tetromino.SHAPE_COL; col++) {
                 for (int row = 0; row < Tetromino.SHAPE_ROW; row++) {
                     Position pos = tet.getPosition();
                     if (tet.mShape[col][row] != null) {
+                        image = tet.mShape[col][row].getTexture();
                         int posX = mGameBoardPosX + (row + pos.mRow) * tileSize;
                         int posY = mGameBoardPosY + (col + pos.mCol) * tileSize;
-                        g2d.setXORMode(tet.getColor());
-                        g2d.drawImage(tet.mShape[col][row].getTexture(), posX, posY, tileSize, tileSize, null);
-                    }
-                }
-            }
-            // Draw static blocks
-            for (int col = 0; col < GameBoard.BOARD_COL; col++) {
-                for (int row = 0; row < GameBoard.BOARD_ROW; row++) {
-                    if (mGameBoard.mBoard[col][row] != null) {
-                        int posX = mGameBoardPosX + row * tileSize;
-                        int posY = mGameBoardPosY + col * tileSize;
-                        g2d.setXORMode(mGameBoard.mBoard[col][row].getColor());
-                        g2d.drawImage(mGameBoard.mBoard[col][row].getTexture(), posX, posY, tileSize, tileSize, null);
+                        g2d.drawImage(image, posX, posY, tileSize, tileSize, null);
                     }
                 }
             }
@@ -141,7 +147,6 @@ public class GameScreen extends Screen {
                     if (tet.mShape[col][row] != null) {
                         int posX = mNextTetBoardPosX + row * tileSize + 5;
                         int posY = mNextTetBoardPosY + col * tileSize + 5;
-                        g2d.setXORMode(tet.getColor());
                         g2d.drawImage(tet.mShape[col][row].getTexture(), posX, posY, tileSize, tileSize, null);
                     }
                 }

@@ -1,39 +1,23 @@
 package tetrisgame.parts;
 
-import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
 
 public class Tile {
-	private Color mColor;
-	private BufferedImage mTex;
+	private String mName;
 
-	public Tile() {
-		try {
-			mTex = ImageIO.read(getClass().getResourceAsStream("../../res/tiles/tempblock.png"));
-		} catch (IOException e) {
-			// TODO:
-			assert (false) : "Open File";
-		}
+	public Tile(String name) {
+		mName = name;
 	}
 
-	public Tile(Color colorIn) {
-		try {
-			mTex = ImageIO.read(getClass().getResourceAsStream("../../res/tiles/tempblock.png"));
-		} catch (IOException e) {
-			// TODO:
-			assert (false) : "Open File";
-		}
-		mColor = colorIn;
+	public Tile(Tile rhs) {
+		mName = rhs.mName;
 	}
 
 	public BufferedImage getTexture() {
-		return mTex;
+		return TileManager.getInstance().getTexture(mName);
 	}
 
-	public Color getColor() {
-		return mColor;
+	public void setName(String name) {
+		mName = name;
 	}
 }

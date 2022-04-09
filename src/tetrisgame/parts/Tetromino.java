@@ -72,21 +72,14 @@ public class Tetromino {
 	};
 
 	static {
-		Color yellow = new Color(255, 255, 102);
-		Color skyBlue = new Color(51, 255, 255);
-		Color lightGreen = new Color(153, 255, 153);
-		Color red = new Color(255, 0, 0);
-		Color orange = new Color(255, 102, 0);
-		Color blue = new Color(0, 0, 255);
-		Color purple = new Color(255, 0, 255);
 		COLOR_BLOCK_ARR = new Tile[VAR_TETROMINOS];
-		COLOR_BLOCK_ARR[0] = new Tile(yellow);
-		COLOR_BLOCK_ARR[1] = new Tile(skyBlue);
-		COLOR_BLOCK_ARR[2] = new Tile(lightGreen);
-		COLOR_BLOCK_ARR[3] = new Tile(red);
-		COLOR_BLOCK_ARR[4] = new Tile(orange);
-		COLOR_BLOCK_ARR[5] = new Tile(blue);
-		COLOR_BLOCK_ARR[6] = new Tile(purple);
+		COLOR_BLOCK_ARR[0] = new Tile("tile_yellow");
+		COLOR_BLOCK_ARR[1] = new Tile("tile_skyblue");
+		COLOR_BLOCK_ARR[2] = new Tile("tile_lightgreen");
+		COLOR_BLOCK_ARR[3] = new Tile("tile_red");
+		COLOR_BLOCK_ARR[4] = new Tile("tile_orange");
+		COLOR_BLOCK_ARR[5] = new Tile("tile_blue");
+		COLOR_BLOCK_ARR[6] = new Tile("tile_purple");
 
 		mProbWeightArr = new int[VAR_TETROMINOS];
 		for (int i = 0; i < VAR_TETROMINOS; i++) {
@@ -146,20 +139,12 @@ public class Tetromino {
 		mShapeNColorIndex = source.mShapeNColorIndex;
 	}
 
-	public Tile getBlock(int c, int r) {
-		return mShape[c][r];
-	}
-
 	public boolean isFilled(int c, int r) {
 		if (mShape[c][r] != null) {
 			return true;
 		} else {
 			return false;
 		}
-	}
-
-	public Color getColor() {
-		return COLOR_BLOCK_ARR[mShapeNColorIndex].getColor();
 	}
 
 	public Position getPosition() {

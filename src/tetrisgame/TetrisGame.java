@@ -51,7 +51,7 @@ public class TetrisGame implements Runnable {
 		mScore = 0;
 		mSpeed = 1;
 		// TODO: Using Temp value
-		mDifficulty = eDifficulty.HARD;
+		mDifficulty = eDifficulty.EASY;
 		Tetromino.setDifficulty(mDifficulty);
 		switch (mDifficulty) {
 			case EASY:
@@ -103,6 +103,7 @@ public class TetrisGame implements Runnable {
 				mGameBoard.moveTet(eDirection.RIGHT);
 				break;
 			case KeyEvent.VK_DOWN:
+				mSumDeltaTime = 0.f;
 				mbCollWithFloor = mGameBoard.moveTet(eDirection.DOWN);
 				break;
 			case KeyEvent.VK_SPACE:
@@ -135,9 +136,9 @@ public class TetrisGame implements Runnable {
 		eGameOver gameOverFlag = eGameOver.CONTINUE;
 
 		mTimer.tick();
+
 		float dTime = mTimer.getDeltaTime();
 		mSumDeltaTime += dTime;
-
 		if (mAutoDownTime <= mSumDeltaTime) {
 			mbCollWithFloor |= mGameBoard.moveTet(eDirection.DOWN);
 			mSumDeltaTime = 0.0f;
