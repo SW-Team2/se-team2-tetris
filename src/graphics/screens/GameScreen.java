@@ -16,7 +16,7 @@ import tetrisgame.TetrisGame;
 import tetrisgame.parts.GameBoard;
 import tetrisgame.parts.Position;
 import tetrisgame.parts.Tetromino;
-import tetrisgame.parts.TileManager;
+import tetrisgame.parts.TexManager;
 
 public class GameScreen extends Screen {
     private TetrisGame mTetrisGame;
@@ -50,35 +50,14 @@ public class GameScreen extends Screen {
         mGameBoard = mTetrisGame.getGameBoard();
         mbPlayingTetrisGame = false;
 
-        // Set Window back ground
-        super.setBackground(Color.gray);
-        // Set panel background
-        try {
-            mPanelBackGroundImage = ImageIO
-                    .read(getClass().getResourceAsStream("../../res/background/background_panel.png"));
-        } catch (IOException e) {
-            assert (false) : "Open File";
-        }
-        // Set game board back ground image
-        try {
-            mGameBoardBackGroundImage = ImageIO
-                    .read(getClass().getResourceAsStream("../../res/background/background_board.png"));
-        } catch (IOException e) {
-            assert (false) : "Open File";
-        }
-        // Set next tetromino board back ground image
-        try {
-            mNextTetBoardBackGroundImage = ImageIO
-                    .read(getClass().getResourceAsStream("../../res/background/background_nextboard.png"));
-        } catch (IOException e) {
-            assert (false) : "Open File";
-        }
+        mPanelBackGroundImage = TexManager.getInstance().getTexture("background_panel");
+        mGameBoardBackGroundImage = TexManager.getInstance().getTexture("background_board");
+        mNextTetBoardBackGroundImage = TexManager.getInstance().getTexture("background_nextboard");
 
         mScoreBoardFont = new Font("Consolas", Font.BOLD, 30);
 
         // TODO: Reflect setting infos
         mSettingInfo = SettingInfoDesc.getInstance();
-
         mScreenWidth = mSettingInfo.mScreen.mWidth;
         mScreenHeight = mSettingInfo.mScreen.mHeight;
         mGameBoardWidth = 400;
@@ -109,7 +88,7 @@ public class GameScreen extends Screen {
         super.paint(g2d);
         // TODO: Temp tile size
         int tileSize = 40;
-        BufferedImage frameImage = TileManager.getInstance().getTexture("tile_frame");
+        BufferedImage frameImage = TexManager.getInstance().getTexture("tile_frame");
         BufferedImage image = null;
         assert (frameImage != null);
 
