@@ -4,14 +4,13 @@ import java.awt.event.KeyEvent;
 import java.util.Random;
 
 import tetrisgame.TetrisGame;
-import tetrisgame.enumerations.eCollResult;
 import tetrisgame.enumerations.eDifficulty;
 import tetrisgame.enumerations.eDirection;
 import tetrisgame.enumerations.eMsg;
 import tetrisgame.parts.Position;
 
 public class Tetromino extends IGameComponent {
-	private GameBoard mPubBoard;
+	private Tile mPubBoard[][];
 
 	private Position mPosition;
 	public Tile mShape[][];
@@ -106,7 +105,7 @@ public class Tetromino extends IGameComponent {
 		mSumProbWeight = DEFAULT_WEIGHT * VAR_TETROMINOS;
 	}
 
-	public Tetromino(TetrisGame game, GameBoard gb) {
+	public Tetromino(TetrisGame game, Tile gb[][]) {
 		super(game);
 		mPubBoard = gb;
 		mPosition = new Position(START_POS.mCol, START_POS.mRow);
@@ -250,16 +249,9 @@ public class Tetromino extends IGameComponent {
 
 	private void rotateOrIgnore() {
 		this.rotate();
-		eCollResult collResult = collisionTest();
-		switch (collResult) {
-			case COLL:
-				this.rotateBack();
-				break;
-			case NOT_COLL:
-				break;
-			default:
-				assert (false);
-				break;
+		boolean collResult = collisionTest();
+		if (collResult) {
+			this.rotateBack();
 		}
 	}
 
@@ -267,32 +259,25 @@ public class Tetromino extends IGameComponent {
 		boolean bCollWithFloor = false;
 
 		this.move(dir);
-		eCollResult collResult = collisionTest();
-		switch (collResult) {
-			case COLL:
-				this.moveBack(dir);
-				if (dir == eDirection.DOWN) {
-					//
-					// Map current Tetromino on Board
-					//
-					Position pos = mPosition;
-					for (int c = 0; c < Tetromino.SHAPE_COL; c++) {
-						for (int r = 0; r < Tetromino.SHAPE_ROW; r++) {
-							if (mShape[c][r] != null) {
-								int col = pos.mCol + c;
-								int row = pos.mRow + r;
-								mPubBoard.mBoard[col][row] = mShape[c][r];
-							}
+		boolean collResult = collisionTest();
+		if (collResult) {
+			this.moveBack(dir);
+			if (dir == eDirection.DOWN) {
+				//
+				// Map current Tetromino on Board
+				//
+				Position pos = mPosition;
+				for (int c = 0; c < Tetromino.SHAPE_COL; c++) {
+					for (int r = 0; r < Tetromino.SHAPE_ROW; r++) {
+						if (mShape[c][r] != null) {
+							int col = pos.mCol + c;
+							int row = pos.mRow + r;
+							mPubBoard[col][row] = mShape[c][r];
 						}
 					}
-					bCollWithFloor = true;
 				}
-				break;
-			case NOT_COLL:
-				break;
-			default:
-				assert (false);
-				break;
+				bCollWithFloor = true;
+			}
 		}
 		return bCollWithFloor;
 	}
@@ -405,18 +390,17 @@ public class Tetromino extends IGameComponent {
 		}
 	}
 
-	private eCollResult collisionTest() {
-		eCollResult re = eCollResult.NOT_COLL;
-
+	private boolean collisionTest() {
+		boolean re = false;
 		Position pos = mPosition;
 		for (int c = 0; c < Tetromino.SHAPE_COL; c++) {
 			for (int r = 0; r < Tetromino.SHAPE_ROW; r++) {
 				if (mShape[c][r] != null) {
 					int col = pos.mCol + c;
 					int row = pos.mRow + r;
-					if (GameBoard.BOARD_COL <= col || col < 0 || row < 0 || GameBoard.BOARD_ROW <= row ||
-							mPubBoard.mBoard[col][row] != null) {
-						re = eCollResult.COLL;
+					if (TetrisGame.BOARD_COL <= col || col < 0 || row < 0 || TetrisGame.BOARD_ROW <= row ||
+							mPubBoard[col][row] != null) {
+						re = true;
 						return re;
 					}
 

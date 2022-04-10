@@ -13,12 +13,12 @@ import graphics.eScreenInfo;
 import tetrisgame.TetrisGame;
 import tetrisgame.parts.ImageLoader;
 import tetrisgame.parts.Position;
-import tetrisgame.parts.component.GameBoard;
 import tetrisgame.parts.component.Tetromino;
+import tetrisgame.parts.component.Tile;
 
 public class GameScreen extends Screen {
     protected TetrisGame mTetrisGame;
-    protected GameBoard mGameBoard;
+    protected Tile mGameBoard[][];
 
     protected BufferedImage mPanelBackGroundImage;
     protected BufferedImage mGameBoardBackGroundImage;
@@ -105,8 +105,8 @@ public class GameScreen extends Screen {
         }
         // Draw board frames
         {
-            for (int col = 0; col < GameBoard.BOARD_COL; col++) {
-                for (int row = 0; row < GameBoard.BOARD_ROW; row++) {
+            for (int col = 0; col < TetrisGame.BOARD_COL; col++) {
+                for (int row = 0; row < TetrisGame.BOARD_ROW; row++) {
                     image = frameImage;
                     int posX = mGameBoardPosX + row * tileSize;
                     int posY = mGameBoardPosY + col * tileSize;
@@ -122,10 +122,10 @@ public class GameScreen extends Screen {
         // Draw game board
         {
             // Draw static blocks
-            for (int col = 0; col < GameBoard.BOARD_COL; col++) {
-                for (int row = 0; row < GameBoard.BOARD_ROW; row++) {
-                    if (mGameBoard.mBoard[col][row] != null) {
-                        image = mGameBoard.mBoard[col][row].getTexture();
+            for (int col = 0; col < TetrisGame.BOARD_COL; col++) {
+                for (int row = 0; row < TetrisGame.BOARD_ROW; row++) {
+                    if (mGameBoard[col][row] != null) {
+                        image = mGameBoard[col][row].getTexture();
                         int posX = mGameBoardPosX + row * tileSize;
                         int posY = mGameBoardPosY + col * tileSize;
                         g2d.drawImage(image, posX, posY, tileSize, tileSize, null);
@@ -133,7 +133,7 @@ public class GameScreen extends Screen {
                 }
             }
             // Map the focused tetromino
-            Tetromino tet = mGameBoard.getCurrTetromino();
+            Tetromino tet = mTetrisGame.getCurrTetromino();
             for (int col = 0; col < Tetromino.SHAPE_COL; col++) {
                 for (int row = 0; row < Tetromino.SHAPE_ROW; row++) {
                     Position pos = tet.getPosition();
@@ -149,7 +149,7 @@ public class GameScreen extends Screen {
         // Draw next tetromino board
         {
             tileSize *= 0.85;
-            Tetromino tet = mGameBoard.getNextTetromion();
+            Tetromino tet = mTetrisGame.getNextTetromion();
             for (int col = 0; col < Tetromino.SHAPE_COL; col++) {
                 for (int row = 0; row < Tetromino.SHAPE_ROW; row++) {
                     if (tet.mShape[col][row] != null) {

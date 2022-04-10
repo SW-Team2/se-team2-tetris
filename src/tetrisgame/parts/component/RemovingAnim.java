@@ -3,7 +3,9 @@ package tetrisgame.parts.component;
 import tetrisgame.TetrisGame;
 import tetrisgame.enumerations.eMsg;
 
-public class RemovingAnim extends IGameBoardComponent {
+public class RemovingAnim extends IGameComponent {
+    private Tile mPubBoard[][];
+
     private float mSumTime;
 
     private int mColArr[];
@@ -13,16 +15,17 @@ public class RemovingAnim extends IGameBoardComponent {
 
     private static final float TIME_FRAME_NEXT_1 = 0.2f;
 
-    public RemovingAnim(TetrisGame g, GameBoard gb, int colArr[], int size) {
-        super(g, gb);
+    public RemovingAnim(TetrisGame g, Tile gb[][], int colArr[], int size) {
+        super(g);
+        mPubBoard = gb;
         mColArr = colArr;
         mSize = size;
 
         for (int i = 0; i < mSize; i++) {
             int col = mColArr[i];
             Tile tileRemove = new Tile(mPubGame, mPubBoard, "tile_remove1");
-            for (int row = 0; row < GameBoard.BOARD_ROW; row++) {
-                mPubBoard.mBoard[col][row] = tileRemove;
+            for (int row = 0; row < TetrisGame.BOARD_ROW; row++) {
+                mPubBoard[col][row] = tileRemove;
             }
         }
     }
@@ -35,8 +38,8 @@ public class RemovingAnim extends IGameBoardComponent {
             for (int i = 0; i < mSize; i++) {
                 int col = mColArr[i];
                 Tile tileRemove = new Tile(mPubGame, mPubBoard, "tile_remove2");
-                for (int row = 0; row < GameBoard.BOARD_ROW; row++) {
-                    mPubBoard.mBoard[col][row] = tileRemove;
+                for (int row = 0; row < TetrisGame.BOARD_ROW; row++) {
+                    mPubBoard[col][row] = tileRemove;
                 }
             }
         }

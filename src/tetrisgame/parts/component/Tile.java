@@ -6,11 +6,13 @@ import tetrisgame.TetrisGame;
 import tetrisgame.enumerations.eMsg;
 import tetrisgame.parts.ImageLoader;
 
-public class Tile extends IGameBoardComponent {
+public class Tile extends IGameComponent {
+	private Tile mPubBoard[][];
 	private String mName;
 
-	public Tile(TetrisGame g, GameBoard gb, String name) {
-		super(g, gb);
+	public Tile(TetrisGame g, Tile[][] gb, String name) {
+		super(g);
+		mPubBoard = gb;
 		mName = name;
 	}
 
