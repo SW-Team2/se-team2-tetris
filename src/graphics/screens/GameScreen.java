@@ -14,7 +14,7 @@ import tetrisgame.TetrisGame;
 import tetrisgame.parts.GameBoard;
 import tetrisgame.parts.Position;
 import tetrisgame.parts.Tetromino;
-import tetrisgame.parts.TexManager;
+import tetrisgame.parts.ImageLoader;
 
 public class GameScreen extends Screen {
     private TetrisGame mTetrisGame;
@@ -45,9 +45,9 @@ public class GameScreen extends Screen {
         mTetrisGame = new TetrisGame(this);
         mGameBoard = mTetrisGame.getGameBoard();
 
-        mPanelBackGroundImage = TexManager.getInstance().getTexture("background_panel");
-        mGameBoardBackGroundImage = TexManager.getInstance().getTexture("background_board");
-        mNextTetBoardBackGroundImage = TexManager.getInstance().getTexture("background_nextboard");
+        mPanelBackGroundImage = ImageLoader.getInstance().getTexture("background_panel");
+        mGameBoardBackGroundImage = ImageLoader.getInstance().getTexture("background_board");
+        mNextTetBoardBackGroundImage = ImageLoader.getInstance().getTexture("background_nextboard");
 
         mScoreBoardFont = new Font("Consolas", Font.BOLD, 30);
 
@@ -83,7 +83,7 @@ public class GameScreen extends Screen {
         super.paint(g2d);
         // TODO: Temp tile size
         int tileSize = 40;
-        BufferedImage frameImage = TexManager.getInstance().getTexture("tile_frame");
+        BufferedImage frameImage = ImageLoader.getInstance().getTexture("tile_frame");
         BufferedImage image = null;
         assert (frameImage != null);
 

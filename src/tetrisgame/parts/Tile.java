@@ -14,7 +14,7 @@ public class Tile {
 	}
 
 	public BufferedImage getTexture() {
-		return TexManager.getInstance().getTexture(mName);
+		return ImageLoader.getInstance().getTexture(mName);
 	}
 
 	public void setName(String name) {
