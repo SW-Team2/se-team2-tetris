@@ -31,13 +31,13 @@ public class TetrisGame implements Runnable {
 	// private float mPrevTimeForDraw;
 
 	private int mCurrKeyCode;
-	private float mKeyReactTimeTick;
+	private volatile float mKeyReactTimeTick;
 
 	private boolean mbCollWithFloor = false;
 
 	private static final float START_AUTO_DOWN_TIME = 1.0f;
 
-	private static final float KEY_REACT_TIME = 0.11f;
+	private static final float KEY_REACT_TIME = 0.12f;
 
 	private static final int SCORE_UNIT = 100;
 	private static final int MULTIPLE_BREAK_BONUS_2L = 30;
@@ -106,7 +106,7 @@ public class TetrisGame implements Runnable {
 		return mScore;
 	}
 
-	public void getUserInput(KeyEvent e) {
+	public synchronized void getUserInput(KeyEvent e) {
 		if (mCurrKeyCode == e.getKeyCode()) {
 			return;
 		}
@@ -130,7 +130,7 @@ public class TetrisGame implements Runnable {
 		return mGameBoard;
 	}
 
-	private boolean update() {
+	private synchronized boolean update() {
 		eGameOver gameOverFlag = eGameOver.CONTINUE;
 
 		mTimer.tick();

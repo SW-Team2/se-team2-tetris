@@ -3,7 +3,7 @@ package gamestarter;
 import tetrisgame.TetrisGame;
 
 public class GameStarter {
-    private static boolean mbStartFlag = false;
+    private static volatile boolean mbStartFlag = false;
     private static TetrisGame mGame = null;
 
     public static void setStart() {
@@ -29,12 +29,8 @@ public class GameStarter {
     }
 
     public static void waitForSignal(boolean startFlag) {
+        // TODO: Busy wait
         while (mbStartFlag == startFlag) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                assert (false);
-            }
         }
     }
 }
