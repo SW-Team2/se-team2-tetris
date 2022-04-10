@@ -68,28 +68,75 @@ public class TetrisGame implements Runnable {
 			return;
 		}
 		if (msg == eMsg.COLL_WITH_FLOOR) {
-			boolean bRemovable = true;
-			int posCol = mCurrTetromino.getPosition().mCol;
-			int startCol = posCol + 3 < BOARD_COL ? posCol + 3 : BOARD_COL - 1;
-			posCol = posCol >= 0 ? posCol : 0;
-			for (int boardCol = startCol; boardCol >= posCol; boardCol--) {
-				for (Tile currBolck : mBoard[boardCol]) {
-					if (currBolck == null) {
-						bRemovable = false;
-						break;
-					}
-				}
-				if (bRemovable) {
-					mRemoveColArr[mNumRemovableLines++] = boardCol;
-				}
-				bRemovable = true;
-			}
+			findRemovableLines();
 			if (mNumRemovableLines > 0) {
 				mCurrTetromino.react(msg);
-				mRemoveAnim = new RemovingAnim(this, mBoard, mRemoveColArr, mNumRemovableLines);
+				mRemoveAnim = new RemovingAnim(this, mBoard);
 				mbRemovingFlag = true;
 				for (int j = 0; j < mNumRemovableLines; j++) {
-					this.broadcast(eMsg.LINE_REMOVE);
+					int col = mRemoveColArr[j];
+					switch (col) {
+						case 0:
+							this.broadcast(eMsg.LINE_REMOVE_0);
+							break;
+						case 1:
+							this.broadcast(eMsg.LINE_REMOVE_1);
+							break;
+						case 2:
+							this.broadcast(eMsg.LINE_REMOVE_2);
+							break;
+						case 3:
+							this.broadcast(eMsg.LINE_REMOVE_3);
+							break;
+						case 4:
+							this.broadcast(eMsg.LINE_REMOVE_4);
+							break;
+						case 5:
+							this.broadcast(eMsg.LINE_REMOVE_5);
+							break;
+						case 6:
+							this.broadcast(eMsg.LINE_REMOVE_6);
+							break;
+						case 7:
+							this.broadcast(eMsg.LINE_REMOVE_7);
+							break;
+						case 8:
+							this.broadcast(eMsg.LINE_REMOVE_8);
+							break;
+						case 9:
+							this.broadcast(eMsg.LINE_REMOVE_9);
+							break;
+						case 10:
+							this.broadcast(eMsg.LINE_REMOVE_10);
+							break;
+						case 11:
+							this.broadcast(eMsg.LINE_REMOVE_11);
+							break;
+						case 12:
+							this.broadcast(eMsg.LINE_REMOVE_12);
+							break;
+						case 13:
+							this.broadcast(eMsg.LINE_REMOVE_13);
+							break;
+						case 14:
+							this.broadcast(eMsg.LINE_REMOVE_14);
+							break;
+						case 15:
+							this.broadcast(eMsg.LINE_REMOVE_15);
+							break;
+						case 16:
+							this.broadcast(eMsg.LINE_REMOVE_16);
+							break;
+						case 17:
+							this.broadcast(eMsg.LINE_REMOVE_17);
+							break;
+						case 18:
+							this.broadcast(eMsg.LINE_REMOVE_18);
+							break;
+						case 19:
+							this.broadcast(eMsg.LINE_REMOVE_19);
+							break;
+					}
 				}
 			} else {
 				mCurrTetromino = mNextTetromino;
@@ -229,7 +276,27 @@ public class TetrisGame implements Runnable {
 		return collResult;
 	}
 
-	public void removeLines() {
+	private void findRemovableLines() {
+		boolean bRemovable = true;
+		mNumRemovableLines = 0;
+		int posCol = mCurrTetromino.getPosition().mCol;
+		int startCol = posCol + 3 < BOARD_COL ? posCol + 3 : BOARD_COL - 1;
+		posCol = posCol >= 0 ? posCol : 0;
+		for (int boardCol = startCol; boardCol >= posCol; boardCol--) {
+			for (Tile currBolck : mBoard[boardCol]) {
+				if (currBolck == null) {
+					bRemovable = false;
+					break;
+				}
+			}
+			if (bRemovable) {
+				mRemoveColArr[mNumRemovableLines++] = boardCol;
+			}
+			bRemovable = true;
+		}
+	}
+
+	private void removeLines() {
 		for (int index = 0; index < mNumRemovableLines; index++) {
 			int col = mRemoveColArr[index];
 			for (int row = 0; row < BOARD_ROW; row++) {
@@ -238,7 +305,7 @@ public class TetrisGame implements Runnable {
 		}
 	}
 
-	public void fallDownLines() {
+	private void fallDownLines() {
 		for (int index = 0; index < mNumRemovableLines; index++) {
 			int col = mRemoveColArr[index];
 			Tile removedLine[] = mBoard[col];

@@ -164,7 +164,26 @@ public class Tetromino extends IGameComponent {
 					}
 				}
 				break;
-			case LINE_REMOVE:
+			case LINE_REMOVE_0:
+			case LINE_REMOVE_1:
+			case LINE_REMOVE_2:
+			case LINE_REMOVE_3:
+			case LINE_REMOVE_4:
+			case LINE_REMOVE_5:
+			case LINE_REMOVE_6:
+			case LINE_REMOVE_7:
+			case LINE_REMOVE_8:
+			case LINE_REMOVE_9:
+			case LINE_REMOVE_10:
+			case LINE_REMOVE_11:
+			case LINE_REMOVE_12:
+			case LINE_REMOVE_13:
+			case LINE_REMOVE_14:
+			case LINE_REMOVE_15:
+			case LINE_REMOVE_16:
+			case LINE_REMOVE_17:
+			case LINE_REMOVE_18:
+			case LINE_REMOVE_19:
 				mCurrRemoveLineCount++;
 				break;
 		}

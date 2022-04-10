@@ -23,8 +23,29 @@ public class Score extends IGameComponent {
 
     @Override
     public void react(eMsg msg) {
-        if (msg == eMsg.LINE_REMOVE) {
-            mCurrRemoveLineCount++;
+        switch (msg) {
+            case LINE_REMOVE_0:
+            case LINE_REMOVE_1:
+            case LINE_REMOVE_2:
+            case LINE_REMOVE_3:
+            case LINE_REMOVE_4:
+            case LINE_REMOVE_5:
+            case LINE_REMOVE_6:
+            case LINE_REMOVE_7:
+            case LINE_REMOVE_8:
+            case LINE_REMOVE_9:
+            case LINE_REMOVE_10:
+            case LINE_REMOVE_11:
+            case LINE_REMOVE_12:
+            case LINE_REMOVE_13:
+            case LINE_REMOVE_14:
+            case LINE_REMOVE_15:
+            case LINE_REMOVE_16:
+            case LINE_REMOVE_17:
+            case LINE_REMOVE_18:
+            case LINE_REMOVE_19:
+                mCurrRemoveLineCount++;
+                break;
         }
         if (msg == eMsg.REMOVE_ANIM_OVER) {
             int addedScore = 0;
