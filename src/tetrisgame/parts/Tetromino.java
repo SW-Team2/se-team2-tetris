@@ -4,12 +4,14 @@ import java.util.Random;
 
 import tetrisgame.enumerations.eDifficulty;
 import tetrisgame.enumerations.eDirection;
+import tetrisgame.enumerations.eItemID;
+import tetrisgame.itemmode.IIsItem;
 
-public class Tetromino {
+public class Tetromino implements IIsItem {
 	private Position mPosition;
 	public Tile mShape[][];
 	private int mShapeNColorIndex;
-	private static Random mRandom;
+	protected static Random mRandom;
 
 	private static int mProbWeightArr[];
 	private static int mSumProbWeight;
@@ -22,8 +24,8 @@ public class Tetromino {
 
 	private static final Tile COLOR_BLOCK_ARR[];
 
-	private static final boolean O = true;
-	private static final boolean F = false;
+	protected static final boolean O = true;
+	protected static final boolean F = false;
 
 	private static final boolean TET_SHAPES[][][] = {
 			{
@@ -77,6 +79,8 @@ public class Tetromino {
 	};
 
 	static {
+		mRandom = new Random();
+		mRandom.setSeed(System.currentTimeMillis());
 		COLOR_BLOCK_ARR = new Tile[VAR_TETROMINOS];
 		COLOR_BLOCK_ARR[0] = new Tile("tile_yellow");
 		COLOR_BLOCK_ARR[1] = new Tile("tile_skyblue");
@@ -96,8 +100,7 @@ public class Tetromino {
 	public Tetromino() {
 		mPosition = new Position(START_POS.mCol, START_POS.mRow);
 		mShape = new Tile[SHAPE_COL][SHAPE_ROW];
-		mRandom = new Random();
-		mRandom.setSeed(System.currentTimeMillis());
+		this.setRandomShapeAndColor();
 	}
 
 	public static void setDifficulty(eDifficulty diff) {
@@ -160,29 +163,6 @@ public class Tetromino {
 		for (int col = 0; col < SHAPE_COL; col++) {
 			for (int row = 0; row < SHAPE_ROW; row++) {
 				mShape[col][row] = null;
-			}
-		}
-	}
-
-	public void setRandomShapeAndColor() {
-		int randomNum = mRandom.nextInt(mSumProbWeight);
-
-		int weight = 0;
-		for (int index = 0; index < VAR_TETROMINOS; index++) {
-			weight += mProbWeightArr[index];
-			if (randomNum < weight) {
-				mShapeNColorIndex = index;
-				break;
-			}
-		}
-
-		for (int col = 0; col < SHAPE_COL; col++) {
-			for (int row = 0; row < SHAPE_ROW; row++) {
-				if (TET_SHAPES[mShapeNColorIndex][col][row]) {
-					mShape[col][row] = COLOR_BLOCK_ARR[mShapeNColorIndex];
-				} else {
-					mShape[col][row] = null;
-				}
 			}
 		}
 	}
@@ -272,6 +252,34 @@ public class Tetromino {
 			default:
 				assert (false);
 				break;
+		}
+	}
+
+	@Override
+	public eItemID isItem() {
+		return eItemID.NONE;
+	}
+
+	protected void setRandomShapeAndColor() {
+		int randomNum = mRandom.nextInt(mSumProbWeight);
+
+		int weight = 0;
+		for (int index = 0; index < VAR_TETROMINOS; index++) {
+			weight += mProbWeightArr[index];
+			if (randomNum < weight) {
+				mShapeNColorIndex = index;
+				break;
+			}
+		}
+
+		for (int col = 0; col < SHAPE_COL; col++) {
+			for (int row = 0; row < SHAPE_ROW; row++) {
+				if (TET_SHAPES[mShapeNColorIndex][col][row]) {
+					mShape[col][row] = COLOR_BLOCK_ARR[mShapeNColorIndex];
+				} else {
+					mShape[col][row] = null;
+				}
+			}
 		}
 	}
 }

@@ -17,13 +17,13 @@ import tetrisgame.parts.Tetromino;
 import tetrisgame.parts.ImageLoader;
 
 public class GameScreen extends Screen {
-    private TetrisGame mTetrisGame;
-    private GameBoard mGameBoard;
+    protected TetrisGame mTetrisGame;
+    protected GameBoard mGameBoard;
 
-    private BufferedImage mPanelBackGroundImage;
-    private BufferedImage mGameBoardBackGroundImage;
-    private BufferedImage mNextTetBoardBackGroundImage;
-    private Font mScoreBoardFont;
+    protected BufferedImage mPanelBackGroundImage;
+    protected BufferedImage mGameBoardBackGroundImage;
+    protected BufferedImage mNextTetBoardBackGroundImage;
+    protected Font mScoreBoardFont;
 
     private int mScreenWidth;
     private int mScreenHeight;
@@ -42,14 +42,7 @@ public class GameScreen extends Screen {
     private SettingInfoDesc mSettingInfo;
 
     public GameScreen() {
-        mTetrisGame = new TetrisGame(this);
-        mGameBoard = mTetrisGame.getGameBoard();
-
-        mPanelBackGroundImage = ImageLoader.getInstance().getTexture("background_panel");
-        mGameBoardBackGroundImage = ImageLoader.getInstance().getTexture("background_board");
-        mNextTetBoardBackGroundImage = ImageLoader.getInstance().getTexture("background_nextboard");
-
-        mScoreBoardFont = new Font("Consolas", Font.BOLD, 30);
+        this.init();
 
         // TODO: Reflect setting infos
         mSettingInfo = SettingInfoDesc.getInstance();
@@ -65,6 +58,17 @@ public class GameScreen extends Screen {
         mNextTetBoardPosY = 50;
         mScoreBoardPosX = 460;
         mScoreBoardPosY = 260;
+    }
+
+    protected void init() {
+        mTetrisGame = new TetrisGame(this);
+        mGameBoard = mTetrisGame.getGameBoard();
+
+        mPanelBackGroundImage = ImageLoader.getInstance().getTexture("background_panel");
+        mGameBoardBackGroundImage = ImageLoader.getInstance().getTexture("background_board");
+        mNextTetBoardBackGroundImage = ImageLoader.getInstance().getTexture("background_nextboard");
+
+        mScoreBoardFont = new Font("Consolas", Font.BOLD, 30);
     }
 
     @Override

@@ -25,6 +25,9 @@ public class ImageLoader {
         loadImage("tile", "tile_remove1");
         loadImage("tile", "tile_remove2");
 
+        loadImage("tile", "item_tile_lineeraser");
+        loadImage("tile", "item_tile_weight");
+
         loadImage("background", "background_board");
         loadImage("background", "background_nextboard");
         loadImage("background", "background_panel");

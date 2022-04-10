@@ -2,7 +2,10 @@ package tetrisgame.parts;
 
 import java.awt.image.BufferedImage;
 
-public class Tile {
+import tetrisgame.enumerations.eItemID;
+import tetrisgame.itemmode.IIsItem;
+
+public class Tile implements IIsItem {
 	private String mName;
 
 	public Tile(String name) {
@@ -19,5 +22,10 @@ public class Tile {
 
 	public void setName(String name) {
 		mName = name;
+	}
+
+	@Override
+	public eItemID isItem() {
+		return eItemID.NONE;
 	}
 }

@@ -15,34 +15,35 @@ import tetrisgame.parts.Tile;
 import tetrisgame.parts.Timer;
 
 public class TetrisGame implements Runnable {
-	private GameScreen mScreen;
+	protected GameScreen mScreen;
 
-	private GameBoard mGameBoard;
-	private Tetromino mNextTetromino;
-	private Timer mTimer;
-	private int mSpeed;
-	private int mScore;
+	protected GameBoard mGameBoard;
+	protected Tetromino mNextTetromino;
+	protected Timer mTimer;
+	protected int mSpeed;
+	protected int mScore;
+	protected int m1000ScoreCount;
 	// TODO: Using Temp enum
-	private eDifficulty meDifficulty;
-	private float GAME_SPEED_ACCEL_UNIT = 0.1f;
+	protected eDifficulty meDifficulty;
+	protected float GAME_SPEED_ACCEL_UNIT = 0.1f;
 
-	private float mAutoDownTime;
-	private float mAutoDownTimeTick;
+	protected float mAutoDownTime;
+	protected float mAutoDownTimeTick;
 	// private float mPrevTimeForDraw;
 
-	private int mCurrKeyCode;
-	private volatile float mKeyReactTimeTick;
+	protected int mCurrKeyCode;
+	protected volatile float mKeyReactTimeTick;
 
-	private boolean mbCollWithFloor = false;
+	protected boolean mbCollWithFloor = false;
 
-	private static final float START_AUTO_DOWN_TIME = 1.0f;
+	protected static final float START_AUTO_DOWN_TIME = 1.0f;
 
-	private static final float KEY_REACT_TIME = 0.12f;
+	protected static final float KEY_REACT_TIME = 0.12f;
 
-	private static final int SCORE_UNIT = 100;
-	private static final int MULTIPLE_BREAK_BONUS_2L = 30;
-	private static final int MULTIPLE_BREAK_BONUS_3L = 60;
-	private static final int MULTIPLE_BREAK_BONUS_4L = 100;
+	protected static final int SCORE_UNIT = 100;
+	protected static final int MULTIPLE_BREAK_BONUS_2L = 30;
+	protected static final int MULTIPLE_BREAK_BONUS_3L = 60;
+	protected static final int MULTIPLE_BREAK_BONUS_4L = 100;
 
 	public TetrisGame(GameScreen gameScreen) {
 		mScreen = gameScreen;
@@ -53,12 +54,12 @@ public class TetrisGame implements Runnable {
 
 	public void initialize() {
 		mGameBoard.clear();
-		mNextTetromino.setRandomShapeAndColor();
 		mGameBoard.setTetromino(mNextTetromino);
-		mNextTetromino.setRandomShapeAndColor();
+		mNextTetromino = new Tetromino();
 		mTimer.initialize();
 		// mTimer.pause();
 		mScore = 0;
+		m1000ScoreCount = 0;
 		mSpeed = 1;
 		// TODO: Using Temp value
 		meDifficulty = eDifficulty.EASY;
@@ -130,7 +131,61 @@ public class TetrisGame implements Runnable {
 		return mGameBoard;
 	}
 
-	private synchronized boolean update() {
+	protected void reactAtContinuousKeyInput() {
+		switch (mCurrKeyCode) {
+			// None
+			case -1:
+				break;
+			case KeyEvent.VK_LEFT:
+				mGameBoard.moveTet(eDirection.LEFT);
+				break;
+			case KeyEvent.VK_RIGHT:
+				mGameBoard.moveTet(eDirection.RIGHT);
+				break;
+			case KeyEvent.VK_DOWN:
+				mAutoDownTimeTick = 0.f;
+				mbCollWithFloor = mGameBoard.moveTet(eDirection.DOWN);
+				break;
+		}
+	}
+
+	protected void updateScore(int numRemovedLines) {
+		int addedScore = 0;
+		switch (numRemovedLines) {
+			case 0:
+				break;
+			case 1:
+				addedScore = SCORE_UNIT;
+				break;
+			case 2:
+				addedScore = SCORE_UNIT * 2 + MULTIPLE_BREAK_BONUS_2L;
+				break;
+			case 3:
+				addedScore = SCORE_UNIT * 3 + MULTIPLE_BREAK_BONUS_3L;
+				break;
+			case 4:
+				addedScore = SCORE_UNIT * 4 + MULTIPLE_BREAK_BONUS_4L;
+				break;
+			default:
+				assert (false) : "Unspecified";
+				break;
+		}
+		addedScore *= (float) (1 + (mSpeed - 1) / 10.0f);
+		mScore += addedScore;
+
+		int scoreDiv1000 = mScore / 1000;
+		if (scoreDiv1000 - 1 == m1000ScoreCount) {
+			m1000ScoreCount = scoreDiv1000;
+			mAutoDownTime *= (1.0f - GAME_SPEED_ACCEL_UNIT);
+			mSpeed++;
+		}
+	}
+
+	protected void getNextTetromino() {
+		mNextTetromino = new Tetromino();
+	}
+
+	protected synchronized boolean update() {
 		eGameOver gameOverFlag = eGameOver.CONTINUE;
 
 		mTimer.tick();
@@ -191,41 +246,13 @@ public class TetrisGame implements Runnable {
 				mScreen.repaint();
 			}
 			mGameBoard.fallDownLines(removeColArr, numRemovedLines);
-			// Calculate Score
-			int addedScore = 0;
-			switch (numRemovedLines) {
-				case 0:
-					break;
-				case 1:
-					addedScore = SCORE_UNIT;
-					break;
-				case 2:
-					addedScore = SCORE_UNIT * 2 + MULTIPLE_BREAK_BONUS_2L;
-					break;
-				case 3:
-					addedScore = SCORE_UNIT * 3 + MULTIPLE_BREAK_BONUS_3L;
-					break;
-				case 4:
-					addedScore = SCORE_UNIT * 4 + MULTIPLE_BREAK_BONUS_4L;
-					break;
-				default:
-					assert (false) : "Unspecified";
-					break;
-			}
-			addedScore *= (float) (1 + (mSpeed - 1) / 10.0f);
-			mScore += addedScore;
-			mSpeed = (int) (mScore / (SCORE_UNIT * 10) + 1);
 
-			mGameBoard.setTetromino(mNextTetromino);
-			gameOverFlag = mGameBoard.checkGameOver();
-			mNextTetromino.setRandomShapeAndColor();
+			updateScore(numRemovedLines);
 			mbCollWithFloor = false;
 			mAutoDownTimeTick = 0.0f;
-			mAutoDownTime = START_AUTO_DOWN_TIME;
-			for (int i = 0; i < mSpeed - 1; i++) {
-				mAutoDownTime = mAutoDownTime * (1.0f - GAME_SPEED_ACCEL_UNIT);
-			}
-
+			mGameBoard.setTetromino(mNextTetromino);
+			getNextTetromino();
+			gameOverFlag = mGameBoard.checkGameOver();
 			if (gameOverFlag == eGameOver.OVER) {
 				return true;
 			}
@@ -262,24 +289,6 @@ public class TetrisGame implements Runnable {
 				break;
 			case KeyEvent.VK_U:
 				mTimer.unPause();
-				break;
-		}
-	}
-
-	private void reactAtContinuousKeyInput() {
-		switch (mCurrKeyCode) {
-			// None
-			case -1:
-				break;
-			case KeyEvent.VK_LEFT:
-				mGameBoard.moveTet(eDirection.LEFT);
-				break;
-			case KeyEvent.VK_RIGHT:
-				mGameBoard.moveTet(eDirection.RIGHT);
-				break;
-			case KeyEvent.VK_DOWN:
-				mAutoDownTimeTick = 0.f;
-				mbCollWithFloor = mGameBoard.moveTet(eDirection.DOWN);
 				break;
 		}
 	}
