@@ -28,6 +28,10 @@ public class Timer {
 		}
 	}
 
+	public boolean getPauseState() {
+		return mbPauseFlag;
+	}
+
 	public float getGameTime() {
 		float R = (getTotalTime() - mPausedTime) / 1000.0f;
 		return R;
@@ -49,5 +53,4 @@ public class Timer {
 	private long getTotalTime() {
 		return System.currentTimeMillis() - mStartTime;
 	}
-
 }

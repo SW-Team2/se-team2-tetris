@@ -5,15 +5,23 @@ import tetrisgame.enumerations.eDirection;
 import tetrisgame.enumerations.eGameOver;
 
 public class GameBoard {
-	private Block mBoard[][];
+	public Tile mBoard[][];
 	private Tetromino mTetromino;
 
 	public static final int BOARD_COL = 20;
 	public static final int BOARD_ROW = 10;
 
 	public GameBoard() {
-		mBoard = new Block[BOARD_COL][BOARD_ROW];
+		mBoard = new Tile[BOARD_COL][BOARD_ROW];
 		mTetromino = new Tetromino();
+	}
+
+	public void clear() {
+		for (int c = 0; c < BOARD_COL; c++) {
+			for (int r = 0; r < BOARD_ROW; r++) {
+				mBoard[c][r] = null;
+			}
+		}
 	}
 
 	public void setTetromino(Tetromino tetIn) {
@@ -36,7 +44,7 @@ public class GameBoard {
 		int startCol = posCol + 3 < BOARD_COL ? posCol + 3 : BOARD_COL - 1;
 		posCol = posCol >= 0 ? posCol : 0;
 		for (int boardCol = startCol; boardCol >= posCol; boardCol--) {
-			for (Block currBolck : mBoard[boardCol]) {
+			for (Tile currBolck : mBoard[boardCol]) {
 				if (currBolck == null) {
 					bRemovable = false;
 					break;
@@ -57,7 +65,13 @@ public class GameBoard {
 			for (int row = 0; row < BOARD_ROW; row++) {
 				mBoard[col][row] = null;
 			}
-			Block removedLine[] = mBoard[col];
+		}
+	}
+
+	public void fallDownLines(int colArr[], int size) {
+		for (int index = 0; index < size; index++) {
+			int col = colArr[index];
+			Tile removedLine[] = mBoard[col];
 			for (int c = col; c > 0; c--) {
 				mBoard[c] = mBoard[c - 1];
 			}
@@ -86,7 +100,7 @@ public class GameBoard {
 							if (mTetromino.isFilled(c, r)) {
 								int col = pos.mCol + c;
 								int row = pos.mRow + r;
-								mBoard[col][row] = mTetromino.getBlock(c, r);
+								mBoard[col][row] = mTetromino.mShape[c][r];
 							}
 						}
 					}
@@ -117,7 +131,7 @@ public class GameBoard {
 		}
 	}
 
-	public Block getBlock(int c, int r) {
+	public Tile getBlock(int c, int r) {
 		return mBoard[c][r];
 	}
 

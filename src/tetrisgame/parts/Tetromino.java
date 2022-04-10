@@ -1,22 +1,26 @@
 package tetrisgame.parts;
 
-import java.awt.Color;
 import java.util.Random;
 
+import tetrisgame.enumerations.eDifficulty;
 import tetrisgame.enumerations.eDirection;
 
 public class Tetromino {
 	private Position mPosition;
-	private Block mShape[][];
-	private int mShapeANColorIndex;
+	public Tile mShape[][];
+	private int mShapeNColorIndex;
 	private static Random mRandom;
+
+	private static int mProbWeightArr[];
+	private static int mSumProbWeight;
+	private static final int DEFAULT_WEIGHT = 100;
 
 	public static final int SHAPE_COL = 4;
 	public static final int SHAPE_ROW = 4;
 	public static final Position START_POS = new Position(-1, 3);
 	public static final int VAR_TETROMINOS = 7;
 
-	private static final Block COLOR_BLOCK_ARR[];
+	private static final Tile COLOR_BLOCK_ARR[];
 
 	private static final boolean O = true;
 	private static final boolean F = false;
@@ -64,45 +68,80 @@ public class Tetromino {
 					{ F, F, O, F },
 					{ F, F, F, F }
 			},
+			{
+					{ F, F, F, F },
+					{ F, F, F, F },
+					{ F, F, F, F },
+					{ F, F, F, F }
+			},
 	};
 
 	static {
-		Color yellow = new Color(255, 255, 102);
-		Color skyBlue = new Color(51, 255, 255);
-		Color lightGreen = new Color(153, 255, 153);
-		Color red = new Color(255, 0, 0);
-		Color orange = new Color(255, 102, 0);
-		Color blue = new Color(0, 0, 255);
-		Color purple = new Color(255, 0, 255);
-		COLOR_BLOCK_ARR = new Block[VAR_TETROMINOS];
-		COLOR_BLOCK_ARR[0] = new Block(yellow);
-		COLOR_BLOCK_ARR[1] = new Block(skyBlue);
-		COLOR_BLOCK_ARR[2] = new Block(lightGreen);
-		COLOR_BLOCK_ARR[3] = new Block(red);
-		COLOR_BLOCK_ARR[4] = new Block(orange);
-		COLOR_BLOCK_ARR[5] = new Block(blue);
-		COLOR_BLOCK_ARR[6] = new Block(purple);
+		COLOR_BLOCK_ARR = new Tile[VAR_TETROMINOS];
+		COLOR_BLOCK_ARR[0] = new Tile("tile_yellow");
+		COLOR_BLOCK_ARR[1] = new Tile("tile_skyblue");
+		COLOR_BLOCK_ARR[2] = new Tile("tile_lightgreen");
+		COLOR_BLOCK_ARR[3] = new Tile("tile_red");
+		COLOR_BLOCK_ARR[4] = new Tile("tile_orange");
+		COLOR_BLOCK_ARR[5] = new Tile("tile_blue");
+		COLOR_BLOCK_ARR[6] = new Tile("tile_purple");
+
+		mProbWeightArr = new int[VAR_TETROMINOS];
+		for (int i = 0; i < VAR_TETROMINOS; i++) {
+			mProbWeightArr[i] = DEFAULT_WEIGHT;
+		}
+		mSumProbWeight = DEFAULT_WEIGHT * VAR_TETROMINOS;
 	}
 
 	public Tetromino() {
 		mPosition = new Position(START_POS.mCol, START_POS.mRow);
-		mShape = new Block[SHAPE_COL][SHAPE_ROW];
+		mShape = new Tile[SHAPE_COL][SHAPE_ROW];
 		mRandom = new Random();
 		mRandom.setSeed(System.currentTimeMillis());
 	}
 
-	public void deepCopy(Tetromino source) {
-		mPosition.deepCopy(source.mPosition);
-		for (int c = 0; c < SHAPE_COL; c++) {
-			for (int r = 0; r < SHAPE_ROW; r++) {
-				mShape[c][r] = source.mShape[c][r];
-			}
+	public static void setDifficulty(eDifficulty diff) {
+		int addWeight = (int) (DEFAULT_WEIGHT * 0.2f);
+		int subWeight = addWeight / 6;
+		switch (diff) {
+			case EASY:
+				mProbWeightArr[0] -= subWeight;
+				mProbWeightArr[1] += addWeight;
+				mProbWeightArr[2] -= subWeight;
+				mProbWeightArr[3] -= subWeight;
+				mProbWeightArr[4] -= subWeight;
+				mProbWeightArr[5] -= subWeight;
+				mProbWeightArr[6] -= subWeight;
+				break;
+			case NORMAL:
+				break;
+			case HARD:
+				mProbWeightArr[0] += subWeight;
+				mProbWeightArr[1] -= addWeight;
+				mProbWeightArr[2] += subWeight;
+				mProbWeightArr[3] += subWeight;
+				mProbWeightArr[4] += subWeight;
+				mProbWeightArr[5] += subWeight;
+				mProbWeightArr[6] += subWeight;
+				break;
+			default:
+				assert (false);
+				break;
 		}
-		mShapeANColorIndex = source.mShapeANColorIndex;
+		mSumProbWeight = 0;
+		for (int pw : mProbWeightArr) {
+			mSumProbWeight += pw;
+		}
 	}
 
-	public Block getBlock(int c, int r) {
-		return mShape[c][r];
+	public void deepCopy(Tetromino source) {
+		mPosition.deepCopy(source.mPosition);
+		for (int col = 0; col < SHAPE_COL; col++) {
+			for (int row = 0; row < SHAPE_ROW; row++) {
+				mShape[col][row] = source.mShape[col][row];
+			}
+		}
+		mShapeNColorIndex = source.mShapeNColorIndex;
 	}
 
 	public boolean isFilled(int c, int r) {
@@ -113,20 +152,34 @@ public class Tetromino {
 		}
 	}
 
-	public Color getColor() {
-		return COLOR_BLOCK_ARR[mShapeANColorIndex].getColor();
-	}
-
 	public Position getPosition() {
 		return mPosition;
 	}
 
-	public void setRandomShapeAndColor() {
-		mShapeANColorIndex = mRandom.nextInt(7);
+	public void setEmptyShapeAndColor() {
 		for (int col = 0; col < SHAPE_COL; col++) {
 			for (int row = 0; row < SHAPE_ROW; row++) {
-				if (TET_SHAPES[mShapeANColorIndex][col][row]) {
-					mShape[col][row] = COLOR_BLOCK_ARR[mShapeANColorIndex];
+				mShape[col][row] = null;
+			}
+		}
+	}
+
+	public void setRandomShapeAndColor() {
+		int randomNum = mRandom.nextInt(mSumProbWeight);
+
+		int weight = 0;
+		for (int index = 0; index < VAR_TETROMINOS; index++) {
+			weight += mProbWeightArr[index];
+			if (randomNum < weight) {
+				mShapeNColorIndex = index;
+				break;
+			}
+		}
+
+		for (int col = 0; col < SHAPE_COL; col++) {
+			for (int row = 0; row < SHAPE_ROW; row++) {
+				if (TET_SHAPES[mShapeNColorIndex][col][row]) {
+					mShape[col][row] = COLOR_BLOCK_ARR[mShapeNColorIndex];
 				} else {
 					mShape[col][row] = null;
 				}
@@ -135,7 +188,7 @@ public class Tetromino {
 	}
 
 	public void rotate() {
-		Block tmpBlock;
+		Tile tmpBlock;
 		tmpBlock = mShape[0][0];
 		mShape[0][0] = mShape[3][0];
 		mShape[3][0] = mShape[3][3];
@@ -162,7 +215,7 @@ public class Tetromino {
 	}
 
 	public void rotateBack() {
-		Block tmpBlock;
+		Tile tmpBlock;
 		tmpBlock = mShape[0][0];
 		mShape[0][0] = mShape[0][3];
 		mShape[0][3] = mShape[3][3];
