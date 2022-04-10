@@ -11,10 +11,10 @@ import data.setting.SettingInfoDesc;
 import gamestarter.GameStarter;
 import graphics.eScreenInfo;
 import tetrisgame.TetrisGame;
-import tetrisgame.parts.GameBoard;
-import tetrisgame.parts.Position;
-import tetrisgame.parts.Tetromino;
 import tetrisgame.parts.ImageLoader;
+import tetrisgame.parts.Position;
+import tetrisgame.parts.component.GameBoard;
+import tetrisgame.parts.component.Tetromino;
 
 public class GameScreen extends Screen {
     protected TetrisGame mTetrisGame;
@@ -61,9 +61,6 @@ public class GameScreen extends Screen {
     }
 
     protected void init() {
-        mTetrisGame = new TetrisGame(this);
-        mGameBoard = mTetrisGame.getGameBoard();
-
         mPanelBackGroundImage = ImageLoader.getInstance().getTexture("background_panel");
         mGameBoardBackGroundImage = ImageLoader.getInstance().getTexture("background_board");
         mNextTetBoardBackGroundImage = ImageLoader.getInstance().getTexture("background_nextboard");
@@ -136,7 +133,7 @@ public class GameScreen extends Screen {
                 }
             }
             // Map the focused tetromino
-            Tetromino tet = mGameBoard.getTetromino();
+            Tetromino tet = mGameBoard.getCurrTetromino();
             for (int col = 0; col < Tetromino.SHAPE_COL; col++) {
                 for (int row = 0; row < Tetromino.SHAPE_ROW; row++) {
                     Position pos = tet.getPosition();
@@ -152,7 +149,7 @@ public class GameScreen extends Screen {
         // Draw next tetromino board
         {
             tileSize *= 0.85;
-            Tetromino tet = mTetrisGame.getNextTetromion();
+            Tetromino tet = mGameBoard.getNextTetromion();
             for (int col = 0; col < Tetromino.SHAPE_COL; col++) {
                 for (int row = 0; row < Tetromino.SHAPE_ROW; row++) {
                     if (tet.mShape[col][row] != null) {
@@ -189,6 +186,8 @@ public class GameScreen extends Screen {
     }
 
     private void startGame() {
+        mTetrisGame = new TetrisGame(this);
+        mGameBoard = mTetrisGame.getGameBoard();
         GameStarter.setGame(mTetrisGame);
         GameStarter.setStart();
     }
@@ -206,7 +205,9 @@ public class GameScreen extends Screen {
 
     public eScreenInfo getUserInputKeyRealease(KeyEvent e) {
         eScreenInfo sr = eScreenInfo.NONE;
-        mTetrisGame.getUserInputKeyRealease(e);
+        if (GameStarter.getState()) {
+            mTetrisGame.getUserInputKeyRealease(e);
+        }
         return sr;
     }
 }

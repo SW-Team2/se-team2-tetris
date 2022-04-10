@@ -9,6 +9,11 @@ public class Position {
         mRow = r;
     }
 
+    public Position(Position in) {
+        mCol = in.mCol;
+        mRow = in.mRow;
+    }
+
     public void deepCopy(Position in) {
         mCol = in.mCol;
         mRow = in.mRow;

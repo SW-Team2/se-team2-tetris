@@ -2,13 +2,13 @@ package graphics.screens;
 
 import java.awt.Font;
 
-import tetrisgame.ItemModeTetrisGame;
+import tetrisgame.TetrisGame;
 import tetrisgame.parts.ImageLoader;
 
 public class ItemModeGameScreen extends GameScreen {
     @Override
     protected void init() {
-        mTetrisGame = new ItemModeTetrisGame(this);
+        mTetrisGame = new TetrisGame(this);
         mGameBoard = mTetrisGame.getGameBoard();
 
         mPanelBackGroundImage = ImageLoader.getInstance().getTexture("background_panel");
