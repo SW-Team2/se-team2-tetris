@@ -186,6 +186,8 @@ public class Tetromino extends IGameComponent {
 			case LINE_REMOVE_19:
 				mCurrRemoveLineCount++;
 				break;
+			default:
+				break;
 		}
 	}
 

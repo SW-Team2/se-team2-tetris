@@ -51,6 +51,8 @@ public class Score extends IGameComponent {
             case LINE_REMOVE_19:
                 mCurrRemoveLineCount++;
                 break;
+            default:
+                break;
         }
         if (msg == eMsg.FOCUS_ANIM_OVER) {
             int addedScore = 0;

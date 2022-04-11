@@ -8,7 +8,6 @@ import gamestarter.GameStarter;
 import graphics.screens.GameScreen;
 import tetrisgame.enumerations.eDifficulty;
 import tetrisgame.enumerations.eMsg;
-import tetrisgame.itemmode.itemmodeparts.ItemTetromino;
 import tetrisgame.itemmode.itemmodeparts.WeightItemAnim;
 import tetrisgame.itemmode.itemmodeparts.WeightItemTetromino;
 import tetrisgame.parts.Position;
@@ -68,116 +67,127 @@ public class TetrisGame implements Runnable {
 	}
 
 	public void broadcast(eMsg msg) {
-		if (msg == eMsg.GAME_OVER) {
-			mbGameOverFlag = true;
-			return;
-		}
-		if (msg == eMsg.COLL_WITH_FLOOR) {
-			findRemovableLines();
-			mCurrTetromino.react(msg);
-			if (mNumRemovableLines > 0) {
-				mFocusAnim = new LineRemovingAnim(this, mBoard);
-				for (int j = 0; j < mNumRemovableLines; j++) {
-					int col = mRemoveColArr[j];
-					switch (col) {
-						case 0:
-							this.broadcast(eMsg.LINE_REMOVE_0);
-							break;
-						case 1:
-							this.broadcast(eMsg.LINE_REMOVE_1);
-							break;
-						case 2:
-							this.broadcast(eMsg.LINE_REMOVE_2);
-							break;
-						case 3:
-							this.broadcast(eMsg.LINE_REMOVE_3);
-							break;
-						case 4:
-							this.broadcast(eMsg.LINE_REMOVE_4);
-							break;
-						case 5:
-							this.broadcast(eMsg.LINE_REMOVE_5);
-							break;
-						case 6:
-							this.broadcast(eMsg.LINE_REMOVE_6);
-							break;
-						case 7:
-							this.broadcast(eMsg.LINE_REMOVE_7);
-							break;
-						case 8:
-							this.broadcast(eMsg.LINE_REMOVE_8);
-							break;
-						case 9:
-							this.broadcast(eMsg.LINE_REMOVE_9);
-							break;
-						case 10:
-							this.broadcast(eMsg.LINE_REMOVE_10);
-							break;
-						case 11:
-							this.broadcast(eMsg.LINE_REMOVE_11);
-							break;
-						case 12:
-							this.broadcast(eMsg.LINE_REMOVE_12);
-							break;
-						case 13:
-							this.broadcast(eMsg.LINE_REMOVE_13);
-							break;
-						case 14:
-							this.broadcast(eMsg.LINE_REMOVE_14);
-							break;
-						case 15:
-							this.broadcast(eMsg.LINE_REMOVE_15);
-							break;
-						case 16:
-							this.broadcast(eMsg.LINE_REMOVE_16);
-							break;
-						case 17:
-							this.broadcast(eMsg.LINE_REMOVE_17);
-							break;
-						case 18:
-							this.broadcast(eMsg.LINE_REMOVE_18);
-							break;
-						case 19:
-							this.broadcast(eMsg.LINE_REMOVE_19);
-							break;
+		switch (msg) {
+			case GAME_OVER:
+				mbGameOverFlag = true;
+				return;
+			case COLL_WITH_FLOOR:
+				findRemovableLines();
+				mCurrTetromino.react(msg);
+				if (mNumRemovableLines > 0) {
+					mFocusAnim = new LineRemovingAnim(this, mBoard);
+					for (int j = 0; j < mNumRemovableLines; j++) {
+						int col = mRemoveColArr[j];
+						switch (col) {
+							case 0:
+								this.broadcast(eMsg.LINE_REMOVE_0);
+								break;
+							case 1:
+								this.broadcast(eMsg.LINE_REMOVE_1);
+								break;
+							case 2:
+								this.broadcast(eMsg.LINE_REMOVE_2);
+								break;
+							case 3:
+								this.broadcast(eMsg.LINE_REMOVE_3);
+								break;
+							case 4:
+								this.broadcast(eMsg.LINE_REMOVE_4);
+								break;
+							case 5:
+								this.broadcast(eMsg.LINE_REMOVE_5);
+								break;
+							case 6:
+								this.broadcast(eMsg.LINE_REMOVE_6);
+								break;
+							case 7:
+								this.broadcast(eMsg.LINE_REMOVE_7);
+								break;
+							case 8:
+								this.broadcast(eMsg.LINE_REMOVE_8);
+								break;
+							case 9:
+								this.broadcast(eMsg.LINE_REMOVE_9);
+								break;
+							case 10:
+								this.broadcast(eMsg.LINE_REMOVE_10);
+								break;
+							case 11:
+								this.broadcast(eMsg.LINE_REMOVE_11);
+								break;
+							case 12:
+								this.broadcast(eMsg.LINE_REMOVE_12);
+								break;
+							case 13:
+								this.broadcast(eMsg.LINE_REMOVE_13);
+								break;
+							case 14:
+								this.broadcast(eMsg.LINE_REMOVE_14);
+								break;
+							case 15:
+								this.broadcast(eMsg.LINE_REMOVE_15);
+								break;
+							case 16:
+								this.broadcast(eMsg.LINE_REMOVE_16);
+								break;
+							case 17:
+								this.broadcast(eMsg.LINE_REMOVE_17);
+								break;
+							case 18:
+								this.broadcast(eMsg.LINE_REMOVE_18);
+								break;
+							case 19:
+								this.broadcast(eMsg.LINE_REMOVE_19);
+								break;
+						}
+					}
+				} else {
+					mCurrTetromino = mNextTetromino;
+					mNextTetromino = new Tetromino(this, mBoard);
+					if (checkGameOver()) {
+						this.broadcast(eMsg.GAME_OVER);
 					}
 				}
-			} else {
+				break;
+			case WEIGHT_ITEM_COLL_WITH_FLOOR:
+
+				break;
+
+			case LINE_REMOVE_ANIM_START:
+				assert (mbAnimFocus == false);
+				mbAnimFocus = true;
+				break;
+			case WEIGHT_ITEM_ANIM_START:
+				assert (mbAnimFocus == false);
+				mbAnimFocus = true;
+				mFocusAnim = new WeightItemAnim(this, mBoard, mCurrTetromino.getPosition());
+				break;
+			case FOCUS_ANIM_OVER:
+				// TODO:
+				// assert (mbAnimFocus == true);
 				mCurrTetromino = mNextTetromino;
 				mNextTetromino = new Tetromino(this, mBoard);
+
+				mbAnimFocus = false;
+				mFocusAnim = null;
+
 				if (checkGameOver()) {
 					this.broadcast(eMsg.GAME_OVER);
 				}
-			}
-		}
-		if (msg == eMsg.LINE_REMOVE_ANIM_START || msg == eMsg.WEIGHT_ITEM_ANIM_START) {
-			assert (mbAnimFocus == false);
-			mbAnimFocus = true;
-		}
-		if (msg == eMsg.WEIGHT_ITEM_ANIM_START) {
-			mFocusAnim = new WeightItemAnim(this, mBoard, mCurrTetromino.getPosition());
-		}
-		if (msg == eMsg.FOCUS_ANIM_OVER) {
-			// TODO:
-			// assert (mbAnimFocus == true);
-			mCurrTetromino = mNextTetromino;
-			mNextTetromino = new Tetromino(this, mBoard);
 
-			mbAnimFocus = false;
-			mFocusAnim = null;
-
-			if (checkGameOver()) {
-				this.broadcast(eMsg.GAME_OVER);
-			}
-
-			removeLines();
-			fallDownLines();
-			mNumRemovableLines = 0;
-		}
-		if (msg == eMsg.ERASE_10xN_LINES) {
-			mNextTetromino = new WeightItemTetromino(this, mBoard);
+				removeLines();
+				fallDownLines();
+				mNumRemovableLines = 0;
+				break;
+			case ERASE_10xN_LINES:
+				mNextTetromino = new WeightItemTetromino(this, mBoard);
+				break;
+			default:
+				break;
 		}
 
+		// Send msg
+		// TODO: Convert to IGameComponent array
 		if (mbAnimFocus) {
 			mCurrTetromino.react(msg);
 		}
