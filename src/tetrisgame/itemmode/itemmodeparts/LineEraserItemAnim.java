@@ -42,7 +42,6 @@ public class LineEraserItemAnim extends IAnim {
                 int col = mEraserCol;
                 for (int sCol = col; sCol > 0; sCol--) {
                     mPubBoard[sCol][row] = mPubBoard[sCol - 1][row];
-
                 }
             }
             mPubGame.broadcast(eMsg.FOCUS_ANIM_OVER);
@@ -51,7 +50,7 @@ public class LineEraserItemAnim extends IAnim {
 
         if (mSumTime >= FRAME_1_TIME) {
             int col = mEraserCol;
-            Tile tileRemove = new Tile(mPubGame, mPubBoard, "tile_remove2");
+            Tile tileRemove = new Tile(mPubGame, mPubBoard, "tile_lineeraser2");
             for (int row = 0; row < TetrisGame.BOARD_ROW; row++) {
                 if (mPubBoard[col][row] != null) {
                     mPubBoard[col][row] = tileRemove;
@@ -62,7 +61,7 @@ public class LineEraserItemAnim extends IAnim {
 
         if (mSumTime >= 0) {
             int col = mEraserCol;
-            Tile tileRemove = new Tile(mPubGame, mPubBoard, "tile_remove1");
+            Tile tileRemove = new Tile(mPubGame, mPubBoard, "tile_lineeraser1");
             for (int row = 0; row < TetrisGame.BOARD_ROW; row++) {
                 if (mPubBoard[col][row] != null) {
                     mPubBoard[col][row] = tileRemove;
