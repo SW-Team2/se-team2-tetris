@@ -40,10 +40,9 @@ public class LineEraserItemAnim extends IAnim {
         if (mSumTime >= TOTAL_TIME) {
             for (int row = 0; row < TetrisGame.BOARD_ROW; row++) {
                 int col = mEraserCol;
-                if (mPubBoard[col][row] != null) {
-                    for (int sCol = col; sCol > 0; sCol--) {
-                        mPubBoard[sCol][row] = mPubBoard[sCol - 1][row];
-                    }
+                for (int sCol = col; sCol > 0; sCol--) {
+                    mPubBoard[sCol][row] = mPubBoard[sCol - 1][row];
+
                 }
             }
             mPubGame.broadcast(eMsg.FOCUS_ANIM_OVER);

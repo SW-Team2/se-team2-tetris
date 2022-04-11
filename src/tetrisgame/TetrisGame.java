@@ -115,7 +115,7 @@ public class TetrisGame implements Runnable {
 				break;
 			case ERASE_10xN_LINES:
 				Random random = new Random();
-				int itemIndex = 1;// random.nextInt(VAR_ITEMS);
+				int itemIndex = random.nextInt(VAR_ITEMS);
 				switch (itemIndex) {
 					case 0:
 						mNextTetromino = new WeightItemTetromino(this, mBoard);
