@@ -1,6 +1,7 @@
 package tetrisgame;
 
 import java.awt.event.KeyEvent;
+import java.util.Random;
 
 import javax.swing.JOptionPane;
 
@@ -8,6 +9,8 @@ import gamestarter.GameStarter;
 import graphics.screens.GameScreen;
 import tetrisgame.enumerations.eDifficulty;
 import tetrisgame.enumerations.eMsg;
+import tetrisgame.itemmode.itemmodeparts.LineEraserItemAnim;
+import tetrisgame.itemmode.itemmodeparts.LineEraserItemTetromino;
 import tetrisgame.itemmode.itemmodeparts.WeightItemAnim;
 import tetrisgame.itemmode.itemmodeparts.WeightItemTetromino;
 import tetrisgame.parts.Position;
@@ -23,6 +26,7 @@ public class TetrisGame implements Runnable {
 
 	private volatile boolean mbGameOverFlag;
 	private boolean mbItemMode = true;
+	private static final int VAR_ITEMS = 2;
 
 	public Tile mBoard[][];
 	protected Tetromino mCurrTetromino;
@@ -91,6 +95,9 @@ public class TetrisGame implements Runnable {
 			case WEIGHT_ITEM_COLL_WITH_FLOOR:
 				mFocusAnim = new WeightItemAnim(this, mBoard, mCurrTetromino.getPosition());
 				break;
+			case LINEERASER_ITEM_COLL_WITH_FLOOR:
+				mFocusAnim = new LineEraserItemAnim(this, mBoard, mCurrTetromino);
+				break;
 			case LINE_REMOVE_ANIM_START:
 				break;
 			case WEIGHT_ITEM_ANIM_START:
@@ -107,7 +114,16 @@ public class TetrisGame implements Runnable {
 				mNumRemovableLines = 0;
 				break;
 			case ERASE_10xN_LINES:
-				mNextTetromino = new WeightItemTetromino(this, mBoard);
+				Random random = new Random();
+				int itemIndex = 1;// random.nextInt(VAR_ITEMS);
+				switch (itemIndex) {
+					case 0:
+						mNextTetromino = new WeightItemTetromino(this, mBoard);
+						break;
+					case 1:
+						mNextTetromino = new LineEraserItemTetromino(this, mBoard);
+						break;
+				}
 				break;
 			default:
 				break;

@@ -14,7 +14,7 @@ public class Tetromino extends IGameComponent {
 
 	protected Position mPosition;
 	public Tile mShape[][];
-	private int mShapeNColorIndex;
+	protected int mShapeNColorIndex;
 	protected int mCurrRemoveLineCount;
 
 	protected float mAutoDownTime;
@@ -22,7 +22,7 @@ public class Tetromino extends IGameComponent {
 	private static final float START_AUTO_DOWN_TIME = 1.0f;
 	protected static float GAME_SPEED_ACCEL_UNIT = 0.1f;
 
-	private static Random mRandom;
+	protected static Random mRandom;
 	private static int mProbWeightArr[];
 	private static int mSumProbWeight;
 	private static final int DEFAULT_WEIGHT = 100;

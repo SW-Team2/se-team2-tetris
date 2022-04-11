@@ -7,8 +7,8 @@ import tetrisgame.enumerations.eMsg;
 import tetrisgame.parts.ImageLoader;
 
 public class Tile extends IGameComponent {
-	private Tile mPubBoard[][];
-	private String mName;
+	protected Tile mPubBoard[][];
+	protected String mName;
 
 	public Tile(TetrisGame g, Tile[][] gb, String name) {
 		super(g);
@@ -30,6 +30,10 @@ public class Tile extends IGameComponent {
 
 	public BufferedImage getTexture() {
 		return ImageLoader.getInstance().getTexture(mName);
+	}
+
+	public String getName() {
+		return mName;
 	}
 
 	public void setName(String name) {
