@@ -149,6 +149,12 @@ public class Tetromino extends IGameComponent {
 		}
 
 		if (bCollWithFloor) {
+			// Set empty
+			for (int col = 0; col < SHAPE_COL; col++) {
+				for (int row = 0; row < SHAPE_ROW; row++) {
+					mShape[col][row] = null;
+				}
+			}
 			mPubGame.broadcast(eMsg.COLL_WITH_FLOOR);
 		}
 	}
@@ -157,12 +163,6 @@ public class Tetromino extends IGameComponent {
 	public void react(eMsg msg) {
 		switch (msg) {
 			case COLL_WITH_FLOOR:
-				// Set empty
-				for (int col = 0; col < SHAPE_COL; col++) {
-					for (int row = 0; row < SHAPE_ROW; row++) {
-						mShape[col][row] = null;
-					}
-				}
 				break;
 			case LINE_REMOVE_0:
 			case LINE_REMOVE_1:

@@ -13,6 +13,7 @@ public class ImageLoader {
 
     private ImageLoader() {
         mImageHash = new HashMap<String, BufferedImage>();
+        loadImage("tile", "tile_white");
         loadImage("tile", "tile_blue");
         loadImage("tile", "tile_frame");
         loadImage("tile", "tile_lightgreen");

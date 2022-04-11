@@ -56,7 +56,7 @@ public class LineRemovingAnim extends IAnim {
 
     @Override
     public void react(eMsg msg) {
-        assert (mSize < 4);
+        assert (mSize <= 4);
         int col = -1;
         switch (msg) {
             case LINE_REMOVE_0:
