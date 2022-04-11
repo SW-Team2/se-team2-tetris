@@ -3,42 +3,34 @@ package tetrisgame.parts.component;
 import tetrisgame.TetrisGame;
 import tetrisgame.enumerations.eMsg;
 
-public class RemovingAnim extends IGameComponent {
+public class LineRemovingAnim extends IAnim {
     private Tile mPubBoard[][];
 
     private float mSumTime;
     private int mColArr[];
     private int mSize;
 
-    private boolean mbLoadFrame1;
-    private boolean mbLoadFrame2;
-
     private static final float TOTAL_TIME = 0.5f;
-    private static final float TIME_FRAME_NEXT_1 = 0.1f;
+    private static final float FRAME_1_TIME = 0.2f;
 
-    public RemovingAnim(TetrisGame g, Tile gb[][]) {
+    public LineRemovingAnim(TetrisGame g, Tile gb[][]) {
         super(g);
         mPubBoard = gb;
         mColArr = new int[4];
+        mPubGame.broadcast(eMsg.LINE_REMOVE_ANIM_START);
     }
 
     @Override
     public void update(float deltaTime, int userInput) {
         if (mSize > 0) {
             mSumTime += deltaTime;
-            if (mbLoadFrame1 == false) {
-                for (int i = 0; i < mSize; i++) {
-                    int col = mColArr[i];
-                    assert (col != -1);
-                    Tile tileRemove = new Tile(mPubGame, mPubBoard, "tile_remove1");
-                    for (int row = 0; row < TetrisGame.BOARD_ROW; row++) {
-                        mPubBoard[col][row] = tileRemove;
-                    }
-                }
-                mbLoadFrame1 = true;
+
+            if (mSumTime >= TOTAL_TIME) {
+                mPubGame.broadcast(eMsg.FOCUS_ANIM_OVER);
+                return;
             }
 
-            if (mbLoadFrame2 == false && mSumTime >= TIME_FRAME_NEXT_1) {
+            if (mSumTime >= FRAME_1_TIME) {
                 for (int i = 0; i < mSize; i++) {
                     int col = mColArr[i];
                     Tile tileRemove = new Tile(mPubGame, mPubBoard, "tile_remove2");
@@ -46,17 +38,20 @@ public class RemovingAnim extends IGameComponent {
                         mPubBoard[col][row] = tileRemove;
                     }
                 }
-                mbLoadFrame2 = true;
+                return;
             }
 
-            if (mSumTime >= TOTAL_TIME) {
-                mPubGame.broadcast(eMsg.REMOVE_ANIM_OVER);
-                mSumTime = 0.f;
-                mbLoadFrame1 = false;
-                mbLoadFrame2 = false;
+            if (mSumTime >= 0) {
+                for (int i = 0; i < mSize; i++) {
+                    int col = mColArr[i];
+                    Tile tileRemove = new Tile(mPubGame, mPubBoard, "tile_remove1");
+                    for (int row = 0; row < TetrisGame.BOARD_ROW; row++) {
+                        mPubBoard[col][row] = tileRemove;
+                    }
+                }
+                return;
             }
         }
-
     }
 
     @Override

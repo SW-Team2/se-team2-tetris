@@ -8,9 +8,13 @@ import gamestarter.GameStarter;
 import graphics.screens.GameScreen;
 import tetrisgame.enumerations.eDifficulty;
 import tetrisgame.enumerations.eMsg;
+import tetrisgame.itemmode.itemmodeparts.ItemTetromino;
+import tetrisgame.itemmode.itemmodeparts.WeightItemAnim;
+import tetrisgame.itemmode.itemmodeparts.WeightItemTetromino;
 import tetrisgame.parts.Position;
 import tetrisgame.parts.Timer;
-import tetrisgame.parts.component.RemovingAnim;
+import tetrisgame.parts.component.IAnim;
+import tetrisgame.parts.component.LineRemovingAnim;
 import tetrisgame.parts.component.Score;
 import tetrisgame.parts.component.Tetromino;
 import tetrisgame.parts.component.Tile;
@@ -19,14 +23,15 @@ public class TetrisGame implements Runnable {
 	protected GameScreen mScreen;
 
 	private volatile boolean mbGameOverFlag;
+	private boolean mbItemMode = true;
 
 	public Tile mBoard[][];
-	private Tetromino mCurrTetromino;
-	private Tetromino mNextTetromino;
-	private RemovingAnim mRemoveAnim;
-	private Score mScore;
+	protected Tetromino mCurrTetromino;
+	protected Tetromino mNextTetromino;
+	private IAnim mFocusAnim;
+	protected Score mScore;
 
-	private boolean mbRemovingFlag;
+	private volatile boolean mbAnimFocus;
 	private int mRemoveColArr[];
 	private int mNumRemovableLines;
 
@@ -34,7 +39,7 @@ public class TetrisGame implements Runnable {
 
 	private int mCurrKeyCode;
 	private float mKeyReactTimeTick;
-	private volatile boolean mbKeyReactFlag;
+	private boolean mbKeyReactFlag;
 	private static final float KEY_REACT_TIME = 0.1f;
 
 	public static final int BOARD_COL = 20;
@@ -69,10 +74,9 @@ public class TetrisGame implements Runnable {
 		}
 		if (msg == eMsg.COLL_WITH_FLOOR) {
 			findRemovableLines();
+			mCurrTetromino.react(msg);
 			if (mNumRemovableLines > 0) {
-				mCurrTetromino.react(msg);
-				mRemoveAnim = new RemovingAnim(this, mBoard);
-				mbRemovingFlag = true;
+				mFocusAnim = new LineRemovingAnim(this, mBoard);
 				for (int j = 0; j < mNumRemovableLines; j++) {
 					int col = mRemoveColArr[j];
 					switch (col) {
@@ -146,11 +150,21 @@ public class TetrisGame implements Runnable {
 				}
 			}
 		}
-		if (msg == eMsg.REMOVE_ANIM_OVER) {
+		if (msg == eMsg.LINE_REMOVE_ANIM_START || msg == eMsg.WEIGHT_ITEM_ANIM_START) {
+			assert (mbAnimFocus == false);
+			mbAnimFocus = true;
+		}
+		if (msg == eMsg.WEIGHT_ITEM_ANIM_START) {
+			mFocusAnim = new WeightItemAnim(this, mBoard, mCurrTetromino.getPosition());
+		}
+		if (msg == eMsg.FOCUS_ANIM_OVER) {
+			// TODO:
+			// assert (mbAnimFocus == true);
 			mCurrTetromino = mNextTetromino;
 			mNextTetromino = new Tetromino(this, mBoard);
-			mbRemovingFlag = false;
-			mRemoveAnim = null;
+
+			mbAnimFocus = false;
+			mFocusAnim = null;
 
 			if (checkGameOver()) {
 				this.broadcast(eMsg.GAME_OVER);
@@ -160,12 +174,15 @@ public class TetrisGame implements Runnable {
 			fallDownLines();
 			mNumRemovableLines = 0;
 		}
+		if (msg == eMsg.ERASE_10xN_LINES) {
+			mNextTetromino = new WeightItemTetromino(this, mBoard);
+		}
 
-		if (mbRemovingFlag) {
+		if (mbAnimFocus) {
 			mCurrTetromino.react(msg);
 		}
-		if (mRemoveAnim != null) {
-			mRemoveAnim.react(msg);
+		if (mFocusAnim != null) {
+			mFocusAnim.react(msg);
 		}
 		mScore.react(msg);
 		for (Tile tileLine[] : mBoard) {
@@ -205,12 +222,13 @@ public class TetrisGame implements Runnable {
 			mKeyReactTimeTick = 0.f;
 		}
 
-		if (mbRemovingFlag == false) {
+		if (mbAnimFocus == false) {
 			mCurrTetromino.update(deltaTime, userInput);
 		}
-		if (mRemoveAnim != null) {
-			mRemoveAnim.update(deltaTime, userInput);
+		if (mFocusAnim != null) {
+			mFocusAnim.update(deltaTime, userInput);
 		}
+		mScore.update(deltaTime, userInput);
 		for (Tile tileLine[] : mBoard) {
 			for (Tile tile : tileLine) {
 				if (tile != null) {

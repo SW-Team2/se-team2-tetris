@@ -10,17 +10,17 @@ import tetrisgame.enumerations.eMsg;
 import tetrisgame.parts.Position;
 
 public class Tetromino extends IGameComponent {
-	private Tile mPubBoard[][];
+	protected Tile mPubBoard[][];
 
-	private Position mPosition;
+	protected Position mPosition;
 	public Tile mShape[][];
 	private int mShapeNColorIndex;
-	private int mCurrRemoveLineCount;
+	protected int mCurrRemoveLineCount;
 
-	private float mAutoDownTime;
-	private float mAutoDownTimeTick;
+	protected float mAutoDownTime;
+	protected float mAutoDownTimeTick;
 	private static final float START_AUTO_DOWN_TIME = 1.0f;
-	private static float GAME_SPEED_ACCEL_UNIT = 0.1f;
+	protected static float GAME_SPEED_ACCEL_UNIT = 0.1f;
 
 	private static Random mRandom;
 	private static int mProbWeightArr[];
@@ -31,11 +31,11 @@ public class Tetromino extends IGameComponent {
 	public static final int SHAPE_ROW = 4;
 	public static final Position START_POS = new Position(-1, 3);
 	public static final int VAR_TETROMINOS = 7;
-	private static final String TILE_NAME_ARR[];
+	private static final String TILE_TEX_NAME_ARR[];
 
-	private static final boolean O = true;
-	private static final boolean F = false;
-	private static final boolean TET_SHAPES[][][] = {
+	protected static final boolean O = true;
+	protected static final boolean F = false;
+	protected static final boolean TET_SHAPES[][][] = {
 			{
 					{ F, F, F, F },
 					{ F, O, O, F },
@@ -89,14 +89,14 @@ public class Tetromino extends IGameComponent {
 	static {
 		mRandom = new Random();
 		mRandom.setSeed(System.currentTimeMillis());
-		TILE_NAME_ARR = new String[VAR_TETROMINOS];
-		TILE_NAME_ARR[0] = "tile_yellow";
-		TILE_NAME_ARR[1] = "tile_skyblue";
-		TILE_NAME_ARR[2] = "tile_lightgreen";
-		TILE_NAME_ARR[3] = "tile_red";
-		TILE_NAME_ARR[4] = "tile_orange";
-		TILE_NAME_ARR[5] = "tile_blue";
-		TILE_NAME_ARR[6] = "tile_purple";
+		TILE_TEX_NAME_ARR = new String[VAR_TETROMINOS];
+		TILE_TEX_NAME_ARR[0] = "tile_yellow";
+		TILE_TEX_NAME_ARR[1] = "tile_skyblue";
+		TILE_TEX_NAME_ARR[2] = "tile_lightgreen";
+		TILE_TEX_NAME_ARR[3] = "tile_red";
+		TILE_TEX_NAME_ARR[4] = "tile_orange";
+		TILE_TEX_NAME_ARR[5] = "tile_blue";
+		TILE_TEX_NAME_ARR[6] = "tile_purple";
 
 		mProbWeightArr = new int[VAR_TETROMINOS];
 		for (int i = 0; i < VAR_TETROMINOS; i++) {
@@ -258,7 +258,7 @@ public class Tetromino extends IGameComponent {
 		for (int col = 0; col < SHAPE_COL; col++) {
 			for (int row = 0; row < SHAPE_ROW; row++) {
 				if (TET_SHAPES[mShapeNColorIndex][col][row]) {
-					mShape[col][row] = new Tile(mPubGame, mPubBoard, TILE_NAME_ARR[mShapeNColorIndex]);
+					mShape[col][row] = new Tile(mPubGame, mPubBoard, TILE_TEX_NAME_ARR[mShapeNColorIndex]);
 				} else {
 					mShape[col][row] = null;
 				}
@@ -266,7 +266,7 @@ public class Tetromino extends IGameComponent {
 		}
 	}
 
-	private void rotateOrIgnore() {
+	protected void rotateOrIgnore() {
 		this.rotate();
 		boolean collResult = collisionTest();
 		if (collResult) {
@@ -274,7 +274,7 @@ public class Tetromino extends IGameComponent {
 		}
 	}
 
-	private boolean moveOrIgnore(eDirection dir) {
+	protected boolean moveOrIgnore(eDirection dir) {
 		boolean bCollWithFloor = false;
 
 		this.move(dir);
@@ -301,7 +301,7 @@ public class Tetromino extends IGameComponent {
 		return bCollWithFloor;
 	}
 
-	private void fallToFloor() {
+	protected void fallToFloor() {
 		Position floorPos = getFloorPos();
 		mPosition = floorPos;
 	}

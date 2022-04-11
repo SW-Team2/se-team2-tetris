@@ -7,6 +7,7 @@ public class Score extends IGameComponent {
     private int mScore;
     private int mCurrRemoveLineCount;
     private int mTotalRemoveLineCount;
+    private int mTenLineCount;
 
     private static final int SCORE_UNIT = 100;
     private static final int MULTIPLE_BREAK_BONUS_2L = 30;
@@ -19,6 +20,10 @@ public class Score extends IGameComponent {
 
     @Override
     public void update(float deltaTime, int userInput) {
+        if (mTenLineCount >= 3) {
+            mTenLineCount -= 3;
+            mPubGame.broadcast(eMsg.ERASE_10xN_LINES);
+        }
     }
 
     @Override
@@ -47,7 +52,7 @@ public class Score extends IGameComponent {
                 mCurrRemoveLineCount++;
                 break;
         }
-        if (msg == eMsg.REMOVE_ANIM_OVER) {
+        if (msg == eMsg.FOCUS_ANIM_OVER) {
             int addedScore = 0;
             switch (mCurrRemoveLineCount) {
                 case 0:
@@ -66,6 +71,7 @@ public class Score extends IGameComponent {
                     break;
             }
             mTotalRemoveLineCount += mCurrRemoveLineCount;
+            mTenLineCount += mCurrRemoveLineCount;
             addedScore += addedScore * (mTotalRemoveLineCount / 10) / 10.f;
 
             mScore += addedScore;
@@ -75,5 +81,9 @@ public class Score extends IGameComponent {
 
     public int getScore() {
         return mScore;
+    }
+
+    public int getRemoveLineCount() {
+        return mTotalRemoveLineCount;
     }
 }

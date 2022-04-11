@@ -3,9 +3,14 @@ package tetrisgame.enumerations;
 public enum eMsg {
     NONE,
     COLL_WITH_FLOOR,
+    WEIGHT_ITEM_COLL_WITH_FLOOR,
     // LINE_REMOVE,
-    REMOVE_ANIM_OVER,
+    LINE_REMOVE_ANIM_START,
+    WEIGHT_ITEM_ANIM_START,
+    FOCUS_ANIM_OVER,
     GAME_OVER,
+
+    ERASE_10xN_LINES,
 
     LINE_REMOVE_0,
     LINE_REMOVE_1,
