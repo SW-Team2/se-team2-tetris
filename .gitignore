@@ -4,3 +4,4 @@ se-team2-tetris.iml
 out
 .gradle
 build
+bin/
