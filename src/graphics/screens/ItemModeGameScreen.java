@@ -3,7 +3,7 @@ package graphics.screens;
 import java.awt.Font;
 
 import tetrisgame.TetrisGame;
-import tetrisgame.parts.ImageLoader;
+import tetrisgame.util.ImageLoader;
 
 public class ItemModeGameScreen extends GameScreen {
     @Override

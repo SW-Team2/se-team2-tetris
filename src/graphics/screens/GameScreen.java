@@ -11,10 +11,10 @@ import data.setting.SettingInfoDesc;
 import gamestarter.GameStarter;
 import graphics.eScreenInfo;
 import tetrisgame.TetrisGame;
-import tetrisgame.parts.ImageLoader;
-import tetrisgame.parts.Position;
-import tetrisgame.parts.component.Tetromino;
-import tetrisgame.parts.component.Tile;
+import tetrisgame.component.tetromino.Tetromino;
+import tetrisgame.component.tile.Tile;
+import tetrisgame.util.ImageLoader;
+import tetrisgame.util.Position;
 
 public class GameScreen extends Screen {
     protected TetrisGame mTetrisGame;

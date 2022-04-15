@@ -7,19 +7,19 @@ import javax.swing.JOptionPane;
 
 import gamestarter.GameStarter;
 import graphics.screens.GameScreen;
+import tetrisgame.component.animation.IAnim;
+import tetrisgame.component.animation.LineEraserItemAnim;
+import tetrisgame.component.animation.LineRemovingAnim;
+import tetrisgame.component.animation.WeightItemAnim;
+import tetrisgame.component.score.Score;
+import tetrisgame.component.tetromino.LineEraserItemTetromino;
+import tetrisgame.component.tetromino.Tetromino;
+import tetrisgame.component.tetromino.WeightItemTetromino;
+import tetrisgame.component.tile.Tile;
 import tetrisgame.enumerations.eDifficulty;
 import tetrisgame.enumerations.eMsg;
-import tetrisgame.itemmode.itemmodeparts.LineEraserItemAnim;
-import tetrisgame.itemmode.itemmodeparts.LineEraserItemTetromino;
-import tetrisgame.itemmode.itemmodeparts.WeightItemAnim;
-import tetrisgame.itemmode.itemmodeparts.WeightItemTetromino;
-import tetrisgame.parts.Position;
-import tetrisgame.parts.Timer;
-import tetrisgame.parts.component.IAnim;
-import tetrisgame.parts.component.LineRemovingAnim;
-import tetrisgame.parts.component.Score;
-import tetrisgame.parts.component.Tetromino;
-import tetrisgame.parts.component.Tile;
+import tetrisgame.util.Position;
+import tetrisgame.util.Timer;
 
 public class TetrisGame implements Runnable {
 	protected GameScreen mScreen;
@@ -114,15 +114,17 @@ public class TetrisGame implements Runnable {
 				mNumRemovableLines = 0;
 				break;
 			case ERASE_10xN_LINES:
-				Random random = new Random();
-				int itemIndex = random.nextInt(VAR_ITEMS);
-				switch (itemIndex) {
-					case 0:
-						mNextTetromino = new WeightItemTetromino(this, mBoard);
-						break;
-					case 1:
-						mNextTetromino = new LineEraserItemTetromino(this, mBoard);
-						break;
+				if (mbItemMode) {
+					Random random = new Random();
+					int itemIndex = random.nextInt(VAR_ITEMS);
+					switch (itemIndex) {
+						case 0:
+							mNextTetromino = new WeightItemTetromino(this, mBoard);
+							break;
+						case 1:
+							mNextTetromino = new LineEraserItemTetromino(this, mBoard);
+							break;
+					}
 				}
 				break;
 			default:
