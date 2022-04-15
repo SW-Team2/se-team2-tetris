@@ -4,9 +4,11 @@ import java.awt.event.KeyEvent;
 import java.util.Random;
 
 import javax.swing.JOptionPane;
+import javax.swing.plaf.multi.MultiFileChooserUI;
 
 import gamestarter.GameStarter;
 import graphics.screens.GameScreen;
+import tetrisgame.component.animation.BounusScoreItemAnim;
 import tetrisgame.component.animation.IAnim;
 import tetrisgame.component.animation.LineEraserItemAnim;
 import tetrisgame.component.animation.LineRemovingAnim;
@@ -14,6 +16,7 @@ import tetrisgame.component.animation.RemovingAllItemAnim;
 import tetrisgame.component.animation.SlowingItemAnim;
 import tetrisgame.component.animation.WeightItemAnim;
 import tetrisgame.component.score.Score;
+import tetrisgame.component.tetromino.BonusScoreItemTetroino;
 import tetrisgame.component.tetromino.LineEraserItemTetromino;
 import tetrisgame.component.tetromino.RemovingAllItemTetromino;
 import tetrisgame.component.tetromino.SlowingItemTetromino;
@@ -30,7 +33,7 @@ public class TetrisGame implements Runnable {
 
 	private volatile boolean mbGameOverFlag;
 	private boolean mbItemMode;
-	private static final int VAR_ITEMS = 4;
+	private static final int VAR_ITEMS = 5;
 
 	public Tile mBoard[][];
 	protected Tetromino mCurrTetromino;
@@ -105,6 +108,9 @@ public class TetrisGame implements Runnable {
 			case SLOWING_ITEM_ERASED:
 				mFocusAnim = new SlowingItemAnim(this);
 				break;
+			case BONUSSCORE_ITEM_ERASED:
+				mFocusAnim = new BounusScoreItemAnim(this);
+				break;
 			case REMOVINGALL_ITEM_ERASED:
 				mFocusAnim = new RemovingAllItemAnim(this, mBoard);
 				break;
@@ -135,6 +141,9 @@ public class TetrisGame implements Runnable {
 							break;
 						case 3:
 							mNextTetromino = new RemovingAllItemTetromino(this, mBoard);
+							break;
+						case 4:
+							mNextTetromino = new BonusScoreItemTetroino(this, mBoard);
 							break;
 					}
 				}

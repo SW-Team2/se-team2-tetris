@@ -9,6 +9,7 @@ public class Score extends IGameComponent {
     private int mCurrRemoveLineCount;
     private int mTotalRemoveLineCount;
     private int mTenLineCount;
+    private int mBonusCount;
 
     private static final int SCORE_UNIT = 100;
     private static final int MULTIPLE_BREAK_BONUS_2L = 30;
@@ -21,8 +22,8 @@ public class Score extends IGameComponent {
 
     @Override
     public void update(float deltaTime, int userInput) {
-        if (mTenLineCount >= 3) {
-            mTenLineCount -= 3;
+        if (mTenLineCount >= 10) {
+            mTenLineCount -= 10;
             mPubGame.broadcast(eMsg.ERASE_10xN_LINES);
         }
     }
@@ -30,6 +31,14 @@ public class Score extends IGameComponent {
     @Override
     public void react(eMsg msg) {
         switch (msg) {
+            case COLL_WITH_FLOOR:
+                if (mBonusCount > 0) {
+                    mBonusCount--;
+                }
+                break;
+            case BONUSSCORE_ITEM_ERASED:
+                mBonusCount = 10;
+                break;
             case LINE_REMOVE_0:
             case LINE_REMOVE_1:
             case LINE_REMOVE_2:
@@ -76,7 +85,9 @@ public class Score extends IGameComponent {
             mTotalRemoveLineCount += mCurrRemoveLineCount;
             mTenLineCount += mCurrRemoveLineCount;
             addedScore += addedScore * (mTotalRemoveLineCount / 10) / 10.f;
-
+            if (mBonusCount > 0) {
+                addedScore *= 2;
+            }
             mScore += addedScore;
             mCurrRemoveLineCount = 0;
         }
