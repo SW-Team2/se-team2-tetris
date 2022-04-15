@@ -22,20 +22,18 @@ public class WeightItemAnim extends IAnim {
         mCurrCol = startPos.mCol;
         mStartRow = startPos.mRow;
         mRowLen = mStartRow + 4;
-        mPubGame.broadcast(eMsg.WEIGHT_ITEM_ANIM_START);
     }
 
     @Override
     public void update(float deltaTime, int userInput) {
         mSumTime += deltaTime;
         if (mCurrCol == mEndCol) {
-            Tile whiteTile = new Tile(mPubGame, mPubBoard, "tile_white");
             for (int col = mCurrCol; col <= 19; col++) {
                 for (int row = mStartRow; row < mRowLen; row++) {
                     if (mPubBoard[col][row]
 
                             != null) {
-                        mPubBoard[col][row] = whiteTile;
+                        mPubBoard[col][row].setName("tile_white");
                     }
                 }
             }

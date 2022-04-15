@@ -10,9 +10,11 @@ import graphics.screens.GameScreen;
 import tetrisgame.component.animation.IAnim;
 import tetrisgame.component.animation.LineEraserItemAnim;
 import tetrisgame.component.animation.LineRemovingAnim;
+import tetrisgame.component.animation.SlowingItemAnim;
 import tetrisgame.component.animation.WeightItemAnim;
 import tetrisgame.component.score.Score;
 import tetrisgame.component.tetromino.LineEraserItemTetromino;
+import tetrisgame.component.tetromino.SlowingItemTetromino;
 import tetrisgame.component.tetromino.Tetromino;
 import tetrisgame.component.tetromino.WeightItemTetromino;
 import tetrisgame.component.tile.Tile;
@@ -26,7 +28,7 @@ public class TetrisGame implements Runnable {
 
 	private volatile boolean mbGameOverFlag;
 	private boolean mbItemMode = true;
-	private static final int VAR_ITEMS = 2;
+	private static final int VAR_ITEMS = 3;
 
 	public Tile mBoard[][];
 	protected Tetromino mCurrTetromino;
@@ -98,9 +100,8 @@ public class TetrisGame implements Runnable {
 			case LINEERASER_ITEM_COLL_WITH_FLOOR:
 				mFocusAnim = new LineEraserItemAnim(this, mBoard, mCurrTetromino);
 				break;
-			case LINE_REMOVE_ANIM_START:
-				break;
-			case WEIGHT_ITEM_ANIM_START:
+			case SLOWING_ITEM_ERASED:
+				mFocusAnim = new SlowingItemAnim(this);
 				break;
 			case FOCUS_ANIM_OVER:
 				mCurrTetromino = mNextTetromino;
@@ -123,6 +124,9 @@ public class TetrisGame implements Runnable {
 							break;
 						case 1:
 							mNextTetromino = new LineEraserItemTetromino(this, mBoard);
+							break;
+						case 2:
+							mNextTetromino = new SlowingItemTetromino(this, mBoard);
 							break;
 					}
 				}
@@ -254,6 +258,7 @@ public class TetrisGame implements Runnable {
 		for (int index = 0; index < mNumRemovableLines; index++) {
 			int col = mRemoveColArr[index];
 			for (int row = 0; row < BOARD_ROW; row++) {
+				mBoard[col][row].eraseAct();
 				mBoard[col][row] = null;
 			}
 		}

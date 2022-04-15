@@ -13,6 +13,7 @@ public class ImageLoader {
 
     private ImageLoader() {
         mImageHash = new HashMap<String, BufferedImage>();
+        // Default tiles
         loadImage("tile", "tile_white");
         loadImage("tile", "tile_blue");
         loadImage("tile", "tile_frame");
@@ -23,14 +24,16 @@ public class ImageLoader {
         loadImage("tile", "tile_skyblue");
         loadImage("tile", "tile_white");
         loadImage("tile", "tile_yellow");
+        // Item tiles
+        loadImage("tile", "item_tile_lineeraser");
+        loadImage("tile", "item_tile_weight");
+        loadImage("tile", "item_tile_slowing");
+        // Anim tiles
         loadImage("tile", "tile_remove1");
         loadImage("tile", "tile_remove2");
         loadImage("tile", "tile_lineeraser1");
         loadImage("tile", "tile_lineeraser2");
-
-        loadImage("tile", "item_tile_lineeraser");
-        loadImage("tile", "item_tile_weight");
-
+        // Background images
         loadImage("background", "background_board");
         loadImage("background", "background_nextboard");
         loadImage("background", "background_panel");

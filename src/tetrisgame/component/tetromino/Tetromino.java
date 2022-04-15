@@ -17,9 +17,8 @@ public class Tetromino extends IGameComponent {
 	protected Position mPosition;
 	public Tile mShape[][];
 	protected int mShapeNColorIndex;
-	protected int mCurrRemoveLineCount;
 
-	protected float mAutoDownTime;
+	protected static float mAutoDownTime;
 	protected float mAutoDownTimeTick;
 	private static final float START_AUTO_DOWN_TIME = 1.0f;
 	protected static float GAME_SPEED_ACCEL_UNIT = 0.1f;
@@ -139,11 +138,6 @@ public class Tetromino extends IGameComponent {
 				break;
 		}
 
-		if (mCurrRemoveLineCount >= 10) {
-			mAutoDownTime *= (1.0f - GAME_SPEED_ACCEL_UNIT);
-			mCurrRemoveLineCount -= 10;
-		}
-
 		mAutoDownTimeTick += deltaTime;
 		if (mAutoDownTimeTick >= mAutoDownTime) {
 			mAutoDownTimeTick = 0.f;
@@ -166,28 +160,12 @@ public class Tetromino extends IGameComponent {
 		switch (msg) {
 			case COLL_WITH_FLOOR:
 				break;
-			case LINE_REMOVE_0:
-			case LINE_REMOVE_1:
-			case LINE_REMOVE_2:
-			case LINE_REMOVE_3:
-			case LINE_REMOVE_4:
-			case LINE_REMOVE_5:
-			case LINE_REMOVE_6:
-			case LINE_REMOVE_7:
-			case LINE_REMOVE_8:
-			case LINE_REMOVE_9:
-			case LINE_REMOVE_10:
-			case LINE_REMOVE_11:
-			case LINE_REMOVE_12:
-			case LINE_REMOVE_13:
-			case LINE_REMOVE_14:
-			case LINE_REMOVE_15:
-			case LINE_REMOVE_16:
-			case LINE_REMOVE_17:
-			case LINE_REMOVE_18:
-			case LINE_REMOVE_19:
-				mCurrRemoveLineCount++;
+			case ERASE_10xN_LINES:
+				mAutoDownTime *= (1.f - GAME_SPEED_ACCEL_UNIT);
 				break;
+			case SLOWING_ITEM_ERASED:
+				int slowingUnit = 3;
+				mAutoDownTime /= Math.pow((1.f - GAME_SPEED_ACCEL_UNIT), (double) slowingUnit);
 			default:
 				break;
 		}

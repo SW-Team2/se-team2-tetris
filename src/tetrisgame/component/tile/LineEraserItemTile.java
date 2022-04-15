@@ -3,13 +3,9 @@ package tetrisgame.component.tile;
 import tetrisgame.TetrisGame;
 import tetrisgame.enumerations.eMsg;
 
-public class LineEraserItemTile extends Tile {
+public class LineEraserItemTile extends ItemTile {
     public LineEraserItemTile(TetrisGame g, Tile[][] gb, String name) {
         super(g, gb, name);
-    }
-
-    public LineEraserItemTile(LineEraserItemTile rhs) {
-        this(rhs.mPubGame, rhs.mPubBoard, rhs.mName);
     }
 
     @Override
@@ -18,5 +14,9 @@ public class LineEraserItemTile extends Tile {
 
     @Override
     public void react(eMsg msg) {
+    }
+
+    @Override
+    public void eraseAct() {
     }
 }

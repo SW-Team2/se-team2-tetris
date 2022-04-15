@@ -18,7 +18,6 @@ public class LineRemovingAnim extends IAnim {
         super(g);
         mPubBoard = gb;
         mColArr = new int[4];
-        mPubGame.broadcast(eMsg.LINE_REMOVE_ANIM_START);
     }
 
     @Override
@@ -34,9 +33,8 @@ public class LineRemovingAnim extends IAnim {
             if (mSumTime >= FRAME_1_TIME) {
                 for (int i = 0; i < mSize; i++) {
                     int col = mColArr[i];
-                    Tile tileRemove = new Tile(mPubGame, mPubBoard, "tile_remove2");
                     for (int row = 0; row < TetrisGame.BOARD_ROW; row++) {
-                        mPubBoard[col][row] = tileRemove;
+                        mPubBoard[col][row].setName("tile_remove2");
                     }
                 }
                 return;
@@ -45,9 +43,8 @@ public class LineRemovingAnim extends IAnim {
             if (mSumTime >= 0) {
                 for (int i = 0; i < mSize; i++) {
                     int col = mColArr[i];
-                    Tile tileRemove = new Tile(mPubGame, mPubBoard, "tile_remove1");
                     for (int row = 0; row < TetrisGame.BOARD_ROW; row++) {
-                        mPubBoard[col][row] = tileRemove;
+                        mPubBoard[col][row].setName("tile_remove1");
                     }
                 }
                 return;

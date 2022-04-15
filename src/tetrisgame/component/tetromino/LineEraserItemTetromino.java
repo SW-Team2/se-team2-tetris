@@ -3,6 +3,7 @@ package tetrisgame.component.tetromino;
 import java.awt.event.KeyEvent;
 
 import tetrisgame.TetrisGame;
+import tetrisgame.component.tile.LineEraserItemTile;
 import tetrisgame.component.tile.Tile;
 import tetrisgame.enumerations.eDirection;
 import tetrisgame.enumerations.eMsg;
@@ -12,20 +13,7 @@ public class LineEraserItemTetromino extends ItemTetromino {
 
     public LineEraserItemTetromino(TetrisGame game, Tile gb[][]) {
         super(game, gb);
-        int eraserLocCount = mRandom.nextInt(4);
-        int locIndex = 0;
-        for (int col = 0; col < SHAPE_COL; col++) {
-            for (int row = 0; row < SHAPE_ROW; row++) {
-                if (mShape[col][row] != null) {
-                    if (locIndex == eraserLocCount) {
-                        mShape[col][row] = new Tile(mPubGame, mPubBoard, ERASER_TEX_NAME);
-                        return;
-                    } else {
-                        locIndex++;
-                    }
-                }
-            }
-        }
+        super.genTetWithOneItemTile(new LineEraserItemTile(game, gb, ERASER_TEX_NAME));
     }
 
     @Override
@@ -49,11 +37,6 @@ public class LineEraserItemTetromino extends ItemTetromino {
                 fallToFloor();
                 bCollWithFloor = true;
                 break;
-        }
-
-        if (mCurrRemoveLineCount >= 10) {
-            mAutoDownTime *= (1.0f - GAME_SPEED_ACCEL_UNIT);
-            mCurrRemoveLineCount -= 10;
         }
 
         mAutoDownTimeTick += deltaTime;

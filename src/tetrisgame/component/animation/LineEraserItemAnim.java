@@ -30,7 +30,6 @@ public class LineEraserItemAnim extends IAnim {
                 }
             }
         }
-        mPubGame.broadcast(eMsg.LINEERASER_ITEM_ANIM_START);
     }
 
     @Override
@@ -49,10 +48,9 @@ public class LineEraserItemAnim extends IAnim {
 
         if (mSumTime >= FRAME_1_TIME) {
             int col = mEraserCol;
-            Tile tileRemove = new Tile(mPubGame, mPubBoard, "tile_lineeraser2");
             for (int row = 0; row < TetrisGame.BOARD_ROW; row++) {
                 if (mPubBoard[col][row] != null) {
-                    mPubBoard[col][row] = tileRemove;
+                    mPubBoard[col][row].setName("tile_lineeraser2");
                 }
             }
             return;
@@ -60,10 +58,9 @@ public class LineEraserItemAnim extends IAnim {
 
         if (mSumTime >= 0) {
             int col = mEraserCol;
-            Tile tileRemove = new Tile(mPubGame, mPubBoard, "tile_lineeraser1");
             for (int row = 0; row < TetrisGame.BOARD_ROW; row++) {
                 if (mPubBoard[col][row] != null) {
-                    mPubBoard[col][row] = tileRemove;
+                    mPubBoard[col][row].setName("tile_lineeraser1");
                 }
             }
             return;

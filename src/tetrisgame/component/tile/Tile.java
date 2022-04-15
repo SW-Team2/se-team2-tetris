@@ -29,6 +29,9 @@ public class Tile extends IGameComponent {
 	public void react(eMsg msg) {
 	}
 
+	public void eraseAct() {
+	}
+
 	public BufferedImage getTexture() {
 		return ImageLoader.getInstance().getTexture(mName);
 	}
