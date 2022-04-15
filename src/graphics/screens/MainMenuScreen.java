@@ -53,7 +53,7 @@ public class MainMenuScreen extends Screen {
                         sr = eScreenInfo.GAME;
                         break;
                     case 1:
-                        sr = eScreenInfo.ITEM_MODE_GAME;
+                        sr = eScreenInfo.ITEMGAME;
                         break;
                     case 2:
                         sr = eScreenInfo.SETTING;

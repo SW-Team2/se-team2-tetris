@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 
 import data.setting.SettingInfoDesc;
 import graphics.screens.GameScreen;
+import graphics.screens.ItemModeGameScreen;
 import graphics.screens.MainMenuScreen;
 import graphics.screens.ScoreBoardScreen;
 import graphics.screens.SettingMenuScreen;
@@ -19,6 +20,7 @@ public class WindowManager {
     private CardLayout mCards;
     private MainMenuScreen mMain;
     private GameScreen mGame;
+    private ItemModeGameScreen mItemGame;
     private SettingMenuScreen mSetting;
     private ScoreBoardScreen mScore;
     private eScreenInfo meCurrScreen;
@@ -35,6 +37,9 @@ public class WindowManager {
                     break;
                 case GAME:
                     switchScreenTo = mGame.getUserInput(e);
+                    break;
+                case ITEMGAME:
+                    switchScreenTo = mItemGame.getUserInput(e);
                     break;
                 case SETTING:
                     switchScreenTo = mSetting.getUserInput(e);
@@ -55,6 +60,9 @@ public class WindowManager {
                 case GAME:
                     showGame();
                     break;
+                case ITEMGAME:
+                    showItemGame();
+                    break;
                 case SETTING:
                     showSetting();
                     break;
@@ -73,6 +81,9 @@ public class WindowManager {
             switch (meCurrScreen) {
                 case GAME:
                     mGame.getUserInputKeyRealease(e);
+                    break;
+                case ITEMGAME:
+                    mItemGame.getUserInputKeyRealease(e);
                     break;
                 default:
                     break;
@@ -100,10 +111,12 @@ public class WindowManager {
 
         mMain = new MainMenuScreen();
         mGame = new GameScreen();
+        mItemGame = new ItemModeGameScreen();
         mSetting = new SettingMenuScreen();
         mScore = new ScoreBoardScreen();
         mWindow.getContentPane().add("main", mMain);
         mWindow.getContentPane().add("game", mGame);
+        mWindow.getContentPane().add("itemgame", mItemGame);
         mWindow.getContentPane().add("setting", mSetting);
         mWindow.getContentPane().add("score", mScore);
 
@@ -138,6 +151,11 @@ public class WindowManager {
     private void showGame() {
         mCards.show(mWindow.getContentPane(), "game");
         meCurrScreen = eScreenInfo.GAME;
+    }
+
+    private void showItemGame() {
+        mCards.show(mWindow.getContentPane(), "itemgame");
+        meCurrScreen = eScreenInfo.ITEMGAME;
     }
 
     private void showSetting() {

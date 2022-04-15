@@ -29,7 +29,7 @@ public class TetrisGame implements Runnable {
 	protected GameScreen mScreen;
 
 	private volatile boolean mbGameOverFlag;
-	private boolean mbItemMode = true;
+	private boolean mbItemMode;
 	private static final int VAR_ITEMS = 4;
 
 	public Tile mBoard[][];
@@ -51,9 +51,9 @@ public class TetrisGame implements Runnable {
 	public static final int BOARD_COL = 20;
 	public static final int BOARD_ROW = 10;
 
-	public TetrisGame(GameScreen gameScreen) {
+	public TetrisGame(GameScreen gameScreen, boolean bItemMode) {
 		mScreen = gameScreen;
-
+		mbItemMode = bItemMode;
 		mBoard = new Tile[BOARD_COL][BOARD_ROW];
 		mCurrTetromino = new Tetromino(this, mBoard);
 		mNextTetromino = new Tetromino(this, mBoard);
@@ -123,7 +123,6 @@ public class TetrisGame implements Runnable {
 				if (mbItemMode) {
 					Random random = new Random();
 					int itemIndex = random.nextInt(VAR_ITEMS);
-					itemIndex = 3;
 					switch (itemIndex) {
 						case 0:
 							mNextTetromino = new WeightItemTetromino(this, mBoard);

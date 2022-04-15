@@ -185,8 +185,8 @@ public class GameScreen extends Screen {
         }
     }
 
-    private void startGame() {
-        mTetrisGame = new TetrisGame(this);
+    protected void startGame() {
+        mTetrisGame = new TetrisGame(this, false);
         mGameBoard = mTetrisGame.getGameBoard();
         GameStarter.setGame(mTetrisGame);
         GameStarter.setStart();

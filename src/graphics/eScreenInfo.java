@@ -4,7 +4,7 @@ public enum eScreenInfo {
     NONE,
     MAIN,
     GAME,
-    ITEM_MODE_GAME,
+    ITEMGAME,
     SETTING,
     SCOREBOARD,
 }
