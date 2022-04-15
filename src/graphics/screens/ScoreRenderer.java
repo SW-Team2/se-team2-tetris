@@ -14,7 +14,7 @@ public class ScoreRenderer extends JLabel implements ListCellRenderer<Score> {
     public Component getListCellRendererComponent(JList<? extends Score> list, Score value, int index, boolean isSelected, boolean cellHasFocus) {
         String name = value.getName();
         int score = value.getScore();
-//        setText(name + Integer.toString(score));
+        setText(name + Integer.toString(score));
         return this;
     }
 }

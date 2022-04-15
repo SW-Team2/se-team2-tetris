@@ -17,7 +17,8 @@ public class DataBase {
     }
 
     private void connectDB() throws SQLException {
-        String URL = "jdbc:mysql://localhost:3306/tetrisgame";
+//        String URL = "jdbc:mysql://localhost:3306/tetrisgame";
+        String URL = "jdbc:sqlite:identifier.sqlite";
         String USER = "root";
         String PASSWORD = "dhwjdwls";
         this.connection = DriverManager.getConnection(URL, USER, PASSWORD);

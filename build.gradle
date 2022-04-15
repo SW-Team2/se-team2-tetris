@@ -21,5 +21,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
     testCompileOnly 'junit:junit:4.13.2'
     testRuntimeOnly 'org.junit.vintage:junit-vintage-engine'
-    implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.28'
+//    implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.28'
+    implementation 'org.xerial:sqlite-jdbc'
+
 }
