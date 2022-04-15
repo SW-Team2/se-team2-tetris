@@ -1,6 +1,7 @@
 package tetrisgame.util;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -13,31 +14,28 @@ public class ImageLoader {
 
     private ImageLoader() {
         mImageHash = new HashMap<String, BufferedImage>();
-        // Default tiles
-        loadImage("tile", "tile_white");
-        loadImage("tile", "tile_blue");
-        loadImage("tile", "tile_frame");
-        loadImage("tile", "tile_lightgreen");
-        loadImage("tile", "tile_orange");
-        loadImage("tile", "tile_purple");
-        loadImage("tile", "tile_red");
-        loadImage("tile", "tile_skyblue");
-        loadImage("tile", "tile_white");
-        loadImage("tile", "tile_yellow");
-        // Item tiles
-        loadImage("tile", "item_tile_lineeraser");
-        loadImage("tile", "item_tile_weight");
-        loadImage("tile", "item_tile_slowing");
-        loadImage("tile", "item_tile_removingall");
-        // Anim tiles
-        loadImage("tile", "tile_remove1");
-        loadImage("tile", "tile_remove2");
-        loadImage("tile", "tile_lineeraser1");
-        loadImage("tile", "tile_lineeraser2");
-        // Background images
-        loadImage("background", "background_board");
-        loadImage("background", "background_nextboard");
-        loadImage("background", "background_panel");
+
+        char resDirCh[] = (System.getProperty("user.dir") + "\\src\\res\\").toCharArray();
+        int size = resDirCh.length;
+        for (int i = 0; i < size; i++) {
+            if (resDirCh[i] == '\\') {
+                resDirCh[i] = '/';
+            }
+        }
+        String resDir = new String(resDirCh);
+        File resFile = new File(resDir);
+
+        String filesInRes[] = resFile.list();
+        int resDirSize = filesInRes.length;
+        for (int i = 0; i < resDirSize; i++) {
+            String currDir = resDir + filesInRes[i] + "/";
+            String paths[] = new File(currDir).list();
+            int pathLen = paths.length;
+            for (int j = 0; j < pathLen; j++) {
+                String currPath = "../../res/" + filesInRes[i] + "/" + paths[j];
+                loadImage(currPath);
+            }
+        }
     }
 
     public static ImageLoader getInstance() {
@@ -51,8 +49,7 @@ public class ImageLoader {
         return mImageHash.get(name);
     }
 
-    private void loadImage(String file, String name) {
-        String path = String.format("../../res/%s/%s.png", file, name);
+    private void loadImage(String path) {
         BufferedImage image = null;
         try {
             image = ImageIO.read(getClass().getResourceAsStream(path));
@@ -60,6 +57,25 @@ public class ImageLoader {
             // TODO: Throw runtime excep or exit program
             assert (false) : "File open failed";
         }
-        mImageHash.put(name, image);
+        char pathCh[] = path.toCharArray();
+        int pathLen = pathCh.length;
+
+        int startIndex = 0;
+        int dotIndex = 0;
+        for (startIndex = pathCh.length - 1; dotIndex >= 0; startIndex--) {
+            if (pathCh[startIndex - 1] == '/') {
+                break;
+            }
+            if (pathCh[startIndex] == '.') {
+                dotIndex = startIndex;
+            }
+        }
+        int nameLen = dotIndex - startIndex;
+        char nameCh[] = new char[nameLen];
+        for (int i = 0; i < nameLen; i++) {
+            nameCh[i] = pathCh[startIndex + i];
+        }
+
+        mImageHash.put(new String(nameCh), image);
     }
 }

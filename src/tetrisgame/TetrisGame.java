@@ -151,7 +151,10 @@ public class TetrisGame implements Runnable {
 			this.draw();
 		}
 		// Save user record
-		String userName = JOptionPane.showInputDialog("Enter your name");
+		String userName;
+		do {
+			userName = JOptionPane.showInputDialog("Enter your name");
+		} while (userName.equals(""));
 		GameStarter.setOver();
 	}
 
