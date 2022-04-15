@@ -10,10 +10,12 @@ import graphics.screens.GameScreen;
 import tetrisgame.component.animation.IAnim;
 import tetrisgame.component.animation.LineEraserItemAnim;
 import tetrisgame.component.animation.LineRemovingAnim;
+import tetrisgame.component.animation.RemovingAllItemAnim;
 import tetrisgame.component.animation.SlowingItemAnim;
 import tetrisgame.component.animation.WeightItemAnim;
 import tetrisgame.component.score.Score;
 import tetrisgame.component.tetromino.LineEraserItemTetromino;
+import tetrisgame.component.tetromino.RemovingAllItemTetromino;
 import tetrisgame.component.tetromino.SlowingItemTetromino;
 import tetrisgame.component.tetromino.Tetromino;
 import tetrisgame.component.tetromino.WeightItemTetromino;
@@ -28,7 +30,7 @@ public class TetrisGame implements Runnable {
 
 	private volatile boolean mbGameOverFlag;
 	private boolean mbItemMode = true;
-	private static final int VAR_ITEMS = 3;
+	private static final int VAR_ITEMS = 4;
 
 	public Tile mBoard[][];
 	protected Tetromino mCurrTetromino;
@@ -103,6 +105,9 @@ public class TetrisGame implements Runnable {
 			case SLOWING_ITEM_ERASED:
 				mFocusAnim = new SlowingItemAnim(this);
 				break;
+			case REMOVINGALL_ITEM_ERASED:
+				mFocusAnim = new RemovingAllItemAnim(this, mBoard);
+				break;
 			case FOCUS_ANIM_OVER:
 				mCurrTetromino = mNextTetromino;
 				mNextTetromino = new Tetromino(this, mBoard);
@@ -118,6 +123,7 @@ public class TetrisGame implements Runnable {
 				if (mbItemMode) {
 					Random random = new Random();
 					int itemIndex = random.nextInt(VAR_ITEMS);
+					itemIndex = 3;
 					switch (itemIndex) {
 						case 0:
 							mNextTetromino = new WeightItemTetromino(this, mBoard);
@@ -127,6 +133,9 @@ public class TetrisGame implements Runnable {
 							break;
 						case 2:
 							mNextTetromino = new SlowingItemTetromino(this, mBoard);
+							break;
+						case 3:
+							mNextTetromino = new RemovingAllItemTetromino(this, mBoard);
 							break;
 					}
 				}

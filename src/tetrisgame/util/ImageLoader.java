@@ -28,6 +28,7 @@ public class ImageLoader {
         loadImage("tile", "item_tile_lineeraser");
         loadImage("tile", "item_tile_weight");
         loadImage("tile", "item_tile_slowing");
+        loadImage("tile", "item_tile_removingall");
         // Anim tiles
         loadImage("tile", "tile_remove1");
         loadImage("tile", "tile_remove2");
