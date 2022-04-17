@@ -2,8 +2,8 @@ package data.setting;
 
 import java.awt.event.KeyEvent;
 
-public class SettingInfoDesc {
-    private static SettingInfoDesc mUniqueInstance = null;
+public class SettingData {
+    private static SettingData mUniqueInstance = null;
 
     public Key mKey;
     public Screen mScreen;
@@ -37,14 +37,14 @@ public class SettingInfoDesc {
 
     public int mColorBlindnessMod = 0;
 
-    private SettingInfoDesc() {
+    private SettingData() {
         mKey = new Key();
         mScreen = new Screen();
     }
 
-    public static SettingInfoDesc getInstance() {
+    public static SettingData getInstance() {
         if (mUniqueInstance == null) {
-            mUniqueInstance = new SettingInfoDesc();
+            mUniqueInstance = new SettingData();
         }
         return mUniqueInstance;
     }

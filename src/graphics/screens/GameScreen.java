@@ -11,7 +11,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-import data.setting.SettingInfoDesc;
+import data.setting.SettingData;
 import graphics.eScreenInfo;
 import tetrisgame.TetrisGame;
 
@@ -26,11 +26,11 @@ public class GameScreen extends Screen {
     // TODO: Show key setting
     private JLabel mKeySettingBoard;
 
-    private SettingInfoDesc mSettingInfo;
+    private SettingData mSettingInfo;
 
     public GameScreen() {
         // TODO: Reflect setting infos
-        mSettingInfo = SettingInfoDesc.getInstance();
+        mSettingInfo = SettingData.getInstance();
 
         mGameBoard = new JTextPane();
         mGameBoard.setEditable(false);

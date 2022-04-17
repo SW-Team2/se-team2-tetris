@@ -9,7 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import data.score.ScoreBoardData;
-import data.setting.SettingInfoDesc;
+import data.setting.SettingData;
 import graphics.screens.GameScreen;
 import graphics.screens.MainMenuScreen;
 import graphics.screens.ScoreBoardScreen;
@@ -80,7 +80,7 @@ public class WindowManager {
     }
 
     public WindowManager() {
-        SettingInfoDesc mSettingInfoDesc = SettingInfoDesc.getInstance();
+        SettingData mSettingInfoDesc = SettingData.getInstance();
         ScoreBoardData scoreBoardInfo = ScoreBoardData.getInstance();
         mWindow = new JFrame();
 

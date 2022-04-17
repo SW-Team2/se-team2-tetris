@@ -1,7 +1,5 @@
 package data.score;
 
-import data.DataBase;
-
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -12,16 +10,7 @@ public class ScoreBoardData {
     private ArrayList<Score> scoreDataList;
 
     private ScoreBoardData() {
-        DataBase db = DataBase.getInstance();
-        this.connection = db.getConnection();
-        this.scoreDataList = new ArrayList<Score>(20);
-        try {
-            this.getScoreDataFromDB();
-//            주석 삭제 예정 : 아래 statement를 주석해제하게 되면 db에 저장됩니다.
-//            this.addNewScore(new Score("jy", 200, Difficulty.EASY.getValue(), Mode.ITEM_MODE.getValue()));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        connectDB();
     }
 
     public static ScoreBoardData getInstance() {
@@ -31,16 +20,44 @@ public class ScoreBoardData {
         return uniqueInstance;
     }
 
+    private void connectDB() {
+        if (this.connection == null) {
+            try {
+                Class.forName("org.sqlite.JDBC");
+                String URL = "jdbc:sqlite:/Users/jeongjin/IdeaProjects/se-team2-tetris/database/tetrisgame";
+                this.connection = DriverManager.getConnection(URL);
+
+                System.out.println("Connection to SQLite has been established.");
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void closeConnection() throws SQLException {
+        this.connection.close();
+    }
+
+    public Connection getConnection() {
+        return this.connection;
+    }
+
     public ArrayList<Score> getScoreDataList() {
         return scoreDataList;
     }
 
-    private void getScoreDataFromDB() throws SQLException {
+    private ArrayList<Score> getDefaultModeScore() throws SQLException {
+        connectDB();
         ResultSet resultSet = null;
         Statement statement = null;
 
+        scoreDataList = new ArrayList<Score>(20);
+
         statement = this.connection.createStatement();
-        resultSet = statement.executeQuery("select * from score order by score desc");
+        resultSet = statement.executeQuery("select * from scores where difficulty is not null order by score desc limit 10");
         while (resultSet.next()) {
             String name = resultSet.getString("name");
             int score = resultSet.getInt("score");
@@ -51,21 +68,64 @@ public class ScoreBoardData {
         }
         resultSet.close();
         statement.close();
+        closeConnection();
+
+        return scoreDataList;
     }
 
-    public void addNewScore(Score newValue) throws SQLException {
-        PreparedStatement statement = null;
+    private ArrayList<Score> getItemModeScore() throws SQLException {
+        connectDB();
+        ResultSet resultSet = null;
+        Statement statement = null;
+        scoreDataList = new ArrayList<Score>(20);
 
-        String query = "insert into score(name, score, difficulty, gameMode) values (?, ?, ?, ?)";
+        statement = this.connection.createStatement();
+        resultSet = statement.executeQuery("select * from scores where gameMode is not null order by score desc limit 10");
+        while (resultSet.next()) {
+            String name = resultSet.getString("name");
+            int score = resultSet.getInt("score");
+            String difficulty = resultSet.getString("difficulty");
+            String gameMode = resultSet.getString("gameMode");
+            Score scoreData = new Score(name, score, difficulty, gameMode);
+            scoreDataList.add(scoreData);
+        }
+        resultSet.close();
+        statement.close();
+        closeConnection();
+
+        return scoreDataList;
+    }
+
+    public void addDefaultModeScore(Score newValue) throws SQLException {
+        connectDB();
+
+        PreparedStatement statement;
+
+        String query = "insert into score(name, score, difficulty) values (?, ?, ?)";
         statement = this.connection.prepareStatement(query);
         statement.setString(1, newValue.getName());
         statement.setInt(2, newValue.getScore());
         statement.setString(3, newValue.getDifficulty());
-        statement.setString(4, newValue.getGameMode());
 
         statement.executeUpdate();
-
         statement.close();
+        closeConnection();
+    }
+
+    public void addItemModeScore(Score newValue) throws SQLException {
+        connectDB();
+
+        PreparedStatement statement;
+
+        String query = "insert into score(name, score, gameMode) values (?, ?, ?)";
+        statement = this.connection.prepareStatement(query);
+        statement.setString(1, newValue.getName());
+        statement.setInt(2, newValue.getScore());
+        statement.setString(3, newValue.getGameMode());
+
+        statement.executeUpdate();
+        statement.close();
+        closeConnection();
     }
 
 }

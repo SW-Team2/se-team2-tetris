@@ -9,7 +9,6 @@ import graphics.screens.Screen;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 
 public class ScoreBoardScreen extends Screen {
     private JLabel label;
@@ -23,8 +22,6 @@ public class ScoreBoardScreen extends Screen {
         this.scoreData = ScoreBoardData.getInstance();
 
         DefaultListModel<Score> listModel = new DefaultListModel<Score>();
-        ArrayList<Score> scoreDataList = this.scoreData.getScoreDataList();
-        for(Score scoreData : scoreDataList) listModel.addElement(scoreData);
 
         JList<Score> scoreList = new JList<>(listModel);
         super.add(new JScrollPane(scoreList));
