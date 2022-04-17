@@ -58,7 +58,6 @@ public class ImageLoader {
             assert (false) : "File open failed";
         }
         char pathCh[] = path.toCharArray();
-        int pathLen = pathCh.length;
 
         int startIndex = 0;
         int dotIndex = 0;

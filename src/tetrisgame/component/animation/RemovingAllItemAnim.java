@@ -22,6 +22,7 @@ public class RemovingAllItemAnim extends IAnim {
                 }
             }
         }
+        mPubGame.broadcast(eMsg.FOCUS_ANIM_OVER);
     }
 
     public void react(eMsg msg) {
