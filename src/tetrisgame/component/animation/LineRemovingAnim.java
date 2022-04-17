@@ -55,71 +55,71 @@ public class LineRemovingAnim extends IAnim {
     @Override
     public void react(eMsg msg) {
         assert (mSize <= 4);
-        int col = -1;
+        int line = -1;
         switch (msg) {
             case LINE_REMOVE_0:
-                col = 0;
+                line = 0;
                 break;
             case LINE_REMOVE_1:
-                col = 1;
+                line = 1;
                 break;
             case LINE_REMOVE_2:
-                col = 2;
+                line = 2;
                 break;
             case LINE_REMOVE_3:
-                col = 3;
+                line = 3;
                 break;
             case LINE_REMOVE_4:
-                col = 4;
+                line = 4;
                 break;
             case LINE_REMOVE_5:
-                col = 5;
+                line = 5;
                 break;
             case LINE_REMOVE_6:
-                col = 6;
+                line = 6;
                 break;
             case LINE_REMOVE_7:
-                col = 7;
+                line = 7;
                 break;
             case LINE_REMOVE_8:
-                col = 8;
+                line = 8;
                 break;
             case LINE_REMOVE_9:
-                col = 9;
+                line = 9;
                 break;
             case LINE_REMOVE_10:
-                col = 10;
+                line = 10;
                 break;
             case LINE_REMOVE_11:
-                col = 11;
+                line = 11;
                 break;
             case LINE_REMOVE_12:
-                col = 12;
+                line = 12;
                 break;
             case LINE_REMOVE_13:
-                col = 13;
+                line = 13;
                 break;
             case LINE_REMOVE_14:
-                col = 14;
+                line = 14;
                 break;
             case LINE_REMOVE_15:
-                col = 15;
+                line = 15;
                 break;
             case LINE_REMOVE_16:
-                col = 16;
+                line = 16;
                 break;
             case LINE_REMOVE_17:
-                col = 17;
+                line = 17;
                 break;
             case LINE_REMOVE_18:
-                col = 18;
+                line = 18;
                 break;
             case LINE_REMOVE_19:
-                col = 19;
+                line = 19;
                 break;
             default:
                 return;
         }
-        mColArr[mSize++] = col;
+        mColArr[mSize++] = line;
     }
 }

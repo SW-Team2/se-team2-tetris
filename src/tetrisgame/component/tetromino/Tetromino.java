@@ -250,7 +250,7 @@ public class Tetromino extends IGameComponent {
 
 	protected void rotateOrIgnore() {
 		this.rotate();
-		boolean collResult = collisionTest();
+		boolean collResult = checkCollision();
 		if (collResult) {
 			this.rotateBack();
 		}
@@ -260,7 +260,7 @@ public class Tetromino extends IGameComponent {
 		boolean bCollWithFloor = false;
 
 		this.move(dir);
-		boolean collResult = collisionTest();
+		boolean collResult = checkCollision();
 		if (collResult) {
 			this.moveBack(dir);
 			if (dir == eDirection.DOWN) {
@@ -391,7 +391,7 @@ public class Tetromino extends IGameComponent {
 		}
 	}
 
-	private boolean collisionTest() {
+	private boolean checkCollision() {
 		boolean re = false;
 		Position pos = mPosition;
 		for (int c = 0; c < Tetromino.SHAPE_COL; c++) {
