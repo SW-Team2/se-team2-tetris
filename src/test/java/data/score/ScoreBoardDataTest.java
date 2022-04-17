@@ -91,7 +91,7 @@ class ScoreBoardDataTest {
     }
 
     @Test
-    public void getDefaultModeScore() throws SQLException {
+    public void getDefaultModeScore() {
         Request request = new Request(dataSource, "select * from scores where difficulty is not null order by score desc limit 10");
 
         assertThat(request).hasNumberOfRows(10);
@@ -100,7 +100,7 @@ class ScoreBoardDataTest {
     }
 
     @Test
-    public void getItemModeScore() throws SQLException {
+    public void getItemModeScore() {
         Request request = new Request(dataSource, "select * from scores where gameMode is not null order by score desc limit 10");
 
         assertThat(request).hasNumberOfRows(10);

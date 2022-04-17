@@ -26,12 +26,7 @@ public class GameScreen extends Screen {
     // TODO: Show key setting
     private JLabel mKeySettingBoard;
 
-    private SettingData mSettingInfo;
-
     public GameScreen() {
-        // TODO: Reflect setting infos
-        mSettingInfo = SettingData.getInstance();
-
         mGameBoard = new JTextPane();
         mGameBoard.setEditable(false);
         mGameBoard.setBackground(Color.black);
