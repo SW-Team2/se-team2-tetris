@@ -2,7 +2,7 @@
 
 HSV ColorHelper::RGB24ToHSV(const RGB24& rgb)
 {
-	double rgbSliceUnit = 1 / 255;
+	double rgbSliceUnit = 1 / 255.f;
 
 	double R = rgb.R / 255.f;
 	double G = rgb.G / 255.f;
@@ -42,6 +42,10 @@ HSV ColorHelper::RGB24ToHSV(const RGB24& rgb)
 	{
 		H += 240;
 	}
+	else
+	{
+		assert(false);
+	}
 
 	if (H < 0)
 	{
@@ -59,8 +63,8 @@ HSV ColorHelper::RGB24ToHSV(const RGB24& rgb)
 RGB24 ColorHelper::HSVToRGB24(const HSV& hsv)
 {
 	assert(0 <= hsv.H && hsv.H < 360);
-	assert(0.f < hsv.S && hsv.S < 100.f);
-	assert(0.f < hsv.V && hsv.V < 100.f);
+	assert(0.f <= hsv.S && hsv.S <= 100.f);
+	assert(0.f <= hsv.V && hsv.V <= 100.0001f);
 	
 	FLOAT H = hsv.H;
 	FLOAT S = hsv.S / 100;
