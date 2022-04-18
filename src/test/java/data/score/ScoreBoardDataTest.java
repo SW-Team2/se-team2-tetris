@@ -1,133 +1,128 @@
 package data.score;
 
-import org.assertj.db.type.*;
-import org.h2.jdbcx.JdbcConnectionPool;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.db.api.Assertions.assertThat;
-import static org.assertj.db.output.Outputs.output;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import org.assertj.db.type.Table;
+import org.junit.jupiter.api.TestInstance;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.sql.*;
 
-
-class ScoreBoardDataTest {
-    protected static JdbcConnectionPool dataSource;
-    private static final String SCORES_CREATE_REQUEST = "create table scores(id number primary key ,name varchar not null,score integer not null, difficulty varchar, gameMode varchar);";
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+public class ScoreBoardDataTest {
     private static final String[] SCORES_INSERT_REQUESTS = {
-            "insert into scores values (1, 'Hewson', 123, null,'Default');",
-            "insert into scores values (2, 'jj', 1231, 'Hard',null);",
-            "insert into scores values (3, 'sy', 321, 'Easy',null);",
-            "insert into scores values (4, 'tw', 100, null,'Default');",
-            "insert into scores values (5, 'Hewson', 123, null,'Default');",
-            "insert into scores values (6, 'jj', 1231, 'Hard',null);",
-            "insert into scores values (7, 'sy', 321, 'Easy',null);",
-            "insert into scores values (8, 'tw', 100, null,'Default');",
-            "insert into scores values (9, 'Hewson', 123, null,'Default');",
-            "insert into scores values (10, 'jj', 1231, 'Hard',null);",
-            "insert into scores values (11, 'sy', 321, 'Easy',null);",
-            "insert into scores values (12, 'tw', 100, null,'Default');",
-            "insert into scores values (13, 'Hewson', 123, null,'Default');",
-            "insert into scores values (14, 'jj', 1231, 'Hard',null);",
-            "insert into scores values (15, 'sy', 321, 'Easy',null);",
-            "insert into scores values (16, 'tw', 100, null,'Default');",
-            "insert into scores values (17, 'Hewson', 123, null,'Default');",
-            "insert into scores values (18, 'jj', 1231, 'Hard',null);",
-            "insert into scores values (19, 'sy', 321, 'Easy',null);",
-            "insert into scores values (20, 'tw', 100, null,'Default');",
-            "insert into scores values (21, 'Hewson', 123, null,'Default');",
-            "insert into scores values (22, 'jj', 1231, 'Hard',null);",
-            "insert into scores values (23, 'sy', 321, 'Easy',null);",
-            "insert into scores values (24, 'tw', 100, null,'Default');",
+            "insert into scores(name, score, difficulty, gameMode) values ('jj', 1231, 'Hard','Default')",
+            "insert into scores(name, score, difficulty, gameMode) values ('asdf', 1231, 'Hard','Default')",
+            "insert into scores(name, score, difficulty, gameMode) values ('sy', 321, 'Easy','Default')",
+            "insert into scores(name, score, difficulty, gameMode) values ('jj', 1231, 'Hard','Default')",
+            "insert into scores(name, score, difficulty, gameMode) values ('jj', 1231, 'Hard','Default')",
+            "insert into scores(name, score, difficulty, gameMode) values ('sy', 321, 'Easy','Default')",
+            "insert into scores(name, score, difficulty, gameMode) values ('jj', 1231, 'Hard','Default')",
+            "insert into scores(name, score, difficulty, gameMode) values ('jj', 1231, 'Hard','Default')",
+            "insert into scores(name, score, difficulty, gameMode) values ('sy', 321, 'Easy','Default')",
+            "insert into scores(name, score, difficulty, gameMode) values ('jj', 1231, 'Hard','Default')",
+            "insert into scores(name, score, difficulty, gameMode) values ('jj', 1231, 'Hard','Default')",
+            "insert into scores(name, score, difficulty, gameMode) values ('sy', 321, null,'Item')",
+            "insert into scores(name, score, difficulty, gameMode) values ('jj', 1231, null,'Item')",
+            "insert into scores(name, score, difficulty, gameMode) values ('jj', 7124, null,'Item')",
+            "insert into scores(name, score, difficulty, gameMode) values ('sy', 3213, null,'Item')",
+            "insert into scores(name, score, difficulty, gameMode) values ('jj', 231, null,'Item')",
+            "insert into scores(name, score, difficulty, gameMode) values ('jj', 61, null,'Item')",
+            "insert into scores(name, score, difficulty, gameMode) values ('jj', 1231, null,'Item')",
+            "insert into scores(name, score, difficulty, gameMode) values ('jj', 1231, null,'Item')",
+            "insert into scores(name, score, difficulty, gameMode) values ('sy', 483, null,'Item')",
+            "insert into scores(name, score, difficulty, gameMode) values ('itemTarget', 23, null,'Item')",
+            "insert into scores(name, score, difficulty, gameMode) values ('qwer', 561, null,'Item')",
+
     };
+    private final String URL = "jdbc:sqlite:/Users/jeongjin/IdeaProjects/se-team2-tetris/database/tetrisgame";
+    private Connection connection;
 
     protected void makeDefaultScore() throws SQLException {
-        Connection conn = dataSource.getConnection();
-        conn.createStatement().executeUpdate("insert into scores(id, name, score, difficulty) values (500, 'jy', 200, 'Hard');");
-        conn.createStatement().executeUpdate("insert into scores(id, name, score, difficulty) values (600, 'jd', 10, 'Normal');");
-        conn.close();
+        connection.createStatement().executeUpdate("insert into scores(name, score, difficulty) values ('jy', 200, 'Hard')");
+        connection.createStatement().executeUpdate("insert into scores(name, score, difficulty) values ('jd', 10, 'Normal')");
     }
 
     protected void makeItemScore() throws SQLException {
-        Connection conn = dataSource.getConnection();
-        conn.createStatement().executeUpdate("insert into scores(id, name, score, gameMode) values (510, 'jy', 200, 'Default');");
-        conn.createStatement().executeUpdate("insert into scores(id, name, score, gameMode) values (610, 'jd', 10, 'item');");
-        conn.close();
+        connection.createStatement().executeUpdate("insert into scores(name, score, gameMode) values ( 'jy', 200, 'Default')");
+        connection.createStatement().executeUpdate("insert into scores(name, score, gameMode) values ('jd', 10, 'item')");
     }
 
-    @Test
-    public void connectDB() {
-        ScoreBoardData scoreboard = ScoreBoardData.getInstance();
-        assertNotNull(scoreboard.getConnection());
-    }
+//    @Test
+//    public void connectDB() throws SQLException {
+//        ScoreBoardData scoreboard = ScoreBoardData.getInstance();
+//        assertNotNull(scoreboard.getConnection());
+//        scoreboard.closeConnection();
+//    }
 
-    @Test
-    void getScoreDataList() {
 
-    }
-
-    @BeforeEach
+    @BeforeAll
     public void setUp() throws SQLException {
-        if (dataSource == null) {
-            dataSource = JdbcConnectionPool.create("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1", "sa", "");
-        } else {
-            Connection con = dataSource.getConnection();
-            con.createStatement().executeUpdate("drop table scores;");
-            con.close();
-
+        try {
+            Class.forName("org.sqlite.JDBC");
+            connection = DriverManager.getConnection(URL);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
-        Connection con = dataSource.getConnection();
-        con.createStatement().executeUpdate(SCORES_CREATE_REQUEST);
         for (String request : SCORES_INSERT_REQUESTS) {
-            con.createStatement().executeUpdate(request);
+            connection.createStatement().executeUpdate(request);
         }
-        con.close();
     }
 
     @Test
-    public void getDefaultModeScore() {
-        Request request = new Request(dataSource, "select * from scores where difficulty is not null order by score desc limit 10");
+    public void getDefaultModeScore() throws SQLException {
+        Statement statement = connection.createStatement();
+        statement.setMaxRows(10);
+        ResultSet resultSet = statement.executeQuery("select * from scores where gameMode = 'Default' order by score desc");
 
-        assertThat(request).hasNumberOfRows(10);
+        assertThat(resultSet.next()).isTrue();
+        assertThat(resultSet.getString("name")).isEqualTo("itemTarget");
 
-        output(request).toConsole();
+        statement.close();
     }
 
     @Test
-    public void getItemModeScore() {
-        Request request = new Request(dataSource, "select * from scores where gameMode is not null order by score desc limit 10");
+    public void getItemModeScore() throws SQLException {
+        Statement statement = connection.createStatement();
+        statement.setMaxRows(10);
+        ResultSet resultSet = statement.executeQuery("select * from scores where gameMode = 'Item' order by score desc");
 
-        assertThat(request).hasNumberOfRows(10);
+        assertThat(resultSet.next()).isTrue();
+        assertThat(resultSet.next()).isTrue();
+        assertThat(resultSet.next()).isTrue();
+        assertThat(resultSet.next()).isTrue();
+        assertThat(resultSet.next()).isTrue();
+        assertThat(resultSet.next()).isTrue();
+        assertThat(resultSet.next()).isTrue();
+        assertThat(resultSet.next()).isTrue();
+        assertThat(resultSet.next()).isTrue();
+        assertThat(resultSet.next()).isTrue();
+        assertThat(resultSet.next()).isTrue();
+        assertThat(resultSet.getString("name")).isEqualTo("itemTarget");
+        assertThat(resultSet.next()).isFalse();
 
-        output(request).toConsole();
+        statement.close();
     }
 
 
     @Test
     public void addDefaultModeScore() throws SQLException {
-        Changes changes = new Changes(dataSource);
-
-        changes.setStartPointNow();
-        makeDefaultScore();
-        changes.setEndPointNow();
-
-        assertThat(changes).ofCreation().hasNumberOfChanges(2);
     }
 
     @Test
     public void addItemModeScore() throws SQLException {
-        Changes changes = new Changes(dataSource);
+    }
 
-        changes.setStartPointNow();
-        makeItemScore();
-        changes.setEndPointNow();
+    @AfterAll
+    public void reset() throws SQLException {
+        Statement statement = null;
 
-        assertThat(changes).ofCreation().hasNumberOfChanges(2);
+        statement = connection.createStatement();
+        statement.executeUpdate("delete from scores");
+
+        statement.close();
+        connection.close();
     }
 }

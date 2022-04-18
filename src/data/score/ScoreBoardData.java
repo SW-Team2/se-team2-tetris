@@ -57,7 +57,7 @@ public class ScoreBoardData {
         scoreDataList = new ArrayList<Score>(20);
 
         statement = this.connection.createStatement();
-        resultSet = statement.executeQuery("select * from scores where difficulty is not null order by score desc limit 10");
+        resultSet = statement.executeQuery("select * from scores where difficulty is not null order by score desc");
         while (resultSet.next()) {
             String name = resultSet.getString("name");
             int score = resultSet.getInt("score");
@@ -101,11 +101,12 @@ public class ScoreBoardData {
 
         PreparedStatement statement;
 
-        String query = "insert into score(name, score, difficulty) values (?, ?, ?)";
+        String query = "insert into score(name, score, difficulty, gameMode) values (?, ?, ?, ?)";
         statement = this.connection.prepareStatement(query);
         statement.setString(1, newValue.getName());
         statement.setInt(2, newValue.getScore());
         statement.setString(3, newValue.getDifficulty());
+        statement.setString(4, newValue.getGameMode());
 
         statement.executeUpdate();
         statement.close();
