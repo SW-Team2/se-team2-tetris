@@ -30,8 +30,6 @@ public class ScoreBoardData {
             try {
                 Class.forName("org.sqlite.JDBC");
                 this.connection = DriverManager.getConnection(URL);
-                getDefaultModeScore();
-                getItemModeScore();
                 System.out.println("Connection to SQLite has been established.");
 
             } catch (SQLException e) {

@@ -11,7 +11,7 @@ import graphics.eScreenInfo;
 public class MainMenuScreen extends Screen {
     private JLabel mTemp;
     private JLabel mButtons[];
-    private static final int NUM_BUTTONS = 3;
+    private static final int NUM_BUTTONS = 4;
     private int mButtonIndex;
 
     public MainMenuScreen() {
@@ -21,8 +21,9 @@ public class MainMenuScreen extends Screen {
 
         mButtons = new JLabel[NUM_BUTTONS];
         mButtons[0] = new JLabel("GAME");
-        mButtons[1] = new JLabel("SETTING");
-        mButtons[2] = new JLabel("SCORE BOARD");
+        mButtons[1] = new JLabel("ITEM MODE");
+        mButtons[2] = new JLabel("SETTING");
+        mButtons[3] = new JLabel("SCORE BOARD");
         mButtonIndex = 0;
 
         super.add(mTemp);
@@ -52,9 +53,12 @@ public class MainMenuScreen extends Screen {
                         sr = eScreenInfo.GAME;
                         break;
                     case 1:
-                        sr = eScreenInfo.SETTING;
+                        sr = eScreenInfo.ITEMGAME;
                         break;
                     case 2:
+                        sr = eScreenInfo.SETTING;
+                        break;
+                    case 3:
                         sr = eScreenInfo.SCOREBOARD;
                 }
                 break;

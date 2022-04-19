@@ -1,4 +1,4 @@
-package tetrisgame.parts;
+package tetrisgame.util;
 
 public class Position {
     public int mCol;
@@ -7,6 +7,11 @@ public class Position {
     public Position(int c, int r) {
         mCol = c;
         mRow = r;
+    }
+
+    public Position(Position in) {
+        mCol = in.mCol;
+        mRow = in.mRow;
     }
 
     public void deepCopy(Position in) {
