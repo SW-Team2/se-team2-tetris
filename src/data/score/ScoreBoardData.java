@@ -30,7 +30,8 @@ public class ScoreBoardData {
             try {
                 Class.forName("org.sqlite.JDBC");
                 this.connection = DriverManager.getConnection(URL);
-
+                getDefaultModeScore();
+                getItemModeScore();
                 System.out.println("Connection to SQLite has been established.");
 
             } catch (SQLException e) {
@@ -49,12 +50,12 @@ public class ScoreBoardData {
         return this.connection;
     }
 
-    private ArrayList<Score> getDefaultModeScore() throws SQLException {
+    public ArrayList<Score> getDefaultModeScore() throws SQLException {
         connectDB();
         ResultSet resultSet = null;
         Statement statement = null;
 
-        this.defaultModeScores = new ArrayList<Score>();
+        this.defaultModeScores = new ArrayList<>();
 
         statement = this.connection.createStatement();
         statement.setMaxRows(MAX_ROWS);
@@ -74,11 +75,11 @@ public class ScoreBoardData {
         return this.defaultModeScores;
     }
 
-    private ArrayList<Score> getItemModeScore() throws SQLException {
+    public ArrayList<Score> getItemModeScore() throws SQLException {
         connectDB();
         ResultSet resultSet = null;
         Statement statement = null;
-        this.itemModeScores = new ArrayList<Score>();
+        this.itemModeScores = new ArrayList<>();
 
         statement = this.connection.createStatement();
         statement.setMaxRows(MAX_ROWS);
