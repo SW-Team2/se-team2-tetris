@@ -8,18 +8,18 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 
 public class SettingData {
     private static SettingData uniqueInstance = null;
 
     private HashMap<String, Integer> windowSize;
-    private HashMap<String, Integer> menuKey;
     private HashMap<String, Integer> gameKey;
-    private boolean isBlindnessMode;
-    private int typeOfBlindness;
+    private int blindnessMode;
 
-    private final String PATH = "/Users/jeongjin/IdeaProjects/se-team2-tetris/database/Setting.json";
+    private final String PATH = System.getProperty("user.dir") + "/database/Setting.json";
 
 
     private SettingData() {
@@ -40,7 +40,6 @@ public class SettingData {
             if (file.createNewFile()) {
                 resetSetting();
             } else {
-//                기존에 존재할 때만 여기에 들어올까?
                 System.out.println("File already exists.");
 
                 JSONParser jsonParser = new JSONParser();
@@ -49,13 +48,10 @@ public class SettingData {
                 JSONObject obj = (JSONObject) jsonParser.parse(reader);
 
                 Object windowSizeMap = obj.get("windowSize");
-                Object menuKeyMap = obj.get("menuKey");
                 Object gameKeyMap = obj.get("gameKey");
                 this.windowSize = (HashMap<String, Integer>) windowSizeMap;
-                this.menuKey = (HashMap<String, Integer>) menuKeyMap;
                 this.gameKey = (HashMap<String, Integer>) gameKeyMap;
-                this.isBlindnessMode = (boolean) obj.get("isBlindnessMode");
-                this.typeOfBlindness = Integer.parseInt(String.valueOf(obj.get("typeOfBlindness")));
+                this.blindnessMode = Integer.parseInt(String.valueOf(obj.get("blindnessMode")));
             }
         } catch (IOException | ParseException e) {
             e.printStackTrace();
@@ -82,36 +78,43 @@ public class SettingData {
         }
     }
 
-    public void storeMenuKey(int moveUp, int moveDown, int selectMenu) {
-        this.menuKey.put("moveUp", moveUp);
-        this.menuKey.put("moveDown", moveDown);
-        this.menuKey.put("selectMenu", selectMenu);
+    public void storeGameMoveDownKey(int moveDown) {
+        this.gameKey.put("moveDown", moveDown);
 
-        try {
-            JSONParser jsonParser = new JSONParser();
-
-            FileReader reader = new FileReader(PATH);
-            JSONObject setting = (JSONObject) jsonParser.parse(reader);
-
-            setting.put("menuKey", this.menuKey);
-
-            FileWriter writer = new FileWriter(PATH);
-            writer.write(setting.toJSONString());
-            writer.flush();
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
-        }
-
+        storeGameKey();
     }
 
-    public void storeGameKey(int moveDown, int moveRight, int moveLeft, int moveToFloor, int rotate, int pause) {
-        this.gameKey.put("moveDown", moveDown);
+    public void storeGameMoveRightKey(int moveRight) {
         this.gameKey.put("moveRight", moveRight);
+
+        storeGameKey();
+    }
+
+    public void storeGameMoveLeftKey(int moveLeft) {
         this.gameKey.put("moveLeft", moveLeft);
+
+        storeGameKey();
+    }
+
+    public void storeGameMoveToFloorKey(int moveToFloor) {
         this.gameKey.put("moveToFloor", moveToFloor);
+
+        storeGameKey();
+    }
+
+    public void storeGameRotateKey(int rotate) {
         this.gameKey.put("rotate", rotate);
+
+        storeGameKey();
+    }
+
+    public void storeGamePauseKey(int pause) {
         this.gameKey.put("pause", pause);
 
+        storeGameKey();
+    }
+
+    private void storeGameKey() {
         try {
             JSONParser jsonParser = new JSONParser();
 
@@ -128,8 +131,8 @@ public class SettingData {
         }
     }
 
-    public void setIsBlindnessMode(boolean isBlindnessMode) {
-        this.isBlindnessMode = isBlindnessMode;
+    public void setBlindnessMode(int blindnessMode) {
+        this.blindnessMode = blindnessMode;
 
         try {
             JSONParser jsonParser = new JSONParser();
@@ -137,26 +140,7 @@ public class SettingData {
             FileReader reader = new FileReader(PATH);
             JSONObject setting = (JSONObject) jsonParser.parse(reader);
 
-            setting.put("isBlindnessMode", this.isBlindnessMode);
-
-            FileWriter writer = new FileWriter(PATH);
-            writer.write(setting.toJSONString());
-            writer.flush();
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void setTypeOfBlindness(int typeOfBlindness) {
-        this.typeOfBlindness = typeOfBlindness;
-
-        try {
-            JSONParser jsonParser = new JSONParser();
-
-            FileReader reader = new FileReader(PATH);
-            JSONObject setting = (JSONObject) jsonParser.parse(reader);
-
-            setting.put("typeOfBlindness", this.typeOfBlindness);
+            setting.put("blindnessMode", this.blindnessMode);
 
             FileWriter writer = new FileWriter(PATH);
             writer.write(setting.toJSONString());
@@ -172,18 +156,6 @@ public class SettingData {
 
     public int getHeight() {
         return Integer.parseInt(String.valueOf(windowSize.get("width")));
-    }
-
-    public int getMenuMoveUp() {
-        return Integer.parseInt(String.valueOf(menuKey.get("moveUp")));
-    }
-
-    public int getMenuMoveDown() {
-        return Integer.parseInt(String.valueOf(menuKey.get("moveDown")));
-    }
-
-    public int getSelectMenu() {
-        return Integer.parseInt(String.valueOf(menuKey.get("selectMenu")));
     }
 
     public int getGameMoveDown() {
@@ -210,12 +182,8 @@ public class SettingData {
         return Integer.parseInt(String.valueOf(gameKey.get("pause")));
     }
 
-    public boolean isBlindnessMode() {
-        return isBlindnessMode;
-    }
-
-    public int getTypeOfBlindness() {
-        return typeOfBlindness;
+    public int getBlindnessMode() {
+        return blindnessMode;
     }
 
     public void resetSetting() throws IOException {
@@ -223,16 +191,12 @@ public class SettingData {
         JSONObject setting = new JSONObject();
 
         setting.put("windowSize", new JSONObject(defaultSetting.getWindowSize()));
-        setting.put("menuKey", new JSONObject(defaultSetting.getMenuKeyMap()));
         setting.put("gameKey", new JSONObject(defaultSetting.getGameKeyMap()));
-        setting.put("isBlindnessMode", defaultSetting.isBlindnessMode());
-        setting.put("typeOfBlindness", defaultSetting.getTypeOfBlindness());
+        setting.put("blindnessMode", defaultSetting.getBlindnessMode());
 
         this.windowSize = defaultSetting.getWindowSize();
-        this.menuKey = defaultSetting.getMenuKeyMap();
         this.gameKey = defaultSetting.getGameKeyMap();
-        this.isBlindnessMode = defaultSetting.isBlindnessMode();
-        this.typeOfBlindness = defaultSetting.getTypeOfBlindness();
+        this.blindnessMode = defaultSetting.getBlindnessMode();
 
         FileWriter writer = new FileWriter(PATH);
         writer.write(setting.toJSONString());

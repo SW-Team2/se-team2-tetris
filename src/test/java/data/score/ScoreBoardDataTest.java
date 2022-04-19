@@ -37,7 +37,7 @@ public class ScoreBoardDataTest {
             "insert into scores(name, score, difficulty, gameMode) values ('qwer', 561, null,'Item')",
 
     };
-    private final String URL = "jdbc:sqlite:/Users/jeongjin/IdeaProjects/se-team2-tetris/database/tetrisgame";
+    private final String URL = "jdbc:sqlite:"+ System.getProperty("user.dir") +"/database/tetrisgame";
     private Connection connection;
 
     protected void makeDefaultScore() throws SQLException {
@@ -49,14 +49,6 @@ public class ScoreBoardDataTest {
         connection.createStatement().executeUpdate("insert into scores(name, score, gameMode) values ( 'jy', 200, 'Default')");
         connection.createStatement().executeUpdate("insert into scores(name, score, gameMode) values ('jd', 10, 'item')");
     }
-
-//    @Test
-//    public void connectDB() throws SQLException {
-//        ScoreBoardData scoreboard = ScoreBoardData.getInstance();
-//        assertNotNull(scoreboard.getConnection());
-//        scoreboard.closeConnection();
-//    }
-
 
     @BeforeAll
     public void setUp() throws SQLException {

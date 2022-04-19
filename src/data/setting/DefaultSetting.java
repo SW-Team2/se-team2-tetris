@@ -7,22 +7,15 @@ public class DefaultSetting {
     private static DefaultSetting uniqueInstance = null;
 
     private HashMap<String, Integer> windowSize;
-    private HashMap<String, Integer> menuKeyMap;
     private HashMap<String, Integer> gameKeyMap;
-    private final boolean isBlindnessMode;
-    private final int typeOfBlindness;
+    private final int blindnessMode;
 
     private DefaultSetting() {
         windowSize = new HashMap<>();
-        menuKeyMap = new HashMap<>();
         gameKeyMap = new HashMap<>();
 
         windowSize.put("width", 800);
         windowSize.put("height", 1040);
-
-        menuKeyMap.put("moveUp", KeyEvent.VK_UP);
-        menuKeyMap.put("moveDown", KeyEvent.VK_DOWN);
-        menuKeyMap.put("selectMenu", KeyEvent.VK_ENTER);
 
         gameKeyMap.put("moveDown", KeyEvent.VK_DOWN);
         gameKeyMap.put("moveRight", KeyEvent.VK_RIGHT);
@@ -31,8 +24,7 @@ public class DefaultSetting {
         gameKeyMap.put("rotate", KeyEvent.VK_SPACE);
         gameKeyMap.put("pause", KeyEvent.VK_P);
 
-        this.isBlindnessMode = false;
-        this.typeOfBlindness = BlindMode.NONE.ordinal();
+        this.blindnessMode = BlindMode.NONE.ordinal();
     }
 
     public static DefaultSetting getInstance() {
@@ -46,19 +38,11 @@ public class DefaultSetting {
         return windowSize;
     }
 
-    public HashMap<String, Integer> getMenuKeyMap() {
-        return menuKeyMap;
-    }
-
     public HashMap<String, Integer> getGameKeyMap() {
         return gameKeyMap;
     }
 
-    public boolean isBlindnessMode() {
-        return isBlindnessMode;
-    }
-
-    public int getTypeOfBlindness() {
-        return typeOfBlindness;
+    public int getBlindnessMode() {
+        return blindnessMode;
     }
 }

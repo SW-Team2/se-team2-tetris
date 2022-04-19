@@ -7,9 +7,12 @@ public class ScoreBoardData {
     private static ScoreBoardData uniqueInstance = null;
 
     private Connection connection;
-    private ArrayList<Score> scoreDataList;
+    private ArrayList<Score> defaultModeScores;
+    private ArrayList<Score> itemModeScores;
 
     private final int MAX_ROWS = 10;
+    private final String URL = "jdbc:sqlite:"+ System.getProperty("user.dir") +"/database/tetrisgame";
+
 
     private ScoreBoardData() {
         connectDB();
@@ -26,7 +29,6 @@ public class ScoreBoardData {
         if (this.connection == null) {
             try {
                 Class.forName("org.sqlite.JDBC");
-                String URL = "jdbc:sqlite:/Users/jeongjin/IdeaProjects/se-team2-tetris/database/tetrisgame";
                 this.connection = DriverManager.getConnection(URL);
 
                 System.out.println("Connection to SQLite has been established.");
@@ -52,7 +54,7 @@ public class ScoreBoardData {
         ResultSet resultSet = null;
         Statement statement = null;
 
-        scoreDataList = new ArrayList<Score>();
+        this.defaultModeScores = new ArrayList<Score>();
 
         statement = this.connection.createStatement();
         statement.setMaxRows(MAX_ROWS);
@@ -63,20 +65,20 @@ public class ScoreBoardData {
             String difficulty = resultSet.getString("difficulty");
             String gameMode = resultSet.getString("gameMode");
             Score scoreData = new Score(name, score, difficulty, gameMode);
-            scoreDataList.add(scoreData);
+            this.defaultModeScores.add(scoreData);
         }
         resultSet.close();
         statement.close();
         closeConnection();
 
-        return scoreDataList;
+        return this.defaultModeScores;
     }
 
     private ArrayList<Score> getItemModeScore() throws SQLException {
         connectDB();
         ResultSet resultSet = null;
         Statement statement = null;
-        scoreDataList = new ArrayList<Score>();
+        this.itemModeScores = new ArrayList<Score>();
 
         statement = this.connection.createStatement();
         statement.setMaxRows(MAX_ROWS);
@@ -87,13 +89,13 @@ public class ScoreBoardData {
             String difficulty = resultSet.getString("difficulty");
             String gameMode = resultSet.getString("gameMode");
             Score scoreData = new Score(name, score, difficulty, gameMode);
-            scoreDataList.add(scoreData);
+            this.itemModeScores.add(scoreData);
         }
         resultSet.close();
         statement.close();
         closeConnection();
 
-        return scoreDataList;
+        return this.itemModeScores;
     }
 
     public void addDefaultModeScore(Score newValue) throws SQLException {
