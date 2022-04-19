@@ -1,109 +1,201 @@
 package tetrisgame;
 
 import java.awt.event.KeyEvent;
+import java.util.Random;
 
 import javax.swing.JOptionPane;
+import javax.swing.plaf.multi.MultiFileChooserUI;
 
 import gamestarter.GameStarter;
 import graphics.screens.GameScreen;
+import tetrisgame.component.animation.BounusScoreItemAnim;
+import tetrisgame.component.animation.IAnim;
+import tetrisgame.component.animation.LineEraserItemAnim;
+import tetrisgame.component.animation.LineRemovingAnim;
+import tetrisgame.component.animation.RemovingAllItemAnim;
+import tetrisgame.component.animation.SlowingItemAnim;
+import tetrisgame.component.animation.WeightItemAnim;
+import tetrisgame.component.score.Score;
+import tetrisgame.component.tetromino.BonusScoreItemTetroino;
+import tetrisgame.component.tetromino.LineEraserItemTetromino;
+import tetrisgame.component.tetromino.RemovingAllItemTetromino;
+import tetrisgame.component.tetromino.SlowingItemTetromino;
+import tetrisgame.component.tetromino.Tetromino;
+import tetrisgame.component.tetromino.WeightItemTetromino;
+import tetrisgame.component.tile.Tile;
 import tetrisgame.enumerations.eDifficulty;
-import tetrisgame.enumerations.eDirection;
-import tetrisgame.enumerations.eGameOver;
-import tetrisgame.parts.GameBoard;
-import tetrisgame.parts.Tetromino;
-import tetrisgame.parts.Tile;
-import tetrisgame.parts.Timer;
+import tetrisgame.enumerations.eMsg;
+import tetrisgame.util.Position;
+import tetrisgame.util.Timer;
 
 public class TetrisGame implements Runnable {
-	private GameScreen mScreen;
+	protected GameScreen mScreen;
 
-	private GameBoard mGameBoard;
-	private Tetromino mNextTetromino;
+	private volatile boolean mbGameOverFlag;
+	private boolean mbItemMode;
+	private static final int VAR_ITEMS = 5;
+
+	public Tile mBoard[][];
+	protected Tetromino mCurrTetromino;
+	protected Tetromino mNextTetromino;
+	private IAnim mFocusAnim;
+	protected Score mScore;
+
+	private int mRemoveColArr[];
+	private int mNumRemovableLines;
+
 	private Timer mTimer;
-	private int mSpeed;
-	private int mScore;
-	// TODO: Using Temp enum
-	private eDifficulty meDifficulty;
-	private float GAME_SPEED_ACCEL_UNIT = 0.1f;
-
-	private float mAutoDownTime;
-	private float mAutoDownTimeTick;
-	// private float mPrevTimeForDraw;
 
 	private int mCurrKeyCode;
-	private volatile float mKeyReactTimeTick;
+	private float mKeyReactTimeTick;
+	private boolean mbKeyReactFlag;
+	private static final float KEY_REACT_TIME = 0.1f;
 
-	private boolean mbCollWithFloor = false;
+	public static final int BOARD_COL = 20;
+	public static final int BOARD_ROW = 10;
 
-	private static final float START_AUTO_DOWN_TIME = 1.0f;
-
-	private static final float KEY_REACT_TIME = 0.12f;
-
-	private static final int SCORE_UNIT = 100;
-	private static final int MULTIPLE_BREAK_BONUS_2L = 30;
-	private static final int MULTIPLE_BREAK_BONUS_3L = 60;
-	private static final int MULTIPLE_BREAK_BONUS_4L = 100;
-
-	public TetrisGame(GameScreen gameScreen) {
+	public TetrisGame(GameScreen gameScreen, boolean bItemMode) {
 		mScreen = gameScreen;
-		mGameBoard = new GameBoard();
-		mNextTetromino = new Tetromino();
+		mbItemMode = bItemMode;
+		mBoard = new Tile[BOARD_COL][BOARD_ROW];
+		mCurrTetromino = new Tetromino(this, mBoard);
+		mNextTetromino = new Tetromino(this, mBoard);
+		mScore = new Score(this);
+
+		// TODO:
+		eDifficulty eDiff = eDifficulty.EASY;
+		Tetromino.setDifficulty(eDiff);
+
 		mTimer = new Timer();
-	}
-
-	public void initialize() {
-		mGameBoard.clear();
-		mNextTetromino.setRandomShapeAndColor();
-		mGameBoard.setTetromino(mNextTetromino);
-		mNextTetromino.setRandomShapeAndColor();
 		mTimer.initialize();
-		// mTimer.pause();
-		mScore = 0;
-		mSpeed = 1;
-		// TODO: Using Temp value
-		meDifficulty = eDifficulty.EASY;
-		Tetromino.setDifficulty(meDifficulty);
-		switch (meDifficulty) {
-			case EASY:
-				GAME_SPEED_ACCEL_UNIT *= 0.8f;
-				break;
-			case NORMAL:
-				break;
-			case HARD:
-				GAME_SPEED_ACCEL_UNIT *= 1.2f;
-				break;
-			default:
-				assert (false);
-				break;
-		}
 
-		mAutoDownTime = START_AUTO_DOWN_TIME;
-		mAutoDownTimeTick = 0.f;
-		// mPrevTimeForDraw = 0.0f;
+		mRemoveColArr = new int[4];
 
 		mCurrKeyCode = -1;
 		mKeyReactTimeTick = 0.f;
+		mbKeyReactFlag = true;
+	}
+
+	public void broadcast(eMsg msg) {
+		// Send msg
+		// TODO: Convert to IGameComponent array
+		mCurrTetromino.react(msg);
+		if (mFocusAnim != null) {
+			mFocusAnim.react(msg);
+		}
+		mScore.react(msg);
+		for (Tile tileLine[] : mBoard) {
+			for (Tile tile : tileLine) {
+				if (tile != null) {
+					tile.react(msg);
+				}
+			}
+		}
+		switch (msg) {
+			case GAME_OVER:
+				mbGameOverFlag = true;
+				return;
+			case COLL_WITH_FLOOR:
+				findRemovableLines();
+				broadRemoveLine();
+				break;
+			case WEIGHT_ITEM_COLL_WITH_FLOOR:
+				mFocusAnim = new WeightItemAnim(this, mBoard, mCurrTetromino.getPosition());
+				break;
+			case LINEERASER_ITEM_COLL_WITH_FLOOR:
+				mFocusAnim = new LineEraserItemAnim(this, mBoard, mCurrTetromino);
+				break;
+			case SLOWING_ITEM_ERASED:
+				mFocusAnim = new SlowingItemAnim(this);
+				break;
+			case BONUSSCORE_ITEM_ERASED:
+				mFocusAnim = new BounusScoreItemAnim(this);
+				break;
+			case REMOVINGALL_ITEM_ERASED:
+				mFocusAnim = new RemovingAllItemAnim(this, mBoard);
+				break;
+			case FOCUS_ANIM_OVER:
+				mCurrTetromino = mNextTetromino;
+				mNextTetromino = new Tetromino(this, mBoard);
+				mFocusAnim = null;
+				if (checkGameOver()) {
+					this.broadcast(eMsg.GAME_OVER);
+				}
+				removeLines();
+				fallDownLines();
+				mNumRemovableLines = 0;
+				break;
+			case ERASE_10xN_LINES:
+				if (mbItemMode) {
+					Random random = new Random();
+					int itemIndex = random.nextInt(VAR_ITEMS);
+					switch (itemIndex) {
+						case 0:
+							mNextTetromino = new WeightItemTetromino(this, mBoard);
+							break;
+						case 1:
+							mNextTetromino = new LineEraserItemTetromino(this, mBoard);
+							break;
+						case 2:
+							mNextTetromino = new SlowingItemTetromino(this, mBoard);
+							break;
+						case 3:
+							mNextTetromino = new RemovingAllItemTetromino(this, mBoard);
+							break;
+						case 4:
+							mNextTetromino = new BonusScoreItemTetroino(this, mBoard);
+							break;
+					}
+				}
+				break;
+			default:
+				break;
+		}
 	}
 
 	@Override
 	public void run() {
-		boolean bGameOverFlag = false;
-		while (!bGameOverFlag) {
-			bGameOverFlag = this.update();
+		while (mbGameOverFlag == false) {
+			this.update();
 			this.draw();
 		}
 		// Save user record
-		String userName = JOptionPane.showInputDialog("Enter your name");
-		System.out.println(userName);
+		String userName;
+		do {
+			userName = JOptionPane.showInputDialog("Enter your name");
+		} while (userName.equals(""));
 		GameStarter.setOver();
 	}
 
-	public Tetromino getNextTetromion() {
-		return mNextTetromino;
-	}
+	protected synchronized void update() {
+		mTimer.tick();
 
-	public long getCurrScore() {
-		return mScore;
+		float deltaTime = mTimer.getDeltaTime();
+		mKeyReactTimeTick += deltaTime;
+
+		// React at input
+		int userInput = -1;
+		if (mKeyReactTimeTick >= KEY_REACT_TIME && mbKeyReactFlag == false) {
+			userInput = mCurrKeyCode;
+			if (mCurrKeyCode != KeyEvent.VK_DOWN && mCurrKeyCode != KeyEvent.VK_RIGHT
+					&& mCurrKeyCode != KeyEvent.VK_LEFT) {
+				mbKeyReactFlag = true;
+			}
+			mKeyReactTimeTick = 0.f;
+		}
+
+		mCurrTetromino.update(deltaTime, userInput);
+		if (mFocusAnim != null) {
+			mFocusAnim.update(deltaTime, userInput);
+		}
+		mScore.update(deltaTime, userInput);
+		for (Tile tileLine[] : mBoard) {
+			for (Tile tile : tileLine) {
+				if (tile != null) {
+					tile.update(deltaTime, userInput);
+				}
+			}
+		}
 	}
 
 	public synchronized void getUserInput(KeyEvent e) {
@@ -112,151 +204,13 @@ public class TetrisGame implements Runnable {
 		}
 
 		mCurrKeyCode = e.getKeyCode();
+		mKeyReactTimeTick = KEY_REACT_TIME;
+		mbKeyReactFlag = false;
 		if (mTimer.getPauseState()) {
 			mCurrKeyCode &= KeyEvent.VK_U;
 		}
-		mKeyReactTimeTick = 0.f;
-		reactAtContinuousKeyInput();
-		reactAtDisContinuousKeyInput();
-	}
 
-	public void getUserInputKeyRealease(KeyEvent e) {
-		if (mCurrKeyCode == e.getKeyCode()) {
-			mCurrKeyCode = -1;
-		}
-	}
-
-	public GameBoard getGameBoard() {
-		return mGameBoard;
-	}
-
-	private synchronized boolean update() {
-		eGameOver gameOverFlag = eGameOver.CONTINUE;
-
-		mTimer.tick();
-
-		float dTime = mTimer.getDeltaTime();
-		mAutoDownTimeTick += dTime;
-		mKeyReactTimeTick += dTime;
-
-		// React at input
-		if (mKeyReactTimeTick >= KEY_REACT_TIME) {
-			mKeyReactTimeTick = 0.f;
-			reactAtContinuousKeyInput();
-		}
-
-		if (mbCollWithFloor == false && mAutoDownTime <= mAutoDownTimeTick) {
-			mbCollWithFloor |= mGameBoard.moveTet(eDirection.DOWN);
-			mAutoDownTimeTick = 0.0f;
-		}
-
-		if (mbCollWithFloor) {
-			mGameBoard.getTetromino().setEmptyShapeAndColor();
-			int removeColArr[] = new int[4];
-			int numRemovedLines = 0;
-			numRemovedLines = mGameBoard.findRemovableLines(removeColArr);
-			if (numRemovedLines > 0) {
-				// Swap to removing tile 1
-				for (int i = 0; i < numRemovedLines; i++) {
-					int col = removeColArr[i];
-					Tile tileRemove = new Tile("tile_remove1");
-					for (int row = 0; row < GameBoard.BOARD_ROW; row++) {
-						mGameBoard.mBoard[col][row] = tileRemove;
-					}
-				}
-				mScreen.repaint();
-
-				try {
-					Thread.sleep(200);
-				} catch (InterruptedException e) {
-					assert (false);
-				}
-
-				// Swap to removing tile 1
-				for (int i = 0; i < numRemovedLines; i++) {
-					int col = removeColArr[i];
-					Tile tileRemove = new Tile("tile_remove2");
-					for (int row = 0; row < GameBoard.BOARD_ROW; row++) {
-						mGameBoard.mBoard[col][row] = tileRemove;
-					}
-				}
-				mScreen.repaint();
-				try {
-					Thread.sleep(300);
-				} catch (InterruptedException e) {
-					assert (false);
-				}
-
-				mGameBoard.removeLines(removeColArr, numRemovedLines);
-				mScreen.repaint();
-			}
-			mGameBoard.fallDownLines(removeColArr, numRemovedLines);
-			// Calculate Score
-			int addedScore = 0;
-			switch (numRemovedLines) {
-				case 0:
-					break;
-				case 1:
-					addedScore = SCORE_UNIT;
-					break;
-				case 2:
-					addedScore = SCORE_UNIT * 2 + MULTIPLE_BREAK_BONUS_2L;
-					break;
-				case 3:
-					addedScore = SCORE_UNIT * 3 + MULTIPLE_BREAK_BONUS_3L;
-					break;
-				case 4:
-					addedScore = SCORE_UNIT * 4 + MULTIPLE_BREAK_BONUS_4L;
-					break;
-				default:
-					assert (false) : "Unspecified";
-					break;
-			}
-			addedScore *= (float) (1 + (mSpeed - 1) / 10.0f);
-			mScore += addedScore;
-			mSpeed = (int) (mScore / (SCORE_UNIT * 10) + 1);
-
-			mGameBoard.setTetromino(mNextTetromino);
-			gameOverFlag = mGameBoard.checkGameOver();
-			mNextTetromino.setRandomShapeAndColor();
-			mbCollWithFloor = false;
-			mAutoDownTimeTick = 0.0f;
-			mAutoDownTime = START_AUTO_DOWN_TIME;
-			for (int i = 0; i < mSpeed - 1; i++) {
-				mAutoDownTime = mAutoDownTime * (1.0f - GAME_SPEED_ACCEL_UNIT);
-			}
-
-			if (gameOverFlag == eGameOver.OVER) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private void draw() {
-		// TODO: refact
-		mScreen.repaint();
-		// float currTime = mTimer.getGameTime();
-		// float dTime = currTime - mPrevTimeForDraw;
-		// // TODO: Set frame
-		// if (dTime < 0.1f) {
-		// return;
-		// }
-		// mPrevTimeForDraw = currTime;
-	}
-
-	private void reactAtDisContinuousKeyInput() {
 		switch (mCurrKeyCode) {
-			// Game Playing
-			case KeyEvent.VK_SPACE:
-				mGameBoard.rotateTet();
-				break;
-			case KeyEvent.VK_UP:
-				while (!mbCollWithFloor) {
-					mbCollWithFloor = mGameBoard.moveTet(eDirection.DOWN);
-				}
-				break;
-			// Pause and UnPause
 			case KeyEvent.VK_P:
 				mTimer.pause();
 				break;
@@ -264,23 +218,180 @@ public class TetrisGame implements Runnable {
 				mTimer.unPause();
 				break;
 		}
+		update();
 	}
 
-	private void reactAtContinuousKeyInput() {
-		switch (mCurrKeyCode) {
-			// None
-			case -1:
-				break;
-			case KeyEvent.VK_LEFT:
-				mGameBoard.moveTet(eDirection.LEFT);
-				break;
-			case KeyEvent.VK_RIGHT:
-				mGameBoard.moveTet(eDirection.RIGHT);
-				break;
-			case KeyEvent.VK_DOWN:
-				mAutoDownTimeTick = 0.f;
-				mbCollWithFloor = mGameBoard.moveTet(eDirection.DOWN);
-				break;
+	public void getUserInputKeyRealease(KeyEvent e) {
+		if (mCurrKeyCode == e.getKeyCode()) {
+			mCurrKeyCode = -1;
+			mbKeyReactFlag = false;
+		}
+	}
+
+	public Tile[][] getGameBoard() {
+		return mBoard;
+	}
+
+	public Tetromino getCurrTetromino() {
+		return mCurrTetromino;
+	}
+
+	public Tetromino getNextTetromion() {
+		return mNextTetromino;
+	}
+
+	public long getCurrScore() {
+		return mScore.getScore();
+	}
+
+	private void draw() {
+		// TODO: refact
+		mScreen.repaint();
+	}
+
+	private boolean checkGameOver() {
+		boolean collResult = collisionTest();
+		return collResult;
+	}
+
+	private void findRemovableLines() {
+		boolean bRemovable = true;
+		mNumRemovableLines = 0;
+		int posCol = mCurrTetromino.getPosition().mCol;
+		int startCol = posCol + 3 < BOARD_COL ? posCol + 3 : BOARD_COL - 1;
+		posCol = posCol >= 0 ? posCol : 0;
+		for (int boardCol = startCol; boardCol >= posCol; boardCol--) {
+			for (Tile currBolck : mBoard[boardCol]) {
+				if (currBolck == null) {
+					bRemovable = false;
+					break;
+				}
+			}
+			if (bRemovable) {
+				mRemoveColArr[mNumRemovableLines++] = boardCol;
+			}
+			bRemovable = true;
+		}
+	}
+
+	private void removeLines() {
+		for (int index = 0; index < mNumRemovableLines; index++) {
+			int col = mRemoveColArr[index];
+			for (int row = 0; row < BOARD_ROW; row++) {
+				mBoard[col][row].eraseAct();
+				mBoard[col][row] = null;
+			}
+		}
+	}
+
+	private void fallDownLines() {
+		for (int index = 0; index < mNumRemovableLines; index++) {
+			int col = mRemoveColArr[index];
+			Tile removedLine[] = mBoard[col];
+			for (int c = col; c > 0; c--) {
+				mBoard[c] = mBoard[c - 1];
+			}
+			for (int i = index; i < mNumRemovableLines; i++) {
+				mRemoveColArr[i]++;
+			}
+			mBoard[0] = removedLine;
+		}
+	}
+
+	private boolean collisionTest() {
+		boolean re = false;
+		Position pos = mCurrTetromino.getPosition();
+		for (int c = 0; c < Tetromino.SHAPE_COL; c++) {
+			for (int r = 0; r < Tetromino.SHAPE_ROW; r++) {
+				if (mCurrTetromino.mShape[c][r] != null) {
+					int col = pos.mCol + c;
+					int row = pos.mRow + r;
+					if (BOARD_COL <= col || col < 0 || row < 0 || BOARD_ROW <= row ||
+							mBoard[col][row] != null) {
+						re = true;
+						return re;
+					}
+
+				}
+			}
+		}
+		return re;
+	}
+
+	private void broadRemoveLine() {
+		if (mNumRemovableLines > 0) {
+			mFocusAnim = new LineRemovingAnim(this, mBoard);
+			for (int j = 0; j < mNumRemovableLines; j++) {
+				int col = mRemoveColArr[j];
+				switch (col) {
+					case 0:
+						this.broadcast(eMsg.LINE_REMOVE_0);
+						break;
+					case 1:
+						this.broadcast(eMsg.LINE_REMOVE_1);
+						break;
+					case 2:
+						this.broadcast(eMsg.LINE_REMOVE_2);
+						break;
+					case 3:
+						this.broadcast(eMsg.LINE_REMOVE_3);
+						break;
+					case 4:
+						this.broadcast(eMsg.LINE_REMOVE_4);
+						break;
+					case 5:
+						this.broadcast(eMsg.LINE_REMOVE_5);
+						break;
+					case 6:
+						this.broadcast(eMsg.LINE_REMOVE_6);
+						break;
+					case 7:
+						this.broadcast(eMsg.LINE_REMOVE_7);
+						break;
+					case 8:
+						this.broadcast(eMsg.LINE_REMOVE_8);
+						break;
+					case 9:
+						this.broadcast(eMsg.LINE_REMOVE_9);
+						break;
+					case 10:
+						this.broadcast(eMsg.LINE_REMOVE_10);
+						break;
+					case 11:
+						this.broadcast(eMsg.LINE_REMOVE_11);
+						break;
+					case 12:
+						this.broadcast(eMsg.LINE_REMOVE_12);
+						break;
+					case 13:
+						this.broadcast(eMsg.LINE_REMOVE_13);
+						break;
+					case 14:
+						this.broadcast(eMsg.LINE_REMOVE_14);
+						break;
+					case 15:
+						this.broadcast(eMsg.LINE_REMOVE_15);
+						break;
+					case 16:
+						this.broadcast(eMsg.LINE_REMOVE_16);
+						break;
+					case 17:
+						this.broadcast(eMsg.LINE_REMOVE_17);
+						break;
+					case 18:
+						this.broadcast(eMsg.LINE_REMOVE_18);
+						break;
+					case 19:
+						this.broadcast(eMsg.LINE_REMOVE_19);
+						break;
+				}
+			}
+		} else {
+			mCurrTetromino = mNextTetromino;
+			mNextTetromino = new Tetromino(this, mBoard);
+			if (checkGameOver()) {
+				this.broadcast(eMsg.GAME_OVER);
+			}
 		}
 	}
 }

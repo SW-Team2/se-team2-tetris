@@ -1,4 +1,4 @@
-package tetrisgame.parts;
+package tetrisgame.util;
 
 public class Timer {
 	private long mStartTime;

@@ -13,7 +13,6 @@ public class TestMain {
             GameStarter.waitForSignal(GAME_START);
 
             TetrisGame game = GameStarter.getGame();
-            game.initialize();
             Thread gameThread = new Thread(game);
             gameThread.start();
 

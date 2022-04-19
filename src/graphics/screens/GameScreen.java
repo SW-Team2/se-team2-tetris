@@ -11,19 +11,19 @@ import data.setting.SettingInfoDesc;
 import gamestarter.GameStarter;
 import graphics.eScreenInfo;
 import tetrisgame.TetrisGame;
-import tetrisgame.parts.GameBoard;
-import tetrisgame.parts.Position;
-import tetrisgame.parts.Tetromino;
-import tetrisgame.parts.ImageLoader;
+import tetrisgame.component.tetromino.Tetromino;
+import tetrisgame.component.tile.Tile;
+import tetrisgame.util.ImageLoader;
+import tetrisgame.util.Position;
 
 public class GameScreen extends Screen {
-    private TetrisGame mTetrisGame;
-    private GameBoard mGameBoard;
+    protected TetrisGame mTetrisGame;
+    protected Tile mGameBoard[][];
 
-    private BufferedImage mPanelBackGroundImage;
-    private BufferedImage mGameBoardBackGroundImage;
-    private BufferedImage mNextTetBoardBackGroundImage;
-    private Font mScoreBoardFont;
+    protected BufferedImage mPanelBackGroundImage;
+    protected BufferedImage mGameBoardBackGroundImage;
+    protected BufferedImage mNextTetBoardBackGroundImage;
+    protected Font mScoreBoardFont;
 
     private int mScreenWidth;
     private int mScreenHeight;
@@ -42,14 +42,7 @@ public class GameScreen extends Screen {
     private SettingInfoDesc mSettingInfo;
 
     public GameScreen() {
-        mTetrisGame = new TetrisGame(this);
-        mGameBoard = mTetrisGame.getGameBoard();
-
-        mPanelBackGroundImage = ImageLoader.getInstance().getTexture("background_panel");
-        mGameBoardBackGroundImage = ImageLoader.getInstance().getTexture("background_board");
-        mNextTetBoardBackGroundImage = ImageLoader.getInstance().getTexture("background_nextboard");
-
-        mScoreBoardFont = new Font("Consolas", Font.BOLD, 30);
+        this.init();
 
         // TODO: Reflect setting infos
         mSettingInfo = SettingInfoDesc.getInstance();
@@ -65,6 +58,14 @@ public class GameScreen extends Screen {
         mNextTetBoardPosY = 50;
         mScoreBoardPosX = 460;
         mScoreBoardPosY = 260;
+    }
+
+    protected void init() {
+        mPanelBackGroundImage = ImageLoader.getInstance().getTexture("background_panel");
+        mGameBoardBackGroundImage = ImageLoader.getInstance().getTexture("background_board");
+        mNextTetBoardBackGroundImage = ImageLoader.getInstance().getTexture("background_nextboard");
+
+        mScoreBoardFont = new Font("Consolas", Font.BOLD, 30);
     }
 
     @Override
@@ -104,8 +105,8 @@ public class GameScreen extends Screen {
         }
         // Draw board frames
         {
-            for (int col = 0; col < GameBoard.BOARD_COL; col++) {
-                for (int row = 0; row < GameBoard.BOARD_ROW; row++) {
+            for (int col = 0; col < TetrisGame.BOARD_COL; col++) {
+                for (int row = 0; row < TetrisGame.BOARD_ROW; row++) {
                     image = frameImage;
                     int posX = mGameBoardPosX + row * tileSize;
                     int posY = mGameBoardPosY + col * tileSize;
@@ -121,10 +122,10 @@ public class GameScreen extends Screen {
         // Draw game board
         {
             // Draw static blocks
-            for (int col = 0; col < GameBoard.BOARD_COL; col++) {
-                for (int row = 0; row < GameBoard.BOARD_ROW; row++) {
-                    if (mGameBoard.mBoard[col][row] != null) {
-                        image = mGameBoard.mBoard[col][row].getTexture();
+            for (int col = 0; col < TetrisGame.BOARD_COL; col++) {
+                for (int row = 0; row < TetrisGame.BOARD_ROW; row++) {
+                    if (mGameBoard[col][row] != null) {
+                        image = mGameBoard[col][row].getTexture();
                         int posX = mGameBoardPosX + row * tileSize;
                         int posY = mGameBoardPosY + col * tileSize;
                         g2d.drawImage(image, posX, posY, tileSize, tileSize, null);
@@ -132,7 +133,7 @@ public class GameScreen extends Screen {
                 }
             }
             // Map the focused tetromino
-            Tetromino tet = mGameBoard.getTetromino();
+            Tetromino tet = mTetrisGame.getCurrTetromino();
             for (int col = 0; col < Tetromino.SHAPE_COL; col++) {
                 for (int row = 0; row < Tetromino.SHAPE_ROW; row++) {
                     Position pos = tet.getPosition();
@@ -184,7 +185,9 @@ public class GameScreen extends Screen {
         }
     }
 
-    private void startGame() {
+    protected void startGame() {
+        mTetrisGame = new TetrisGame(this, false);
+        mGameBoard = mTetrisGame.getGameBoard();
         GameStarter.setGame(mTetrisGame);
         GameStarter.setStart();
     }
@@ -202,7 +205,9 @@ public class GameScreen extends Screen {
 
     public eScreenInfo getUserInputKeyRealease(KeyEvent e) {
         eScreenInfo sr = eScreenInfo.NONE;
-        mTetrisGame.getUserInputKeyRealease(e);
+        if (GameStarter.getState()) {
+            mTetrisGame.getUserInputKeyRealease(e);
+        }
         return sr;
     }
 }
