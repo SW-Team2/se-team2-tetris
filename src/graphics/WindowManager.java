@@ -84,9 +84,9 @@ public class WindowManager {
         ScoreBoardData scoreBoardInfo = ScoreBoardData.getInstance();
         mWindow = new JFrame();
 
-        int w = mSettingInfoDesc.mScreen.mWidth;
-        int h = mSettingInfoDesc.mScreen.mHeight;
-        mWindow.setSize(w, h);
+        int width = mSettingInfoDesc.getWidth();
+        int height = mSettingInfoDesc.getHeight();
+        mWindow.setSize(width, height);
         mWindow.setLocation(200, 200);
         mCards = new CardLayout(0, 0);
         mWindow.getContentPane().setLayout(mCards);

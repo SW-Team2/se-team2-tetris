@@ -9,6 +9,8 @@ public class ScoreBoardData {
     private Connection connection;
     private ArrayList<Score> scoreDataList;
 
+    private final int MAX_ROWS = 10;
+
     private ScoreBoardData() {
         connectDB();
     }
@@ -45,18 +47,15 @@ public class ScoreBoardData {
         return this.connection;
     }
 
-    public ArrayList<Score> getScoreDataList() {
-        return scoreDataList;
-    }
-
     private ArrayList<Score> getDefaultModeScore() throws SQLException {
         connectDB();
         ResultSet resultSet = null;
         Statement statement = null;
 
-        scoreDataList = new ArrayList<Score>(20);
+        scoreDataList = new ArrayList<Score>();
 
         statement = this.connection.createStatement();
+        statement.setMaxRows(MAX_ROWS);
         resultSet = statement.executeQuery("select * from scores where difficulty is not null order by score desc");
         while (resultSet.next()) {
             String name = resultSet.getString("name");
@@ -77,10 +76,11 @@ public class ScoreBoardData {
         connectDB();
         ResultSet resultSet = null;
         Statement statement = null;
-        scoreDataList = new ArrayList<Score>(20);
+        scoreDataList = new ArrayList<Score>();
 
         statement = this.connection.createStatement();
-        resultSet = statement.executeQuery("select * from scores where gameMode is not null order by score desc limit 10");
+        statement.setMaxRows(MAX_ROWS);
+        resultSet = statement.executeQuery("select * from scores where gameMode is not null order by score desc");
         while (resultSet.next()) {
             String name = resultSet.getString("name");
             int score = resultSet.getInt("score");
@@ -128,5 +128,15 @@ public class ScoreBoardData {
         statement.close();
         closeConnection();
     }
+    public void resetScoreBoard() throws SQLException {
+        connectDB();
+        Statement statement = null;
+        
+        statement = this.connection.createStatement();
+        String query = "delete from scores";
+        statement.executeUpdate(query);
 
+        statement.close();
+        closeConnection();
+    }
 }
