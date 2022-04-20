@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 public class ImageLoader {
     private static ImageLoader mUniqueInstance = null;
@@ -29,10 +31,19 @@ public class ImageLoader {
         }
     }
 
-    public static ImageLoader getInstance() {
-        if (mUniqueInstance == null) {
+    public static boolean Load() {
+        try {
             mUniqueInstance = new ImageLoader();
+        } catch (RuntimeException re) {
+            JOptionPane.showMessageDialog(new JFrame(), re.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
         }
+        return true;
+    }
+
+    public static ImageLoader getInstance() {
+        assert (mUniqueInstance != null) : "You mus call Load()";
         return mUniqueInstance;
     }
 
@@ -45,8 +56,8 @@ public class ImageLoader {
         try {
             image = ImageIO.read(new File(imagePath));
         } catch (IOException e) {
-            // TODO: Throw runtime excep or exit program
             assert (false) : "File open failed";
+            throw new RuntimeException("File open failed");
         }
         char[] pathCh = imagePath.toCharArray();
 
