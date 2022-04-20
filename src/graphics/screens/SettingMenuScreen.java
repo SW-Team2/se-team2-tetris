@@ -1,13 +1,11 @@
 package graphics.screens;
 
-import java.awt.*;
+import java.awt.Color;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 
-import data.score.Score;
-import data.score.ScoreBoardData;
 import graphics.eScreenInfo;
 
 public class SettingMenuScreen extends Screen {

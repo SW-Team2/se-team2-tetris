@@ -1,31 +1,19 @@
 package graphics.screens;
 
-import data.score.Score;
-import data.score.ScoreBoardData;
-import graphics.eScreenInfo;
-import graphics.screens.ScoreRenderer;
-import graphics.screens.Screen;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 
-public class ScoreBoardScreen extends Screen {
-    private JLabel label;
+import javax.swing.JLabel;
 
-    private ScoreBoardData scoreData;
+import graphics.eScreenInfo;
+
+public class ScoreBoardScreen extends Screen {
+    private JLabel mTemp;
 
     public ScoreBoardScreen() {
-        this.label = new JLabel("Score");
+        mTemp = new JLabel("Score");
         super.setBackground(Color.green);
-        super.add(this.label);
-        this.scoreData = ScoreBoardData.getInstance();
-
-        DefaultListModel<Score> listModel = new DefaultListModel<Score>();
-
-        JList<Score> scoreList = new JList<>(listModel);
-        super.add(new JScrollPane(scoreList));
-        scoreList.setCellRenderer(new ScoreRenderer());
+        super.add(mTemp);
     }
 
     @Override

@@ -29,7 +29,6 @@ public class GameStarter {
     }
 
     public static void waitForSignal(boolean startFlag) {
-        // TODO: Busy wait
         while (mbStartFlag == startFlag) {
         }
     }

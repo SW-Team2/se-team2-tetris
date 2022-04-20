@@ -8,8 +8,7 @@ import java.awt.event.WindowAdapter;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import data.score.ScoreBoardData;
-import data.setting.SettingData;
+import data.setting.SettingInfoDesc;
 import graphics.screens.GameScreen;
 import graphics.screens.ItemModeGameScreen;
 import graphics.screens.MainMenuScreen;
@@ -98,13 +97,12 @@ public class WindowManager {
     }
 
     public WindowManager() {
-        SettingData mSettingInfoDesc = SettingData.getInstance();
-        ScoreBoardData scoreBoardInfo = ScoreBoardData.getInstance();
+        SettingInfoDesc mSettingInfoDesc = SettingInfoDesc.getInstance();
         mWindow = new JFrame();
 
-        int width = mSettingInfoDesc.getWidth();
-        int height = mSettingInfoDesc.getHeight();
-        mWindow.setSize(width, height);
+        int w = mSettingInfoDesc.mScreen.mWidth;
+        int h = mSettingInfoDesc.mScreen.mHeight;
+        mWindow.setSize(w, h);
         mWindow.setLocation(200, 200);
         mCards = new CardLayout(0, 0);
         mWindow.getContentPane().setLayout(mCards);
