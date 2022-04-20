@@ -11,29 +11,20 @@ public class ImageLoader {
     private static ImageLoader mUniqueInstance = null;
 
     private HashMap<String, BufferedImage> mImageHash;
+    private final String PATH = System.getProperty("user.dir") + "/images/";
 
     private ImageLoader() {
         mImageHash = new HashMap<String, BufferedImage>();
 
-        char resDirCh[] = (System.getProperty("user.dir") + "\\src\\res\\").toCharArray();
-        int size = resDirCh.length;
-        for (int i = 0; i < size; i++) {
-            if (resDirCh[i] == '\\') {
-                resDirCh[i] = '/';
-            }
-        }
-        String resDir = new String(resDirCh);
-        File resFile = new File(resDir);
+        File resource = new File(PATH);
 
-        String filesInRes[] = resFile.list();
-        int resDirSize = filesInRes.length;
-        for (int i = 0; i < resDirSize; i++) {
-            String currDir = resDir + filesInRes[i] + "/";
-            String paths[] = new File(currDir).list();
-            int pathLen = paths.length;
-            for (int j = 0; j < pathLen; j++) {
-                String currPath = "../../res/" + filesInRes[i] + "/" + paths[j];
-                loadImage(currPath);
+        String[] resourceList = resource.list();
+        for (int i = 0; i < resourceList.length; i++) {
+            String imageFolder = PATH + resourceList[i] + "/";
+            String[] imageFileList = new File(imageFolder).list();
+            for (int j = 0; j < imageFileList.length; j++) {
+                String imageFilePath = imageFolder + imageFileList[j];
+                loadImage(imageFilePath);
             }
         }
     }
@@ -49,17 +40,17 @@ public class ImageLoader {
         return mImageHash.get(name);
     }
 
-    private void loadImage(String path) {
+    private void loadImage(String imagePath) {
         BufferedImage image = null;
         try {
-            image = ImageIO.read(getClass().getResourceAsStream(path));
+            image = ImageIO.read(new File(imagePath));
         } catch (IOException e) {
             // TODO: Throw runtime excep or exit program
             assert (false) : "File open failed";
         }
-        char pathCh[] = path.toCharArray();
+        char[] pathCh = imagePath.toCharArray();
 
-        int startIndex = 0;
+        int startIndex;
         int dotIndex = 0;
         for (startIndex = pathCh.length - 1; dotIndex >= 0; startIndex--) {
             if (pathCh[startIndex - 1] == '/') {
@@ -70,11 +61,10 @@ public class ImageLoader {
             }
         }
         int nameLen = dotIndex - startIndex;
-        char nameCh[] = new char[nameLen];
+        char[] nameCh = new char[nameLen];
         for (int i = 0; i < nameLen; i++) {
             nameCh[i] = pathCh[startIndex + i];
         }
-
         mImageHash.put(new String(nameCh), image);
     }
 }
