@@ -34,7 +34,7 @@ public class GameStarter {
         return mGame;
     }
 
-    public static eDifficulty getDiff() {
+    public static eDifficulty getDifficulty() {
         return meDiff;
     }
 

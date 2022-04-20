@@ -27,9 +27,4 @@ public class TestMain {
             win.showMain();
         }
     }
-
-    @Test
-    public void test() {
-        assertEquals(2, 1 + 1);
-    }
 }

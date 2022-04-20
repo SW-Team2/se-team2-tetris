@@ -174,7 +174,7 @@ public class GameScreen extends Screen {
     }
 
     protected void startGame() {
-        mTetrisGame = new TetrisGame(this, false, GameStarter.getDiff());
+        mTetrisGame = new TetrisGame(this, false, GameStarter.getDifficulty());
         mGameBoard = mTetrisGame.getGameBoard();
         GameStarter.setGame(mTetrisGame);
         GameStarter.setStart();
