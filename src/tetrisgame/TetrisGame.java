@@ -4,6 +4,7 @@ import java.awt.event.KeyEvent;
 import java.util.Random;
 
 import javax.swing.JOptionPane;
+import javax.swing.plaf.multi.MultiFileChooserUI;
 
 import gamestarter.GameStarter;
 import graphics.screens.GameScreen;
@@ -57,13 +58,13 @@ public class TetrisGame implements Runnable {
 		mScreen = gameScreen;
 		mbItemMode = bItemMode;
 		mBoard = new Tile[BOARD_COL][BOARD_ROW];
+		mCurrTetromino = new Tetromino(this, mBoard);
+		mNextTetromino = new Tetromino(this, mBoard);
+		mScore = new Score(this);
 
 		// TODO:
 		eDifficulty eDiff = eDifficulty.EASY;
 		Tetromino.setDifficulty(eDiff);
-		mCurrTetromino = new Tetromino(this, mBoard);
-		mNextTetromino = new Tetromino(this, mBoard);
-		mScore = new Score(this);
 
 		mTimer = new Timer();
 		mTimer.initialize();
