@@ -40,15 +40,15 @@ public class ImageLoader {
         }
     }
 
-    public static boolean Load() {
+    public static void Load() {
         try {
             mUniqueInstance = new ImageLoader();
         } catch (RuntimeException re) {
             JOptionPane.showMessageDialog(new JFrame(), re.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
+            System.exit(1);
         }
-        return true;
+        return;
     }
 
     public static ImageLoader getInstance() {
