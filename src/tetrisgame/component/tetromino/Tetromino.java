@@ -1,8 +1,8 @@
 package tetrisgame.component.tetromino;
 
-import java.awt.event.KeyEvent;
 import java.util.Random;
 
+import data.setting.SettingData;
 import tetrisgame.TetrisGame;
 import tetrisgame.component.IGameComponent;
 import tetrisgame.component.tile.Tile;
@@ -17,6 +17,13 @@ public class Tetromino extends IGameComponent {
 	protected Position mPosition;
 	public Tile mShape[][];
 	protected int mShapeNColorIndex;
+
+	protected static int mMoveRightKey;
+	protected static int mMoveLeftKey;
+	protected static int mMoveDownKey;
+	protected static int mRotateKey;
+	protected static int mHardDownKey;
+	protected static int mPauseKey;
 
 	protected static float mAutoDownTime;
 	protected float mAutoDownTimeTick;
@@ -104,6 +111,8 @@ public class Tetromino extends IGameComponent {
 			mProbWeightArr[i] = DEFAULT_WEIGHT;
 		}
 		mSumProbWeight = DEFAULT_WEIGHT * VAR_TETROMINOS;
+
+		refreshSetting();
 	}
 
 	public Tetromino(TetrisGame game, Tile gb[][]) {
@@ -115,27 +124,32 @@ public class Tetromino extends IGameComponent {
 		this.setRandomShapeAndColor();
 	}
 
+	public static void refreshSetting() {
+		SettingData setting = SettingData.getInstance();
+		mMoveRightKey = setting.getGameMoveRight();
+		mMoveLeftKey = setting.getGameMoveLeft();
+		mMoveDownKey = setting.getGameMoveDown();
+		mRotateKey = setting.getRotateKey();
+		mHardDownKey = setting.getGameMoveToFloor();
+	}
+
 	@Override
 	public void update(float deltaTime, int userInput) {
 		boolean bCollWithFloor = false;
-		switch (userInput) {
-			case KeyEvent.VK_SPACE:
-				rotateOrIgnore();
-				break;
-			case KeyEvent.VK_DOWN:
-				bCollWithFloor = moveOrIgnore(eDirection.DOWN);
-				mAutoDownTimeTick = 0.f;
-				break;
-			case KeyEvent.VK_RIGHT:
-				bCollWithFloor = moveOrIgnore(eDirection.RIGHT);
-				break;
-			case KeyEvent.VK_LEFT:
-				bCollWithFloor = moveOrIgnore(eDirection.LEFT);
-				break;
-			case KeyEvent.VK_UP:
-				fallToFloor();
-				bCollWithFloor = true;
-				break;
+		if (userInput == mRotateKey) {
+			rotateOrIgnore();
+		} else if (userInput == mMoveDownKey) {
+			bCollWithFloor = moveOrIgnore(eDirection.DOWN);
+			mAutoDownTimeTick = 0.f;
+		} else if (userInput == mMoveRightKey) {
+			bCollWithFloor = moveOrIgnore(eDirection.RIGHT);
+			mAutoDownTimeTick = 0.f;
+		} else if (userInput == mMoveLeftKey) {
+			bCollWithFloor = moveOrIgnore(eDirection.LEFT);
+			mAutoDownTimeTick = 0.f;
+		} else if (userInput == mHardDownKey) {
+			fallToFloor();
+			mAutoDownTimeTick = 100.f;
 		}
 
 		mAutoDownTimeTick += deltaTime;

@@ -1,9 +1,11 @@
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+
 import gamestarter.GameStarter;
 import graphics.WindowManager;
 import tetrisgame.TetrisGame;
 import tetrisgame.util.ImageLoader;
-
-import org.junit.*;
 
 public class TestMain {
     public static void main(String args[]) {
@@ -24,5 +26,10 @@ public class TestMain {
             GameStarter.waitForSignal(GAME_END);
             win.showMain();
         }
+    }
+
+    @Test
+    public void test() {
+        assertEquals(2, 1 + 1);
     }
 }

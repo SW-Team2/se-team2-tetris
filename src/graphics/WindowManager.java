@@ -10,11 +10,13 @@ import javax.swing.JOptionPane;
 
 import data.score.ScoreBoardData;
 import data.setting.SettingData;
+import gamestarter.GameStarter;
 import graphics.screens.GameScreen;
 import graphics.screens.ItemModeGameScreen;
 import graphics.screens.MainMenuScreen;
 import graphics.screens.ScoreBoardScreen;
 import graphics.screens.SettingMenuScreen;
+import tetrisgame.enumerations.eDifficulty;
 
 public class WindowManager {
     private JFrame mWindow;
@@ -151,6 +153,9 @@ public class WindowManager {
     }
 
     private void showGame() {
+        // TODO:
+        GameStarter.setDifficulty(eDifficulty.NORMAL);
+
         mCards.show(mWindow.getContentPane(), "game");
         meCurrScreen = eScreenInfo.GAME;
     }
