@@ -2,12 +2,9 @@ package graphics.screens;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 
 import javax.swing.*;
 
-import data.score.Score;
-import data.score.ScoreBoardData;
 import graphics.eScreenInfo;
 
 public class SettingMenuScreen extends Screen {

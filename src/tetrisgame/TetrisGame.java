@@ -31,6 +31,7 @@ public class TetrisGame implements Runnable {
 	protected GameScreen mScreen;
 
 	private volatile boolean mbGameOverFlag;
+	private boolean mbPauseFlag;
 	private boolean mbItemMode;
 	private static final int VAR_ITEMS = 5;
 
@@ -53,13 +54,12 @@ public class TetrisGame implements Runnable {
 	public static final int BOARD_COL = 20;
 	public static final int BOARD_ROW = 10;
 
-	public TetrisGame(GameScreen gameScreen, boolean bItemMode) {
+	public TetrisGame(GameScreen gameScreen, boolean bItemMode, eDifficulty diff) {
 		mScreen = gameScreen;
 		mbItemMode = bItemMode;
 		mBoard = new Tile[BOARD_COL][BOARD_ROW];
 
-		// TODO:
-		eDifficulty eDiff = eDifficulty.EASY;
+		eDifficulty eDiff = diff;
 		Tetromino.setDifficulty(eDiff);
 		mCurrTetromino = new Tetromino(this, mBoard);
 		mNextTetromino = new Tetromino(this, mBoard);
@@ -198,6 +198,16 @@ public class TetrisGame implements Runnable {
 	}
 
 	public synchronized void getUserInput(KeyEvent e) {
+		if (mCurrKeyCode == KeyEvent.VK_ESCAPE) {
+			if (mbPauseFlag == false) {
+				mbPauseFlag = true;
+				mTimer.pause();
+			} else {
+				mbPauseFlag = false;
+				mTimer.unPause();
+			}
+		}
+
 		if (mCurrKeyCode == e.getKeyCode()) {
 			return;
 		}
@@ -209,14 +219,6 @@ public class TetrisGame implements Runnable {
 			mCurrKeyCode &= KeyEvent.VK_U;
 		}
 
-		switch (mCurrKeyCode) {
-			case KeyEvent.VK_P:
-				mTimer.pause();
-				break;
-			case KeyEvent.VK_U:
-				mTimer.unPause();
-				break;
-		}
 		update();
 	}
 
@@ -243,8 +245,11 @@ public class TetrisGame implements Runnable {
 		return mScore.getScore();
 	}
 
+	public boolean getPauseFlag() {
+		return mbPauseFlag;
+	}
+
 	private void draw() {
-		// TODO: refact
 		mScreen.repaint();
 	}
 

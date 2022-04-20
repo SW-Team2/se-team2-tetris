@@ -43,21 +43,7 @@ public class GameScreen extends Screen {
 
     public GameScreen() {
         this.init();
-
-        // TODO: Reflect setting infos
-        mSettingInfo = SettingData.getInstance();
-        mScreenWidth = mSettingInfo.getWidth();
-        mScreenHeight = mSettingInfo.getHeight();
-        mGameBoardWidth = 400;
-        mGameBoardHeight = 800;
-        mNextTetBoardWidth = 160;
-        mNextTetBoardHeight = 160;
-        mGameBoardPosX = 50;
-        mGameBoardPosY = 50;
-        mNextTetBoardPosX = 460;
-        mNextTetBoardPosY = 50;
-        mScoreBoardPosX = 460;
-        mScoreBoardPosY = 260;
+        this.refreshSetting();
     }
 
     protected void init() {
@@ -66,6 +52,22 @@ public class GameScreen extends Screen {
         mNextTetBoardBackGroundImage = ImageLoader.getInstance().getTexture("background_nextboard");
 
         mScoreBoardFont = new Font("Consolas", Font.BOLD, 30);
+    }
+
+    public void refreshSetting() {
+        mSettingInfo = SettingData.getInstance();
+        mScreenHeight = mSettingInfo.getHeight();
+        mScreenWidth = mSettingInfo.getWidth();
+        mGameBoardHeight = (int) (mScreenHeight * 0.9);
+        mGameBoardWidth = mGameBoardHeight / 2;
+        mGameBoardPosY = (int) (mScreenHeight * 0.02);
+        mGameBoardPosX = mGameBoardPosY;
+        mNextTetBoardHeight = mGameBoardHeight / 5;
+        mNextTetBoardWidth = mNextTetBoardHeight;
+        mNextTetBoardPosY = mGameBoardPosY;
+        mNextTetBoardPosX = mGameBoardPosX + mGameBoardWidth + mGameBoardPosX;
+        mScoreBoardPosY = mNextTetBoardPosY + mNextTetBoardHeight + mNextTetBoardPosY * 2;
+        mScoreBoardPosX = mNextTetBoardPosX;
     }
 
     @Override
@@ -82,8 +84,8 @@ public class GameScreen extends Screen {
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         super.paint(g2d);
-        // TODO: Temp tile size
-        int tileSize = 40;
+
+        int tileSize = mGameBoardHeight / 20;
         BufferedImage frameImage = ImageLoader.getInstance().getTexture("tile_frame");
         BufferedImage image = null;
         assert (frameImage != null);
@@ -160,20 +162,6 @@ public class GameScreen extends Screen {
                 }
             }
         }
-
-        // Draw particles
-        {
-            // BufferedImage par = null;
-            // try {
-            // par = ImageIO
-            // .read(getClass().getResourceAsStream("../../res/particle/particle_whitecircles2r1.png"));
-            // } catch (IOException e) {
-            // assert (false) : "Open File";
-            // }
-            // // g2d.setXORMode(Color.black);
-            // g2d.drawImage(par, 200, 500, tileSize * 4, tileSize * 2, null);
-        }
-
         // Draw score board
         {
             StringBuffer scoreStrBuf = new StringBuffer();
@@ -186,7 +174,7 @@ public class GameScreen extends Screen {
     }
 
     protected void startGame() {
-        mTetrisGame = new TetrisGame(this, false);
+        mTetrisGame = new TetrisGame(this, false, GameStarter.getDifficulty());
         mGameBoard = mTetrisGame.getGameBoard();
         GameStarter.setGame(mTetrisGame);
         GameStarter.setStart();

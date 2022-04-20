@@ -1,7 +1,5 @@
 package tetrisgame.component.tetromino;
 
-import java.awt.event.KeyEvent;
-
 import tetrisgame.TetrisGame;
 import tetrisgame.component.tile.Tile;
 import tetrisgame.enumerations.eDirection;
@@ -24,21 +22,18 @@ public class WeightItemTetromino extends ItemTetromino {
     @Override
     public void update(float deltaTime, int userInput) {
         boolean bCollWithFloor = false;
-        switch (userInput) {
-            case KeyEvent.VK_DOWN:
-                bCollWithFloor = moveOrIgnore(eDirection.DOWN);
-                mAutoDownTimeTick = 0.f;
-                break;
-            case KeyEvent.VK_RIGHT:
-                bCollWithFloor = moveOrIgnore(eDirection.RIGHT);
-                break;
-            case KeyEvent.VK_LEFT:
-                bCollWithFloor = moveOrIgnore(eDirection.LEFT);
-                break;
-            case KeyEvent.VK_UP:
-                fallToFloor();
-                bCollWithFloor = true;
-                break;
+        if (userInput == mMoveDownKey) {
+            bCollWithFloor = moveOrIgnore(eDirection.DOWN);
+            mAutoDownTimeTick = 0.f;
+        } else if (userInput == mMoveRightKey) {
+            bCollWithFloor = moveOrIgnore(eDirection.RIGHT);
+            mAutoDownTimeTick = 0.f;
+        } else if (userInput == mMoveLeftKey) {
+            bCollWithFloor = moveOrIgnore(eDirection.LEFT);
+            mAutoDownTimeTick = 0.f;
+        } else if (userInput == mHardDownKey) {
+            fallToFloor();
+            mAutoDownTimeTick = 100.f;
         }
 
         mAutoDownTimeTick += deltaTime;

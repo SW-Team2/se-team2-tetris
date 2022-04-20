@@ -3,8 +3,6 @@ package graphics.screens;
 import data.score.Score;
 import data.score.ScoreBoardData;
 import graphics.eScreenInfo;
-import graphics.screens.ScoreRenderer;
-import graphics.screens.Screen;
 
 import javax.swing.*;
 import java.awt.*;
