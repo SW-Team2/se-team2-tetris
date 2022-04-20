@@ -98,12 +98,6 @@ public class Tetromino extends IGameComponent {
 		TILE_TEX_NAME_ARR[4] = "tile_orange";
 		TILE_TEX_NAME_ARR[5] = "tile_blue";
 		TILE_TEX_NAME_ARR[6] = "tile_purple";
-
-		mProbWeightArr = new int[VAR_TETROMINOS];
-		for (int i = 0; i < VAR_TETROMINOS; i++) {
-			mProbWeightArr[i] = DEFAULT_WEIGHT;
-		}
-		mSumProbWeight = DEFAULT_WEIGHT * VAR_TETROMINOS;
 	}
 
 	public Tetromino(TetrisGame game, Tile gb[][]) {
@@ -173,6 +167,11 @@ public class Tetromino extends IGameComponent {
 
 	public static void setDifficulty(eDifficulty eDiff) {
 		// Set shape generation probabilty
+		mProbWeightArr = new int[VAR_TETROMINOS];
+		for (int i = 0; i < VAR_TETROMINOS; i++) {
+			mProbWeightArr[i] = DEFAULT_WEIGHT;
+		}
+		mSumProbWeight = DEFAULT_WEIGHT * VAR_TETROMINOS;
 		int addWeight = (int) (DEFAULT_WEIGHT * 0.2f);
 		int subWeight = addWeight / 6;
 		switch (eDiff) {
@@ -409,5 +408,10 @@ public class Tetromino extends IGameComponent {
 			}
 		}
 		return re;
+	}
+
+	// Testing method
+	public int getRandomIndex() {
+		return mShapeNColorIndex;
 	}
 }
