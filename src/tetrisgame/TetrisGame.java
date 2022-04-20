@@ -58,12 +58,12 @@ public class TetrisGame implements Runnable {
 		mScreen = gameScreen;
 		mbItemMode = bItemMode;
 		mBoard = new Tile[BOARD_COL][BOARD_ROW];
-		mCurrTetromino = new Tetromino(this, mBoard);
-		mNextTetromino = new Tetromino(this, mBoard);
-		mScore = new Score(this);
 
 		eDifficulty eDiff = diff;
 		Tetromino.setDifficulty(eDiff);
+		mCurrTetromino = new Tetromino(this, mBoard);
+		mNextTetromino = new Tetromino(this, mBoard);
+		mScore = new Score(this);
 
 		mTimer = new Timer();
 		mTimer.initialize();

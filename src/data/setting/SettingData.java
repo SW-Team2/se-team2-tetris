@@ -19,6 +19,7 @@ public class SettingData {
 
     private final String PATH = System.getProperty("user.dir") + "/database/Setting.json";
 
+
     private SettingData() {
         initialize();
     }
