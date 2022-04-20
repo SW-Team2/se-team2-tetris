@@ -198,6 +198,16 @@ public class TetrisGame implements Runnable {
 	}
 
 	public synchronized void getUserInput(KeyEvent e) {
+		if (mCurrKeyCode == KeyEvent.VK_ESCAPE) {
+			if (mbPauseFlag == false) {
+				mbPauseFlag = true;
+				mTimer.pause();
+			} else {
+				mbPauseFlag = false;
+				mTimer.unPause();
+			}
+		}
+
 		if (mCurrKeyCode == e.getKeyCode()) {
 			return;
 		}
@@ -209,15 +219,6 @@ public class TetrisGame implements Runnable {
 			mCurrKeyCode &= KeyEvent.VK_U;
 		}
 
-		if (mCurrKeyCode == KeyEvent.VK_ESCAPE) {
-			if (mbPauseFlag == false) {
-				mbPauseFlag = true;
-				mTimer.pause();
-			} else {
-				mbPauseFlag = false;
-				mTimer.unPause();
-			}
-		}
 		update();
 	}
 
