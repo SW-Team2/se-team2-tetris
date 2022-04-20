@@ -7,7 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
-import data.setting.SettingInfoDesc;
+import data.setting.SettingData;
 import gamestarter.GameStarter;
 import graphics.eScreenInfo;
 import tetrisgame.TetrisGame;
@@ -39,15 +39,15 @@ public class GameScreen extends Screen {
     private int mScoreBoardPosX;
     private int mScoreBoardPosY;
 
-    private SettingInfoDesc mSettingInfo;
+    private SettingData mSettingInfo;
 
     public GameScreen() {
         this.init();
 
         // TODO: Reflect setting infos
-        mSettingInfo = SettingInfoDesc.getInstance();
-        mScreenWidth = mSettingInfo.mScreen.mWidth;
-        mScreenHeight = mSettingInfo.mScreen.mHeight;
+        mSettingInfo = SettingData.getInstance();
+        mScreenWidth = mSettingInfo.getWidth();
+        mScreenHeight = mSettingInfo.getHeight();
         mGameBoardWidth = 400;
         mGameBoardHeight = 800;
         mNextTetBoardWidth = 160;
