@@ -23,7 +23,6 @@ public class ImageLoader {
             String imageFolder = PATH + resourceList[i] + "/";
             String[] imageFileList = new File(imageFolder).list();
             for (int j = 0; j < imageFileList.length; j++) {
-//                String currPath = "../../res/" + resourceList[i] + "/" + paths[j];
                 String imageFilePath = imageFolder + imageFileList[j];
                 loadImage(imageFilePath);
             }
