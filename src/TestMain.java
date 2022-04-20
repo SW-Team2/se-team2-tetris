@@ -1,12 +1,16 @@
 import gamestarter.GameStarter;
 import graphics.WindowManager;
 import tetrisgame.TetrisGame;
+import tetrisgame.util.ImageLoader;
+
 import org.junit.*;
 
 public class TestMain {
     public static void main(String args[]) {
         final boolean GAME_START = false;
         final boolean GAME_END = true;
+
+        ImageLoader.Load();
 
         WindowManager win = new WindowManager();
 
