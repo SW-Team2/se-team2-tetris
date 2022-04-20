@@ -121,7 +121,7 @@ public class GameScreen extends Screen {
         }
 
         // TODO: Reflect setting info
-        int CVDMode = 2;
+        int CVDMode = 1;
         // Draw game board
         {
             // Draw static blocks
