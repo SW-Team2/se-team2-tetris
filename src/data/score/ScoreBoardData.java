@@ -11,11 +11,11 @@ public class ScoreBoardData {
     private ArrayList<Score> itemModeScores;
 
     private final int MAX_ROWS = 10;
-    private final String URL = "jdbc:sqlite:"+ System.getProperty("user.dir") +"/database/tetrisgame";
+    private final String URL = "jdbc:sqlite:" + System.getProperty("user.dir") + "/database/tetrisgame";
 
 
     private ScoreBoardData() {
-        connectDB();
+        createScoresTable();
     }
 
     public static ScoreBoardData getInstance() {
@@ -32,9 +32,7 @@ public class ScoreBoardData {
                 this.connection = DriverManager.getConnection(URL);
                 System.out.println("Connection to SQLite has been established.");
 
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
+            } catch (SQLException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }
@@ -42,6 +40,31 @@ public class ScoreBoardData {
 
     public void closeConnection() throws SQLException {
         this.connection.close();
+    }
+
+    public void createScoresTable() {
+        connectDB();
+        Statement statement = null;
+        try {
+            statement = this.connection.createStatement();
+            String query = "create table if not exists scores(id integer not null constraint scores_pk primary key autoincrement," +
+                    " name varchar(20) not null," +
+                    " score integer not null," +
+                    " difficulty varchar(20)," +
+                    " gameMode varchar(20)" +
+                    ")";
+            statement.executeUpdate(query);
+
+            closeConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public Connection getConnection() {
@@ -129,10 +152,11 @@ public class ScoreBoardData {
         statement.close();
         closeConnection();
     }
+
     public void resetScoreBoard() throws SQLException {
         connectDB();
         Statement statement = null;
-        
+
         statement = this.connection.createStatement();
         String query = "delete from scores";
         statement.executeUpdate(query);
