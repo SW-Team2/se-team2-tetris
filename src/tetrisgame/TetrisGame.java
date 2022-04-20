@@ -4,7 +4,6 @@ import java.awt.event.KeyEvent;
 import java.util.Random;
 
 import javax.swing.JOptionPane;
-import javax.swing.plaf.multi.MultiFileChooserUI;
 
 import gamestarter.GameStarter;
 import graphics.screens.GameScreen;
