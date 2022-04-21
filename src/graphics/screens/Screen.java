@@ -12,11 +12,11 @@ public abstract class Screen extends JPanel {
     protected int mBtnHeight;
     protected int mBtnWidth;
 
-    public static final int LEFT_BUTTON_X = 50;
-    public static final int LEFT_BUTTON_Y = 50;
+    private static final int ESC_BUTTON_X = 50;
+    private static final int ESC_BUTTON_Y = 50;
 
-    public static final int LEFT_BUTTON_WIDTH = 80;
-    public static final int LEFT_BUTTON_HEIGHT = 80;
+    private static final int ESC_BUTTON_WIDTH = 301;
+    private static final int ESC_BUTTON_HEIGHT = 193;
 
     public void setNumButtons(int n) {
         assert (n > 0);
@@ -67,6 +67,22 @@ public abstract class Screen extends JPanel {
 
     public int getButtonHeight() {
         return (int) (mBtnHeight * SettingData.getInstance().getHeight() / (double) FIXED_SCREEN_LEN);
+    }
+
+    public static int getEscPosX() {
+        return (int) (ESC_BUTTON_X * SettingData.getInstance().getWidth() / (double) FIXED_SCREEN_LEN);
+    }
+
+    public static int getEscPosY() {
+        return (int) (ESC_BUTTON_Y * SettingData.getInstance().getHeight() / (double) FIXED_SCREEN_LEN);
+    }
+
+    public static int getEscButtonWidth() {
+        return (int) (ESC_BUTTON_WIDTH * SettingData.getInstance().getWidth() / (double) FIXED_SCREEN_LEN);
+    }
+
+    public static int getEscButtonHeight() {
+        return (int) (ESC_BUTTON_HEIGHT * SettingData.getInstance().getHeight() / (double) FIXED_SCREEN_LEN);
     }
 
     public abstract eScreenInfo getUserInput(KeyEvent e);

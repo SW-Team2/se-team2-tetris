@@ -78,13 +78,13 @@ public class MainMenuScreen extends Screen {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_DOWN:
                 mCurrButtonImage[mButtonIndex] = mButtonImages[mButtonIndex];
-                mButtonIndex = mButtonIndex == NUM_BUTTONS - 1 ? mButtonIndex : mButtonIndex + 1;
+                mButtonIndex = mButtonIndex == NUM_BUTTONS - 1 ? 0 : mButtonIndex + 1;
                 mCurrButtonImage[mButtonIndex] = mFocusButtonImages[mButtonIndex];
                 this.repaint();
                 break;
             case KeyEvent.VK_UP:
                 mCurrButtonImage[mButtonIndex] = mButtonImages[mButtonIndex];
-                mButtonIndex = mButtonIndex == 0 ? mButtonIndex : mButtonIndex - 1;
+                mButtonIndex = mButtonIndex == 0 ? NUM_BUTTONS - 1 : mButtonIndex - 1;
                 mCurrButtonImage[mButtonIndex] = mFocusButtonImages[mButtonIndex];
                 this.repaint();
                 break;

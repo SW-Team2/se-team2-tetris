@@ -72,10 +72,10 @@ public class DifficultyScreen extends Screen {
         }
 
         g.drawImage(mBackButtonImage,
-                Screen.LEFT_BUTTON_X,
-                Screen.LEFT_BUTTON_Y,
-                Screen.LEFT_BUTTON_WIDTH,
-                Screen.LEFT_BUTTON_WIDTH, null);
+                Screen.getEscPosX(),
+                Screen.getEscPosY(),
+                Screen.getEscButtonWidth(),
+                Screen.getEscButtonHeight(), null);
     }
 
     @Override
@@ -84,13 +84,13 @@ public class DifficultyScreen extends Screen {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_DOWN:
                 mCurrButtonImage[mButtonIndex] = mButtonImages[mButtonIndex];
-                mButtonIndex = mButtonIndex == NUM_BUTTONS - 1 ? mButtonIndex : mButtonIndex + 1;
+                mButtonIndex = mButtonIndex == NUM_BUTTONS - 1 ? 0 : mButtonIndex + 1;
                 mCurrButtonImage[mButtonIndex] = mFocusButtonImages[mButtonIndex];
                 this.repaint();
                 break;
             case KeyEvent.VK_UP:
                 mCurrButtonImage[mButtonIndex] = mButtonImages[mButtonIndex];
-                mButtonIndex = mButtonIndex == 0 ? mButtonIndex : mButtonIndex - 1;
+                mButtonIndex = mButtonIndex == 0 ? NUM_BUTTONS - 1 : mButtonIndex - 1;
                 mCurrButtonImage[mButtonIndex] = mFocusButtonImages[mButtonIndex];
                 this.repaint();
                 break;
@@ -108,7 +108,7 @@ public class DifficultyScreen extends Screen {
                         break;
                 }
                 break;
-            case KeyEvent.VK_LEFT:
+            case KeyEvent.VK_ESCAPE:
                 sr = eScreenInfo.MAIN;
                 break;
             default:
