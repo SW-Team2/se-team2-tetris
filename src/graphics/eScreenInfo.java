@@ -8,4 +8,5 @@ public enum eScreenInfo {
     ITEMGAME,
     SETTING,
     SCOREBOARD,
+    EXIT,
 }

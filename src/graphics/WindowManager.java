@@ -163,9 +163,6 @@ public class WindowManager {
     }
 
     private void showGame() {
-        // TODO:
-        GameStarter.setDifficulty(eDifficulty.NORMAL);
-
         mCards.show(mWindow.getContentPane(), "game");
         meCurrScreen = eScreenInfo.GAME;
     }
