@@ -13,6 +13,7 @@ import graphics.eScreenInfo;
 import tetrisgame.TetrisGame;
 import tetrisgame.component.tetromino.Tetromino;
 import tetrisgame.component.tile.Tile;
+import tetrisgame.util.ImageCVDConverter;
 import tetrisgame.util.ImageLoader;
 import tetrisgame.util.Position;
 
@@ -149,6 +150,8 @@ public class GameScreen extends Screen {
             return;
         }
 
+        // TODO: Reflect setting info
+        int CVDMode = 1;
         // Draw game board
         {
             // Draw static blocks
@@ -156,6 +159,9 @@ public class GameScreen extends Screen {
                 for (int row = 0; row < TetrisGame.BOARD_ROW; row++) {
                     if (mGameBoard[col][row] != null) {
                         image = mGameBoard[col][row].getTexture();
+                        //
+                        image = ImageCVDConverter.convert(image, CVDMode);
+                        //
                         int posX = mGameBoardPosX + row * tileSize;
                         int posY = mGameBoardPosY + col * tileSize;
                         g2d.drawImage(image, posX, posY, tileSize, tileSize, null);
@@ -169,6 +175,9 @@ public class GameScreen extends Screen {
                     Position pos = tet.getPosition();
                     if (tet.mShape[col][row] != null) {
                         image = tet.mShape[col][row].getTexture();
+                        //
+                        image = ImageCVDConverter.convert(image, CVDMode);
+                        //
                         int posX = mGameBoardPosX + (row + pos.mRow) * tileSize;
                         int posY = mGameBoardPosY + (col + pos.mCol) * tileSize;
                         g2d.drawImage(image, posX, posY, tileSize, tileSize, null);
@@ -185,7 +194,11 @@ public class GameScreen extends Screen {
                     if (tet.mShape[col][row] != null) {
                         int posX = mNextTetBoardPosX + row * tileSize + 5;
                         int posY = mNextTetBoardPosY + col * tileSize + 5;
-                        g2d.drawImage(tet.mShape[col][row].getTexture(), posX, posY, tileSize, tileSize, null);
+                        image = tet.mShape[col][row].getTexture();
+                        //
+                        image = ImageCVDConverter.convert(image, CVDMode);
+                        //
+                        g2d.drawImage(image, posX, posY, tileSize, tileSize, null);
                     }
                 }
             }
