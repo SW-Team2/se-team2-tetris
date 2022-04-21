@@ -20,7 +20,7 @@ public class ItemModeGameScreen extends GameScreen {
     @Override
     protected void startGame() {
         GameStarter.setDifficulty(eDifficulty.NORMAL);
-        mTetrisGame = new TetrisGame(this, true, GameStarter.getDifficulty());
+        mTetrisGame = new TetrisGame(this, true, eDifficulty.NORMAL);
         mGameBoard = mTetrisGame.getGameBoard();
         GameStarter.setGame(mTetrisGame);
         GameStarter.setStart();

@@ -12,8 +12,6 @@ public class TestMain {
 
         WindowManager win = new WindowManager();
 
-        //win.showMain();
-
         while (true) {
             GameStarter.waitForSignal(GAME_START);
 
