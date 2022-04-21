@@ -56,7 +56,10 @@ public class ScoreBoardScreen extends Screen {
 
         scoreboard = new JScrollPane();
         scoreboard.setSize(100,100);
-        scoreboard.setVisible(false);
+        scoreboard.setVisible(true);
+        scoreboard.setForeground(Color.BLUE);
+        this.add(new Button("hello"));
+        this.add(scoreboard);
     }
     public void refreshScoreBoard() {
         ScoreBoardData scoreBoardData = ScoreBoardData.getInstance();
@@ -94,8 +97,6 @@ public class ScoreBoardScreen extends Screen {
                 Screen.getEscPosY(),
                 Screen.getEscButtonWidth(),
                 Screen.getEscButtonHeight(), null);
-        scoreboard.setVisible(true);
-
     }
 
     @Override
@@ -137,7 +138,8 @@ public class ScoreBoardScreen extends Screen {
             case KeyEvent.VK_ENTER:
                 switch (mButtonIndex) {
                     case 0:
-                        sr = eScreenInfo.MAIN;//일반모드 스코어보드 표시 기능 넣어야
+                        scoreboard.setVisible(true);
+//                        sr = eScreenInfo.MAIN;//일반모드 스코어보드 표시 기능 넣어야
                         break;
                     case 1:
                         sr = eScreenInfo.SETTING;//아이템모드 스코어보드 표시 기능 넣어야
