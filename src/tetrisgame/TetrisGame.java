@@ -173,38 +173,35 @@ public class TetrisGame implements Runnable {
 			userName = JOptionPane.showInputDialog("Enter your name");
 		} while (userName.equals(""));
 
-		try {
-			if (mbItemMode == true) {
-				ScoreBoardData.getInstance()
-						.addItemModeScore(
-								new data.score.Score(userName, mScore.getScore(), null, Mode.ITEM_MODE.getValue()));
-			} else {
-				switch (meDifficulty) {
-					case EASY:
-						ScoreBoardData.getInstance()
-								.addItemModeScore(
-										new data.score.Score(userName, mScore.getScore(), Difficulty.EASY.getValue(),
-												Mode.ITEM_MODE.getValue()));
-						break;
-					case NORMAL:
-						ScoreBoardData.getInstance()
-								.addItemModeScore(
-										new data.score.Score(userName, mScore.getScore(), Difficulty.NORMAL.getValue(),
-												Mode.ITEM_MODE.getValue()));
-						break;
-					case HARD:
-						ScoreBoardData.getInstance()
-								.addItemModeScore(
-										new data.score.Score(userName, mScore.getScore(), Difficulty.HARD.getValue(),
-												Mode.ITEM_MODE.getValue()));
-						break;
-					default:
-						assert (false) : "Undefined eDifficulty";
-						break;
-				}
+		if (mbItemMode == true) {
+			ScoreBoardData.getInstance()
+					.addItemModeScore(
+							new data.score.Score(userName, mScore.getScore(), Difficulty.NORMAL.getValue(),
+									Mode.ITEM_MODE.getValue()));
+		} else {
+			switch (meDifficulty) {
+				case EASY:
+					ScoreBoardData.getInstance()
+							.addDefaultModeScore(
+									new data.score.Score(userName, mScore.getScore(), Difficulty.EASY.getValue(),
+											Mode.DEFAULT.getValue()));
+					break;
+				case NORMAL:
+					ScoreBoardData.getInstance()
+							.addDefaultModeScore(
+									new data.score.Score(userName, mScore.getScore(), Difficulty.NORMAL.getValue(),
+											Mode.DEFAULT.getValue()));
+					break;
+				case HARD:
+					ScoreBoardData.getInstance()
+							.addDefaultModeScore(
+									new data.score.Score(userName, mScore.getScore(), Difficulty.HARD.getValue(),
+											Mode.DEFAULT.getValue()));
+					break;
+				default:
+					assert (false) : "Undefined eDifficulty";
+					break;
 			}
-		} catch (SQLException se) {
-			throw new RuntimeException("Data base error");
 		}
 		GameStarter.setOver();
 	}
