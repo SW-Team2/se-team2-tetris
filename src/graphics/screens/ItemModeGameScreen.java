@@ -4,6 +4,7 @@ import java.awt.Font;
 
 import gamestarter.GameStarter;
 import tetrisgame.TetrisGame;
+import tetrisgame.enumerations.eDifficulty;
 import tetrisgame.util.ImageLoader;
 
 public class ItemModeGameScreen extends GameScreen {
@@ -18,7 +19,7 @@ public class ItemModeGameScreen extends GameScreen {
 
     @Override
     protected void startGame() {
-        mTetrisGame = new TetrisGame(this, true, GameStarter.getDifficulty());
+        mTetrisGame = new TetrisGame(this, true, eDifficulty.NORMAL);
         mGameBoard = mTetrisGame.getGameBoard();
         GameStarter.setGame(mTetrisGame);
         GameStarter.setStart();

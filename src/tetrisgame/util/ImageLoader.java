@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
 public class ImageLoader {
     private static ImageLoader mUniqueInstance = null;
@@ -32,13 +30,7 @@ public class ImageLoader {
     }
 
     public static boolean Load() {
-        try {
-            mUniqueInstance = new ImageLoader();
-        } catch (RuntimeException re) {
-            JOptionPane.showMessageDialog(new JFrame(), re.getMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
+        mUniqueInstance = new ImageLoader();
         return true;
     }
 
