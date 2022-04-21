@@ -75,6 +75,14 @@ public class WindowManager {
                 case SCOREBOARD:
                     showScore();
                     break;
+                case EXIT:
+                    if (JOptionPane.showConfirmDialog(mWindow,
+                            "Are you sure you want to close this window?", "Close Window?",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                        System.exit(0);
+                    }
+                    break;
                 default:
                     assert (false) : "Undefined eScreenInfo";
                     break;
@@ -132,21 +140,6 @@ public class WindowManager {
         meCurrScreen = eScreenInfo.MAIN;
         mWindow.addKeyListener(new MsgManager());
         mWindow.setFocusable(true);
-
-        //
-        // Define action when closing window message occurs
-        //
-        mWindow.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                if (JOptionPane.showConfirmDialog(mWindow,
-                        "Are you sure you want to close this window?", "Close Window?",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-                    System.exit(0);
-                }
-            }
-        });
 
         this.showMain();
         mWindow.setVisible(true);
