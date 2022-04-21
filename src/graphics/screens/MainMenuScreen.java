@@ -14,6 +14,7 @@ public class MainMenuScreen extends Screen {
     private static final int NUM_BUTTONS = 4;
     private int mButtonIndex;
 
+
     public MainMenuScreen() {
         mTemp = new JLabel("Main");
         super.setBackground(Color.gray);
