@@ -88,6 +88,7 @@ public class ScoreBoardScreen extends Screen {
                 Screen.getEscButtonWidth(),
                 Screen.getEscButtonHeight(), null);
 
+        ArrayList<String> resultList = new ArrayList<>();
         StringBuffer str = new StringBuffer();
         ArrayList<HashMap<String, Object>> scoreArr;
         int bold = (int) (100 * SettingData.getInstance().getHeight() / (double) 1920);
@@ -101,14 +102,12 @@ public class ScoreBoardScreen extends Screen {
                 Integer score = Integer.parseInt(String.valueOf(hs.get("score")));
                 String difficulty = (String) hs.get("difficulty");
 
-                str.append(name);
-                str.append("  ");
-                str.append(score.toString());
-                str.append("  ");
-                str.append(difficulty);
-                str.append('\n');
+                resultList.add(String.format("%-7s\t%-7s\t%-7s\t%-15s", i + 1, name, score, difficulty));
             }
-            g.drawString(str.toString(), 300, 300);
+            g.drawString(String.format("%-7s\t%-7s\t%-7s\t%-15s", "Rank", "name", "score", "difficulty"), 50, 200);
+            for (int i = 0; i < resultList.size(); i++) {
+                g.drawString(resultList.get(i), 50, 200 + (i + 1) * 50);
+            }
         } else {
             scoreArr = itemModeScores;
             for (int i = 0; i < scoreArr.size(); i++) {
@@ -116,12 +115,12 @@ public class ScoreBoardScreen extends Screen {
                 String name = (String) hs.get("name");
                 Integer score = Integer.parseInt(String.valueOf(hs.get("score")));
 
-                str.append(name);
-                str.append("  ");
-                str.append(score.toString());
-                str.append('\n');
+                resultList.add(String.format("%-7s\t%-7s\t%-7s\t", i + 1, name, score));
             }
-            g.drawString(str.toString(), 300, 300);
+            g.drawString(String.format("%-7s\t%-7s\t%-7s\t", "Rank", "name", "score"), 50, 200);
+            for (int i = 0; i < resultList.size(); i++) {
+                g.drawString(resultList.get(i), 50, 200 + (i + 1) * 50);
+            }
         }
 
     }
