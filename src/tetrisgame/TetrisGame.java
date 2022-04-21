@@ -1,10 +1,14 @@
 package tetrisgame;
 
 import java.awt.event.KeyEvent;
+import java.sql.SQLException;
 import java.util.Random;
 
 import javax.swing.JOptionPane;
 
+import data.score.Difficulty;
+import data.score.Mode;
+import data.score.ScoreBoardData;
 import gamestarter.GameStarter;
 import graphics.screens.GameScreen;
 import tetrisgame.component.animation.BounusScoreItemAnim;
@@ -34,6 +38,7 @@ public class TetrisGame implements Runnable {
 	private boolean mbPauseFlag;
 	private int mPausePanBtnIndex;
 	private boolean mbItemMode;
+	private eDifficulty meDifficulty;
 	private static final int VAR_ITEMS = 5;
 
 	public Tile mBoard[][];
@@ -60,8 +65,8 @@ public class TetrisGame implements Runnable {
 		mbItemMode = bItemMode;
 		mBoard = new Tile[BOARD_COL][BOARD_ROW];
 
-		eDifficulty eDiff = diff;
-		Tetromino.setDifficulty(eDiff);
+		meDifficulty = diff;
+		Tetromino.setDifficulty(meDifficulty);
 		mCurrTetromino = new Tetromino(this, mBoard);
 		mNextTetromino = new Tetromino(this, mBoard);
 		mScore = new Score(this);
@@ -167,6 +172,37 @@ public class TetrisGame implements Runnable {
 		do {
 			userName = JOptionPane.showInputDialog("Enter your name");
 		} while (userName.equals(""));
+
+		if (mbItemMode == true) {
+			ScoreBoardData.getInstance()
+					.addItemModeScore(
+							new data.score.Score(userName, mScore.getScore(), Difficulty.NORMAL.getValue(),
+									Mode.ITEM_MODE.getValue()));
+		} else {
+			switch (meDifficulty) {
+				case EASY:
+					ScoreBoardData.getInstance()
+							.addDefaultModeScore(
+									new data.score.Score(userName, mScore.getScore(), Difficulty.EASY.getValue(),
+											Mode.DEFAULT.getValue()));
+					break;
+				case NORMAL:
+					ScoreBoardData.getInstance()
+							.addDefaultModeScore(
+									new data.score.Score(userName, mScore.getScore(), Difficulty.NORMAL.getValue(),
+											Mode.DEFAULT.getValue()));
+					break;
+				case HARD:
+					ScoreBoardData.getInstance()
+							.addDefaultModeScore(
+									new data.score.Score(userName, mScore.getScore(), Difficulty.HARD.getValue(),
+											Mode.DEFAULT.getValue()));
+					break;
+				default:
+					assert (false) : "Undefined eDifficulty";
+					break;
+			}
+		}
 		GameStarter.setOver();
 	}
 

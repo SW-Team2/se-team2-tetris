@@ -21,6 +21,8 @@ public class GameScreen extends Screen {
     protected TetrisGame mTetrisGame;
     protected Tile mGameBoard[][];
 
+    private int mCVDMode;
+
     protected BufferedImage mPanelBackGroundImage;
     protected BufferedImage mGameBoardBackGroundImage;
     protected BufferedImage mNextTetBoardBackGroundImage;
@@ -97,6 +99,8 @@ public class GameScreen extends Screen {
         mExitBtnPosY = mScreenHeight / 2;
         mPuasePanelHeight = (int) ((mContinueBtnHeight + mExitBtnHeight) * 1.4);
         mPausePanelPosY = mScreenHeight / 2 - mPuasePanelHeight / 2;
+
+        mCVDMode = mSettingInfo.getBlindnessMode();
     }
 
     @Override
@@ -150,8 +154,6 @@ public class GameScreen extends Screen {
             return;
         }
 
-        // TODO: Reflect setting info
-        int CVDMode = 1;
         // Draw game board
         {
             // Draw static blocks
@@ -160,7 +162,7 @@ public class GameScreen extends Screen {
                     if (mGameBoard[col][row] != null) {
                         image = mGameBoard[col][row].getTexture();
                         //
-                        image = ImageCVDConverter.convert(image, CVDMode);
+                        image = ImageCVDConverter.convert(image, mCVDMode);
                         //
                         int posX = mGameBoardPosX + row * tileSize;
                         int posY = mGameBoardPosY + col * tileSize;
@@ -176,7 +178,7 @@ public class GameScreen extends Screen {
                     if (tet.mShape[col][row] != null) {
                         image = tet.mShape[col][row].getTexture();
                         //
-                        image = ImageCVDConverter.convert(image, CVDMode);
+                        image = ImageCVDConverter.convert(image, mCVDMode);
                         //
                         int posX = mGameBoardPosX + (row + pos.mRow) * tileSize;
                         int posY = mGameBoardPosY + (col + pos.mCol) * tileSize;
@@ -196,7 +198,7 @@ public class GameScreen extends Screen {
                         int posY = mNextTetBoardPosY + col * tileSize + 5;
                         image = tet.mShape[col][row].getTexture();
                         //
-                        image = ImageCVDConverter.convert(image, CVDMode);
+                        image = ImageCVDConverter.convert(image, mCVDMode);
                         //
                         g2d.drawImage(image, posX, posY, tileSize, tileSize, null);
                     }
