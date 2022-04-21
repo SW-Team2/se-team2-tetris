@@ -21,7 +21,6 @@ public class ScoreBoardData {
     private final String DEFAULT_MODE_SCORE_PATH = System.getProperty("user.dir") + "/database/DefaultModeScore.json";
     private final String ITEM_MODE_SCORE_PATH = System.getProperty("user.dir") + "/database/ItemModeScore.json";
 
-
     private ScoreBoardData() {
         initializeDefaultData();
         initializeItemScore();
@@ -151,7 +150,7 @@ public class ScoreBoardData {
             for (int i = 0; i < defaultScores.size(); i++)
                 defaultScores.remove(i);
 
-            for (int i = 0; i < defaultScores.size(); i++)
+            for (int i = 0; i < itemScores.size(); i++)
                 itemScores.remove(i);
 
             FileWriter defaultScoreWriter = new FileWriter(DEFAULT_MODE_SCORE_PATH);
