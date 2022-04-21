@@ -1,5 +1,6 @@
 package graphics.screens;
 
+import data.score.Score;
 import data.score.ScoreBoardData;
 import data.setting.SettingData;
 import graphics.eScreenInfo;
@@ -13,18 +14,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ScoreBoardScreen extends Screen {
-    private BufferedImage[] mCurrButtonImage;
-    private BufferedImage[] mButtonImages;
-    private BufferedImage[] mFocusButtonImages;
-
+    private BufferedImage mDefaultButtonImage;
+    private BufferedImage mFocusDefaultButtonImage;
+    private BufferedImage mCurrDefaultButtonImage;
+    private BufferedImage mItemButtonImage;
+    private BufferedImage mFocusItemButtonImage;
+    private BufferedImage mCurrItemButtonImage;
     private BufferedImage mBackButtonImage;
-    private int mButtonIndex;
     private Image mBackgroundImage;
+
+    private int mButtonIndex;
 
     private ArrayList<HashMap<String, Object>> defaultModeScores;
     private ArrayList<HashMap<String, Object>> itemModeScores;
-    private JPanel scorePanel;
-    private JScrollPane scoreboard;
 
     private static final int NUM_BUTTONS = 3;
 
@@ -32,35 +34,20 @@ public class ScoreBoardScreen extends Screen {
         this.refreshScoreBoard();
 
         ImageLoader img = ImageLoader.getInstance();
-        mButtonImages = new BufferedImage[NUM_BUTTONS];
 
-        mButtonImages[0] = img.getTexture("btn_default");
-        mButtonImages[1] = img.getTexture("btn_item");
-        mButtonImages[2] = img.getTexture("btn_next_page");
-
-        mFocusButtonImages = new BufferedImage[NUM_BUTTONS];
-
-        mFocusButtonImages[0] = img.getTexture("btn_default_focus");
-        mFocusButtonImages[1] = img.getTexture("btn_item_focus");
-        mFocusButtonImages[2] = img.getTexture("btn_next_page_focus");
-
-        mCurrButtonImage = new BufferedImage[NUM_BUTTONS];
-        mCurrButtonImage[0] = mFocusButtonImages[0];
-        mCurrButtonImage[1] = mButtonImages[1];
-        mCurrButtonImage[2] = mButtonImages[2];
-
+        mDefaultButtonImage = img.getTexture("btn_default");
+        mFocusDefaultButtonImage = img.getTexture("btn_default_focus");
+        mItemButtonImage = img.getTexture("btn_item");
+        mFocusItemButtonImage = img.getTexture("btn_item_focus");
         mBackButtonImage = img.getTexture("btn_back");
-
         mBackgroundImage = img.getTexture("tetris_background");
-        mButtonIndex = 0;
 
-        scoreboard = new JScrollPane();
-        scoreboard.setSize(100,100);
-        scoreboard.setVisible(true);
-        scoreboard.setForeground(Color.BLUE);
-        this.add(new Button("hello"));
-        this.add(scoreboard);
+        mCurrDefaultButtonImage = mFocusDefaultButtonImage;
+        mCurrItemButtonImage = mItemButtonImage;
+
+        mButtonIndex = 0;
     }
+
     public void refreshScoreBoard() {
         ScoreBoardData scoreBoardData = ScoreBoardData.getInstance();
         this.defaultModeScores = scoreBoardData.getDefaultModeScore();
@@ -85,68 +72,79 @@ public class ScoreBoardScreen extends Screen {
         int ScreenHeight = SettingData.getInstance().getHeight();
         Dimension d = getSize();
         g.drawImage(mBackgroundImage, 0, 0, d.width, d.height, null);
-        g.drawImage(mCurrButtonImage[0], 186 * ScreenWidth / 720, 81 * ScreenHeight / 720,
-                mCurrButtonImage[0].getWidth() * 7 / 20 * ScreenWidth / 720, mCurrButtonImage[0].getHeight() * 7 / 20 * ScreenHeight / 720, null);
-        g.drawImage(mCurrButtonImage[1], 402 * ScreenWidth / 720, 81 * ScreenHeight / 720,
-                mCurrButtonImage[1].getWidth() * 7 / 20 * ScreenWidth / 720, mCurrButtonImage[1].getHeight() * 7 / 20 * ScreenHeight / 720, null);
-        g.drawImage(mCurrButtonImage[2], 492 * ScreenWidth / 720, 512 * ScreenHeight / 720,
-                mCurrButtonImage[2].getWidth() * 7 / 20 * ScreenWidth / 720, mCurrButtonImage[2].getHeight() * 7 / 20 * ScreenHeight / 720, null);
+
+        g.drawImage(
+                mCurrDefaultButtonImage, 186 * ScreenWidth / 720, 81 * ScreenHeight / 720,
+                mCurrDefaultButtonImage.getWidth() * 7 / 20 * ScreenWidth / 720,
+                mCurrDefaultButtonImage.getHeight() * 7 / 20 * ScreenHeight / 720, null);
+        g.drawImage(
+                mCurrItemButtonImage, 402 * ScreenWidth / 720, 81 * ScreenHeight / 720,
+                mCurrItemButtonImage.getWidth() * 7 / 20 * ScreenWidth / 720,
+                mCurrItemButtonImage.getHeight() * 7 / 20 * ScreenHeight / 720, null);
 
         g.drawImage(mBackButtonImage,
                 Screen.getEscPosX(),
                 Screen.getEscPosY(),
                 Screen.getEscButtonWidth(),
                 Screen.getEscButtonHeight(), null);
+
+        StringBuffer str = new StringBuffer();
+        ArrayList<HashMap<String, Object>> scoreArr;
+        int bold = (int) (100 * SettingData.getInstance().getHeight() / (double) 1920);
+        g.setFont(new Font("S-Core_Dream_OTF", Font.BOLD, bold));
+        g.setColor(Color.WHITE);
+        if (mButtonIndex == 0) {
+            scoreArr = defaultModeScores;
+            for (int i = 0; i < scoreArr.size(); i++) {
+                HashMap<String, Object> hs = scoreArr.get(i);
+                String name = (String) hs.get("name");
+                Integer score = Integer.parseInt(String.valueOf(hs.get("score")));
+                String difficulty = (String) hs.get("difficulty");
+
+                str.append(name);
+                str.append("  ");
+                str.append(score.toString());
+                str.append("  ");
+                str.append(difficulty);
+                str.append('\n');
+            }
+            g.drawString(str.toString(), 300, 300);
+        } else {
+            scoreArr = itemModeScores;
+            for (int i = 0; i < scoreArr.size(); i++) {
+                HashMap<String, Object> hs = scoreArr.get(i);
+                String name = (String) hs.get("name");
+                Integer score = Integer.parseInt(String.valueOf(hs.get("score")));
+
+                str.append(name);
+                str.append("  ");
+                str.append(score.toString());
+                str.append('\n');
+            }
+            g.drawString(str.toString(), 300, 300);
+        }
+
     }
 
     @Override
     public eScreenInfo getUserInput(KeyEvent e) {
         eScreenInfo sr = eScreenInfo.NONE;
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_DOWN:
-                if (mButtonIndex == 0 || mButtonIndex == 1) {
-                    mCurrButtonImage[mButtonIndex] = mButtonImages[mButtonIndex];
-                    mButtonIndex = 2;
-                    mCurrButtonImage[2] = mFocusButtonImages[2];
-                }
-                this.repaint();
-                break;
-            case KeyEvent.VK_UP:
-                if (mButtonIndex == 2) {
-                    mCurrButtonImage[2] = mButtonImages[2];
-                    mButtonIndex = 0;
-                    mCurrButtonImage[0] = mFocusButtonImages[0];
-                }
-                this.repaint();
-                break;
             case KeyEvent.VK_RIGHT:
                 if (mButtonIndex == 0) {
-                    mCurrButtonImage[0] = mButtonImages[0];
-                    mButtonIndex = 1;
-                    mCurrButtonImage[1] = mFocusButtonImages[1];
+                    mButtonIndex++;
+                    mCurrDefaultButtonImage = mDefaultButtonImage;
+                    mCurrItemButtonImage = mFocusItemButtonImage;
                 }
                 this.repaint();
                 break;
             case KeyEvent.VK_LEFT:
                 if (mButtonIndex == 1) {
-                    mCurrButtonImage[1] = mButtonImages[1];
-                    mButtonIndex = 0;
-                    mCurrButtonImage[0] = mFocusButtonImages[0];
+                    mButtonIndex--;
+                    mCurrDefaultButtonImage = mFocusDefaultButtonImage;
+                    mCurrItemButtonImage = mItemButtonImage;
                 }
                 this.repaint();
-                break;
-            case KeyEvent.VK_ENTER:
-                switch (mButtonIndex) {
-                    case 0:
-                        scoreboard.setVisible(true);
-//                        sr = eScreenInfo.MAIN;//일반모드 스코어보드 표시 기능 넣어야
-                        break;
-                    case 1:
-                        sr = eScreenInfo.SETTING;//아이템모드 스코어보드 표시 기능 넣어야
-                        break;
-                    case 2:
-                        break;
-                }
                 break;
             case KeyEvent.VK_ESCAPE:
                 sr = eScreenInfo.MAIN;
