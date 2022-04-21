@@ -121,6 +121,7 @@ public class WindowManager {
 
     public WindowManager() {
         mWindow = new JFrame();
+        mWindow.setResizable(false);
 
         refreshSetting();
         mWindow.setLocation(200, 200);

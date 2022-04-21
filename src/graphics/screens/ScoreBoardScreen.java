@@ -104,9 +104,9 @@ public class ScoreBoardScreen extends Screen {
 
                 resultList.add(String.format("%-7s\t%-7s\t%-7s\t%-15s", i + 1, name, score, difficulty));
             }
-            g.drawString(String.format("%-7s\t%-7s\t%-7s\t%-15s", "Rank", "name", "score", "difficulty"), 50, 200);
+            g.drawString(String.format("%-7s\t%-7s\t%-7s\t%-15s", "Rank", "name", "score", "difficulty"), 50 * ScreenWidth / 720, 200* ScreenWidth / 720);
             for (int i = 0; i < resultList.size(); i++) {
-                g.drawString(resultList.get(i), 50, 200 + (i + 1) * 50);
+                g.drawString(resultList.get(i), 50* ScreenWidth / 720, (200 + (i + 1) * 50)* ScreenWidth / 720);
             }
         } else {
             scoreArr = itemModeScores;
@@ -117,9 +117,9 @@ public class ScoreBoardScreen extends Screen {
 
                 resultList.add(String.format("%-7s\t%-7s\t%-7s\t", i + 1, name, score));
             }
-            g.drawString(String.format("%-7s\t%-7s\t%-7s\t", "Rank", "name", "score"), 50, 200);
+            g.drawString(String.format("%-7s\t%-7s\t%-7s\t", "Rank", "name", "score"), 50* ScreenWidth / 720, 200* ScreenWidth / 720);
             for (int i = 0; i < resultList.size(); i++) {
-                g.drawString(resultList.get(i), 50, 200 + (i + 1) * 50);
+                g.drawString(resultList.get(i), 50* ScreenWidth / 720, (200 + (i + 1) * 50)* ScreenWidth / 720);
             }
         }
 
