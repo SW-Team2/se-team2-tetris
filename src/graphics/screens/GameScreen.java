@@ -218,9 +218,19 @@ public class GameScreen extends Screen {
             if (mTetrisGame.getPauseFlag() == true) {
                 image = ImageLoader.getInstance().getTexture("pause_panel");
                 g2d.drawImage(image, mPausePanelPosX, mPausePanelPosY, mPausePanelWidth, mPuasePanelHeight, null);
-                image = ImageLoader.getInstance().getTexture("btn_start");
+
+                int focusBtnIndex = mTetrisGame.getPauseBtnIndex();
+                if (focusBtnIndex == 0) {
+                    image = ImageLoader.getInstance().getTexture("btn_continue_focus");
+                } else {
+                    image = ImageLoader.getInstance().getTexture("btn_continue");
+                }
                 g2d.drawImage(image, mContinueBtnPosX, mContinueBtnPosY, mContinueBtnWidth, mContinueBtnHeight, null);
-                image = ImageLoader.getInstance().getTexture("btn_exit");
+                if (focusBtnIndex == 1) {
+                    image = ImageLoader.getInstance().getTexture("btn_exit_focus");
+                } else {
+                    image = ImageLoader.getInstance().getTexture("btn_exit");
+                }
                 g2d.drawImage(image, mExitBtnPosX, mExitBtnPosY, mExitBtnWidth, mExitBtnHeight, null);
             }
         }
