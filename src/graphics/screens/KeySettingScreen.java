@@ -91,6 +91,7 @@ public class KeySettingScreen extends Screen {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
+        refreshSetting();
         Dimension d = getSize();
         g.drawImage(mBackgroundImage, 0, 0, d.width, d.height, null);
 
@@ -234,5 +235,14 @@ public class KeySettingScreen extends Screen {
     private String keyCodeToString(int key) {
         String re = KeyEvent.getKeyText(key);
         return re;
+    }
+
+    private void refreshSetting() {
+        SettingData setting = SettingData.getInstance();
+        mCurrKeyName[0] = mCurrKeyName[0].equals("") ? "" : this.keyCodeToString(setting.getGameMoveLeft());
+        mCurrKeyName[1] = mCurrKeyName[1].equals("") ? "" : this.keyCodeToString(setting.getGameMoveDown());
+        mCurrKeyName[2] = mCurrKeyName[2].equals("") ? "" : this.keyCodeToString(setting.getGameMoveRight());
+        mCurrKeyName[3] = mCurrKeyName[3].equals("") ? "" : this.keyCodeToString(setting.getGameMoveToFloor());
+        mCurrKeyName[4] = mCurrKeyName[4].equals("") ? "" : this.keyCodeToString(setting.getRotateKey());
     }
 }

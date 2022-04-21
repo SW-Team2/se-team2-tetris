@@ -147,11 +147,9 @@ public class ScoreBoardData {
 
             JSONArray defaultScores = (JSONArray) jsonParser.parse(defaultScoreReader);
             JSONArray itemScores = (JSONArray) jsonParser.parse(itemScoreReader);
-            for (int i = 0; i < defaultScores.size(); i++)
-                defaultScores.remove(i);
 
-            for (int i = 0; i < itemScores.size(); i++)
-                itemScores.remove(i);
+            defaultScores.clear();
+            itemScores.clear();
 
             FileWriter defaultScoreWriter = new FileWriter(DEFAULT_MODE_SCORE_PATH);
             FileWriter itemScoreWriter = new FileWriter(ITEM_MODE_SCORE_PATH);
