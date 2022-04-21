@@ -43,7 +43,7 @@ public class ImageLoader {
     }
 
     public static ImageLoader getInstance() {
-        assert (mUniqueInstance != null) : "You mus call Load()";
+        assert (mUniqueInstance != null) : "You must call Load()";
         return mUniqueInstance;
     }
 
