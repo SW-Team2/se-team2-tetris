@@ -11,17 +11,14 @@ import javax.swing.JOptionPane;
 import data.score.ScoreBoardData;
 import data.setting.SettingData;
 import gamestarter.GameStarter;
-import graphics.screens.GameScreen;
-import graphics.screens.ItemModeGameScreen;
-import graphics.screens.MainMenuScreen;
-import graphics.screens.ScoreBoardScreen;
-import graphics.screens.SettingMenuScreen;
+import graphics.screens.*;
 import tetrisgame.enumerations.eDifficulty;
 
 public class WindowManager {
     private JFrame mWindow;
     private CardLayout mCards;
     private MainMenuScreen mMain;
+    private DifficultyScreen mDifficulty;
     private GameScreen mGame;
     private ItemModeGameScreen mItemGame;
     private SettingMenuScreen mSetting;
@@ -37,6 +34,9 @@ public class WindowManager {
             switch (meCurrScreen) {
                 case MAIN:
                     switchScreenTo = mMain.getUserInput(e);
+                    break;
+                case DIFFICULTY:
+                    switchScreenTo = mDifficulty.getUserInput(e);
                     break;
                 case GAME:
                     switchScreenTo = mGame.getUserInput(e);
@@ -59,6 +59,9 @@ public class WindowManager {
                     break;
                 case MAIN:
                     showMain();
+                    break;
+                case DIFFICULTY:
+                    showDifficulty();
                     break;
                 case GAME:
                     showGame();
@@ -114,11 +117,13 @@ public class WindowManager {
         mWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         mMain = new MainMenuScreen();
+        mDifficulty = new DifficultyScreen();
         mGame = new GameScreen();
         mItemGame = new ItemModeGameScreen();
         mSetting = new SettingMenuScreen();
         mScore = new ScoreBoardScreen();
         mWindow.getContentPane().add("main", mMain);
+        mWindow.getContentPane().add("difficulty", mDifficulty);
         mWindow.getContentPane().add("game", mGame);
         mWindow.getContentPane().add("itemgame", mItemGame);
         mWindow.getContentPane().add("setting", mSetting);
@@ -150,6 +155,11 @@ public class WindowManager {
     public void showMain() {
         mCards.show(mWindow.getContentPane(), "main");
         meCurrScreen = eScreenInfo.MAIN;
+    }
+
+    public void showDifficulty() {
+        mCards.show(mWindow.getContentPane(), "difficulty");
+        meCurrScreen = eScreenInfo.DIFFICULTY;
     }
 
     private void showGame() {
