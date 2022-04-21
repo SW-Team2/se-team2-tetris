@@ -11,17 +11,14 @@ import javax.swing.JOptionPane;
 import data.score.ScoreBoardData;
 import data.setting.SettingData;
 import gamestarter.GameStarter;
-import graphics.screens.GameScreen;
-import graphics.screens.ItemModeGameScreen;
-import graphics.screens.MainMenuScreen;
-import graphics.screens.ScoreBoardScreen;
-import graphics.screens.SettingMenuScreen;
+import graphics.screens.*;
 import tetrisgame.enumerations.eDifficulty;
 
 public class WindowManager {
     private JFrame mWindow;
     private CardLayout mCards;
     private MainMenuScreen mMain;
+    private DifficultyScreen mDifficulty;
     private GameScreen mGame;
     private ItemModeGameScreen mItemGame;
     private SettingMenuScreen mSetting;
@@ -37,6 +34,9 @@ public class WindowManager {
             switch (meCurrScreen) {
                 case MAIN:
                     switchScreenTo = mMain.getUserInput(e);
+                    break;
+                case DIFFICULTY:
+                    switchScreenTo = mDifficulty.getUserInput(e);
                     break;
                 case GAME:
                     switchScreenTo = mGame.getUserInput(e);
@@ -60,6 +60,9 @@ public class WindowManager {
                 case MAIN:
                     showMain();
                     break;
+                case DIFFICULTY:
+                    showDifficulty();
+                    break;
                 case GAME:
                     showGame();
                     break;
@@ -71,6 +74,23 @@ public class WindowManager {
                     break;
                 case SCOREBOARD:
                     showScore();
+                    break;
+                case SET_SCREEN_SIZE:
+                    // TODO:
+                    break;
+                case SET_GAME_KEY:
+                    // TODO:
+                    break;
+                case SET_COLOR_BLIND_MODE:
+                    // TODO:
+                    break;
+                case EXIT:
+                    if (JOptionPane.showConfirmDialog(mWindow,
+                            "Are you sure you want to close this window?", "Close Window?",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                        System.exit(0);
+                    }
                     break;
                 default:
                     assert (false) : "Undefined eScreenInfo";
@@ -114,11 +134,13 @@ public class WindowManager {
         mWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         mMain = new MainMenuScreen();
+        mDifficulty = new DifficultyScreen();
         mGame = new GameScreen();
         mItemGame = new ItemModeGameScreen();
         mSetting = new SettingMenuScreen();
         mScore = new ScoreBoardScreen();
         mWindow.getContentPane().add("main", mMain);
+        mWindow.getContentPane().add("difficulty", mDifficulty);
         mWindow.getContentPane().add("game", mGame);
         mWindow.getContentPane().add("itemgame", mItemGame);
         mWindow.getContentPane().add("setting", mSetting);
@@ -127,21 +149,6 @@ public class WindowManager {
         meCurrScreen = eScreenInfo.MAIN;
         mWindow.addKeyListener(new MsgManager());
         mWindow.setFocusable(true);
-
-        //
-        // Define action when closing window message occurs
-        //
-        mWindow.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                if (JOptionPane.showConfirmDialog(mWindow,
-                        "Are you sure you want to close this window?", "Close Window?",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-                    System.exit(0);
-                }
-            }
-        });
 
         this.showMain();
         mWindow.setVisible(true);
@@ -152,10 +159,12 @@ public class WindowManager {
         meCurrScreen = eScreenInfo.MAIN;
     }
 
-    private void showGame() {
-        // TODO:
-        GameStarter.setDifficulty(eDifficulty.NORMAL);
+    public void showDifficulty() {
+        mCards.show(mWindow.getContentPane(), "difficulty");
+        meCurrScreen = eScreenInfo.DIFFICULTY;
+    }
 
+    private void showGame() {
         mCards.show(mWindow.getContentPane(), "game");
         meCurrScreen = eScreenInfo.GAME;
     }

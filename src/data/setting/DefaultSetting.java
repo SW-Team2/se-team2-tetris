@@ -14,8 +14,8 @@ public class DefaultSetting {
         windowSize = new HashMap<>();
         gameKeyMap = new HashMap<>();
 
-        windowSize.put("width", 800);
-        windowSize.put("height", 1040);
+        windowSize.put("width", 720);
+        windowSize.put("height", 720);
 
         gameKeyMap.put("moveDown", KeyEvent.VK_DOWN);
         gameKeyMap.put("moveRight", KeyEvent.VK_RIGHT);
