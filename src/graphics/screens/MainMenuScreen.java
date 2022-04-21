@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.*;
 
+import data.setting.SettingData;
 import graphics.eScreenInfo;
 
 public class MainMenuScreen extends Screen {
@@ -12,23 +13,21 @@ public class MainMenuScreen extends Screen {
     private JLabel mButtons[];
     private ImageIcon btnImageIcon[];
     private ImageIcon updatedBtnImage[];
-    private static final int NUM_BUTTONS = 4;
+    private static final int NUM_BUTTONS = 5;
     private int mButtonIndex;
 
     public void paintComponent(Graphics g) {
+        int screenWidth = SettingData.getInstance().getWidth();
+        int screenHeight = SettingData.getInstance().getHeight();
         Dimension d = getSize();
         int imageWidth = updatedBtnImage[0].getIconWidth();
         int imageHeight = updatedBtnImage[0].getIconHeight();
         ImageIcon image = new ImageIcon("images\\main\\main_background.png");
-        mButtons[0].setBounds(, , imageWidth, imageHeight);
-        mButtons[1].setBounds(, , imageWidth, imageHeight);
-        mButtons[2].setBounds(, , imageWidth, imageHeight);
-        mButtons[3].setBounds(, , imageWidth, imageHeight);
-
-        mButtons[0].setHorizontalAlignment(JLabel.CENTER);
-        mButtons[1].setHorizontalAlignment(JLabel.CENTER);
-        mButtons[2].setHorizontalAlignment(JLabel.CENTER);
-        mButtons[3].setHorizontalAlignment(JLabel.CENTER);
+        mButtons[0].setBounds(screenWidth / 2 - imageWidth / 2, 280, imageWidth, imageHeight);
+        mButtons[1].setBounds(screenWidth / 2 - imageWidth / 2, 340, imageWidth, imageHeight);
+        mButtons[2].setBounds(screenWidth / 2 - imageWidth / 2, 400, imageWidth, imageHeight);
+        mButtons[3].setBounds(screenWidth / 2 - imageWidth / 2, 460, imageWidth, imageHeight);
+        mButtons[4].setBounds(screenWidth / 2 - imageWidth / 2, 520, imageWidth, imageHeight);
 
         g.drawImage(image.getImage(), 0, 0, d.width, d.height, null);
     }
@@ -56,17 +55,20 @@ public class MainMenuScreen extends Screen {
         this.btnImageIcon[0] = new ImageIcon("images\\main\\btn_start.png");
         this.btnImageIcon[1] = new ImageIcon("images\\main\\btn_item_mode.png");
         this.btnImageIcon[2] = new ImageIcon("images\\main\\btn_setting.png");
-        this.btnImageIcon[3] = new ImageIcon("images\\main\\btn_exit.png");
+        this.btnImageIcon[3] = new ImageIcon("images\\main\\btn_score_board.png");
+        this.btnImageIcon[4] = new ImageIcon("images\\main\\btn_exit.png");
 
         this.updatedBtnImage[0] = resizeBtn(this.btnImageIcon[0].getIconWidth(), this.btnImageIcon[0].getIconHeight(), this.btnImageIcon[0]);
         this.updatedBtnImage[1] = resizeBtn(this.btnImageIcon[1].getIconWidth(), this.btnImageIcon[1].getIconHeight(), this.btnImageIcon[1]);
         this.updatedBtnImage[2] = resizeBtn(this.btnImageIcon[2].getIconWidth(), this.btnImageIcon[2].getIconHeight(), this.btnImageIcon[2]);
         this.updatedBtnImage[3] = resizeBtn(this.btnImageIcon[3].getIconWidth(), this.btnImageIcon[3].getIconHeight(), this.btnImageIcon[3]);
+        this.updatedBtnImage[4] = resizeBtn(this.btnImageIcon[4].getIconWidth(), this.btnImageIcon[4].getIconHeight(), this.btnImageIcon[4]);
 
         mButtons[0] = new JLabel(this.updatedBtnImage[0]);
         mButtons[1] = new JLabel(this.updatedBtnImage[1]);
         mButtons[2] = new JLabel(this.updatedBtnImage[2]);
         mButtons[3] = new JLabel(this.updatedBtnImage[3]);
+        mButtons[4] = new JLabel(this.updatedBtnImage[4]);
 
         //mButtonIndex = 0;
 

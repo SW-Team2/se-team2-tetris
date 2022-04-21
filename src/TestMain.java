@@ -12,9 +12,9 @@ public class TestMain {
 
         WindowManager win = new WindowManager();
 
-        win.showMain();
+        //win.showMain();
 
-      /*  while (true) {
+        while (true) {
             GameStarter.waitForSignal(GAME_START);
 
             TetrisGame game = GameStarter.getGame();
@@ -23,6 +23,6 @@ public class TestMain {
 
             GameStarter.waitForSignal(GAME_END);
             win.showMain();
-        }*/
+        }
     }
 }
