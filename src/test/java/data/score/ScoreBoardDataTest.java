@@ -1,119 +1,209 @@
 package data.score;
 
-import org.assertj.db.type.*;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.junit.jupiter.api.*;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import org.junit.jupiter.api.TestInstance;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.stream.Stream;
 
-import java.sql.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class ScoreBoardDataTest {
-    private static final String[] SCORES_INSERT_REQUESTS = {
-            "insert into scores(name, score, difficulty, gameMode) values ('defalut', 1, 'Hard','Default')",
-            "insert into scores(name, score, difficulty, gameMode) values ('lastDefault', 2, 'Hard','Default')",
-            "insert into scores(name, score, difficulty, gameMode) values ('haha', 3, 'Easy','Default')",
-            "insert into scores(name, score, difficulty, gameMode) values ('jj', 4, 'Hard','Default')",
-            "insert into scores(name, score, difficulty, gameMode) values ('jj', 5, 'Hard','Default')",
-            "insert into scores(name, score, difficulty, gameMode) values ('sy', 6, 'Easy','Default')",
-            "insert into scores(name, score, difficulty, gameMode) values ('jj', 7, 'Hard','Default')",
-            "insert into scores(name, score, difficulty, gameMode) values ('jj', 8, 'Hard','Default')",
-            "insert into scores(name, score, difficulty, gameMode) values ('kk', 9, 'Easy','Default')",
-            "insert into scores(name, score, difficulty, gameMode) values ('asdf', 10, 'Hard','Default')",
-            "insert into scores(name, score, difficulty, gameMode) values ('ll', 11, 'Hard','Default')",
-            "insert into scores(name, score, difficulty, gameMode) values ('item', 1, null,'Item')",
-            "insert into scores(name, score, difficulty, gameMode) values ('lastItem', 2, null,'Item')",
-            "insert into scores(name, score, difficulty, gameMode) values ('haha', 3, null,'Item')",
-            "insert into scores(name, score, difficulty, gameMode) values ('sy', 4, null,'Item')",
-            "insert into scores(name, score, difficulty, gameMode) values ('jj', 5, null,'Item')",
-            "insert into scores(name, score, difficulty, gameMode) values ('jj', 6, null,'Item')",
-            "insert into scores(name, score, difficulty, gameMode) values ('jj', 7, null,'Item')",
-            "insert into scores(name, score, difficulty, gameMode) values ('jj', 8, null,'Item')",
-            "insert into scores(name, score, difficulty, gameMode) values ('sy', 9, null,'Item')",
-            "insert into scores(name, score, difficulty, gameMode) values ('asdf', 10, null,'Item')",
-            "insert into scores(name, score, difficulty, gameMode) values ('qwer', 11, null,'Item')",
+class ScoreBoardDataTest {
+    final String DEFAULT_MODE_SCORE_PATH = System.getProperty("user.dir") + "/database/DefaultModeScoreTest.json";
+    final String ITEM_MODE_SCORE_PATH = System.getProperty("user.dir") + "/database/ItemModeScoreTest.json";
+    File defaultScoreFile, ItemScoreFile;
 
-    };
-    private final String URL = "jdbc:sqlite:" + System.getProperty("user.dir") + "/database/tetrisgame";
-    private Connection connection;
-
-    protected void makeDefaultScore() throws SQLException {
-        connection.createStatement().executeUpdate("insert into scores(name, score, difficulty) values ('jy', 200, 'Hard')");
-        connection.createStatement().executeUpdate("insert into scores(name, score, difficulty) values ('jd', 10, 'Normal')");
-    }
-
-    protected void makeItemScore() throws SQLException {
-        connection.createStatement().executeUpdate("insert into scores(name, score, gameMode) values ( 'jy', 200, 'Default')");
-        connection.createStatement().executeUpdate("insert into scores(name, score, gameMode) values ('jd', 10, 'item')");
-    }
+    ArrayList<HashMap<String, Object>> defaultModeScores;
+    ArrayList<HashMap<String, Object>> itemModeScores;
 
     @BeforeAll
-    public void setUp() throws SQLException {
-        try {
-            Class.forName("org.sqlite.JDBC");
-            connection = DriverManager.getConnection(URL);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        for (String request : SCORES_INSERT_REQUESTS) {
-            connection.createStatement().executeUpdate(request);
-        }
-    }
+    void setUp() throws IOException {
+        defaultScoreFile = new File(DEFAULT_MODE_SCORE_PATH);
+        ItemScoreFile = new File(ITEM_MODE_SCORE_PATH);
+        defaultScoreFile.createNewFile();
+        ItemScoreFile.createNewFile();
 
-    @Test
-    public void getDefaultModeScore() throws SQLException {
-        Statement statement = connection.createStatement();
-        statement.setMaxRows(10);
-        ResultSet resultSet = statement.executeQuery("select * from scores where gameMode = 'Default' order by score desc");
+        JSONArray emptyList = new JSONArray();
 
-        assertThat(resultSet.next()).isTrue();
-        assertThat(resultSet.next()).isTrue();
-        assertThat(resultSet.next()).isTrue();
-        assertThat(resultSet.next()).isTrue();
-        assertThat(resultSet.next()).isTrue();
-        assertThat(resultSet.next()).isTrue();
-        assertThat(resultSet.next()).isTrue();
-        assertThat(resultSet.next()).isTrue();
-        assertThat(resultSet.next()).isTrue();
-        assertThat(resultSet.next()).isTrue();
-        assertThat(resultSet.getString("name")).isEqualTo("lastDefault");
+        FileWriter defaultWriter = new FileWriter(DEFAULT_MODE_SCORE_PATH);
+        FileWriter itemWriter = new FileWriter(ITEM_MODE_SCORE_PATH);
 
-        statement.close();
-    }
+        defaultWriter.write(emptyList.toJSONString());
+        itemWriter.write(emptyList.toJSONString());
 
-    @Test
-    public void getItemModeScore() throws SQLException {
-        Statement statement = connection.createStatement();
-        statement.setMaxRows(10);
-        ResultSet resultSet = statement.executeQuery("select * from scores where gameMode = 'Item' order by score desc");
-
-        assertThat(resultSet.next()).isTrue();
-        assertThat(resultSet.next()).isTrue();
-        assertThat(resultSet.next()).isTrue();
-        assertThat(resultSet.next()).isTrue();
-        assertThat(resultSet.next()).isTrue();
-        assertThat(resultSet.next()).isTrue();
-        assertThat(resultSet.next()).isTrue();
-        assertThat(resultSet.next()).isTrue();
-        assertThat(resultSet.next()).isTrue();
-        assertThat(resultSet.next()).isTrue();
-        assertThat(resultSet.getString("name")).isEqualTo("lastItem");
-
-        statement.close();
+        defaultWriter.flush();
+        itemWriter.flush();
     }
 
     @AfterAll
-    public void reset() throws SQLException {
-        Statement statement = null;
+    void tearDown() {
+        defaultScoreFile.delete();
+        ItemScoreFile.delete();
+    }
 
-        statement = connection.createStatement();
-        statement.executeUpdate("delete from scores");
+    static Stream<Score> provideDefaultScore() {
+        return Stream.of(
+                new Score("jj", 1, Difficulty.HARD.getValue(), Mode.DEFAULT.getValue()),
+                new Score("sy", 2, Difficulty.HARD.getValue(), Mode.DEFAULT.getValue()),
+                new Score("jj", 3, Difficulty.HARD.getValue(), Mode.DEFAULT.getValue()),
+                new Score("sy", 4, Difficulty.HARD.getValue(), Mode.DEFAULT.getValue()),
+                new Score("jj", 5, Difficulty.HARD.getValue(), Mode.DEFAULT.getValue()),
+                new Score("sy", 6, Difficulty.HARD.getValue(), Mode.DEFAULT.getValue()),
+                new Score("jj", 7, Difficulty.HARD.getValue(), Mode.DEFAULT.getValue()),
+                new Score("sy", 8, Difficulty.HARD.getValue(), Mode.DEFAULT.getValue()),
+                new Score("jj", 9, Difficulty.HARD.getValue(), Mode.DEFAULT.getValue()),
+                new Score("sy", 10, Difficulty.HARD.getValue(), Mode.DEFAULT.getValue()),
+                new Score("jj", 11, Difficulty.HARD.getValue(), Mode.DEFAULT.getValue()),
+                new Score("sy", 12, Difficulty.HARD.getValue(), Mode.DEFAULT.getValue())
+        );
+    }
 
-        statement.close();
-        connection.close();
+    @ParameterizedTest
+    @MethodSource("provideDefaultScore")
+    void addDefaultModeScore(Score dummy) {
+        try {
+            JSONParser jsonParser = new JSONParser();
+
+            FileReader reader = new FileReader(DEFAULT_MODE_SCORE_PATH);
+            JSONArray defaultScores = (JSONArray) jsonParser.parse(reader);
+
+            HashMap<String, Object> score = new HashMap<>();
+            score.put("name", dummy.getName());
+            score.put("score", dummy.getScore());
+            score.put("difficulty", dummy.getDifficulty());
+            score.put("gameMode", dummy.getGameMode());
+
+            defaultScores.add(new JSONObject(score));
+
+            FileWriter writer = new FileWriter(DEFAULT_MODE_SCORE_PATH);
+            writer.write(defaultScores.toJSONString());
+            writer.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    @Disabled
+    void addItemModeScore() {
+        Score dummy = new Score("jj", 123, Difficulty.NORMAL.getValue(), Mode.ITEM_MODE.getValue());
+        try {
+            JSONParser jsonParser = new JSONParser();
+
+            FileReader reader = new FileReader(ITEM_MODE_SCORE_PATH);
+            JSONArray defaultScores = (JSONArray) jsonParser.parse(reader);
+
+            HashMap<String, Object> score = new HashMap<>();
+            score.put("name", dummy.getName());
+            score.put("score", dummy.getScore());
+            score.put("difficulty", dummy.getDifficulty());
+            score.put("gameMode", dummy.getGameMode());
+
+            JSONObject obj = new JSONObject(score);
+
+            defaultScores.add(obj);
+
+            FileWriter writer = new FileWriter(ITEM_MODE_SCORE_PATH);
+            writer.write(defaultScores.toJSONString());
+            writer.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    @Disabled
+    void getDefaultModeScore() {
+        readDefaultModeScores();
+
+        try {
+            JSONParser jsonParser = new JSONParser();
+
+            FileReader reader = new FileReader(DEFAULT_MODE_SCORE_PATH);
+            JSONArray testList = (JSONArray) jsonParser.parse(reader);
+
+//            for (int i = 0; i < testList.size(); i++) {
+//                JSONObject test = (JSONObject) testList.get(i);
+//                HashMap<String, Object> score = this.defaultModeScores.get(i);
+//
+//                assertThat(test.get("name")).isEqualTo(score.get("name"));
+//                assertThat(Integer.parseInt(String.valueOf(test.get("score")))).isEqualTo(score.get("score"));
+//                assertThat(test.get("difficulty")).isEqualTo(score.get("difficulty"));
+//                assertThat(test.get("gameMode")).isEqualTo(score.get("gameMode"));
+//            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    @Disabled
+    void getItemModeScore() {
+
+    }
+
+    @Test
+    @Disabled
+    void resetScoreBoard() {
+        readItemModeScores();
+    }
+
+    void readDefaultModeScores() {
+        try {
+            JSONParser jsonParser = new JSONParser();
+
+            FileReader reader = new FileReader(DEFAULT_MODE_SCORE_PATH);
+            JSONArray defaultScores = (JSONArray) jsonParser.parse(reader);
+            System.out.println(defaultScores);
+
+            if (defaultScores != null) {
+                for (int i = 0; i < defaultScores.size(); i++) {
+                    JSONObject score = (JSONObject) defaultScores.get(i);
+                    this.defaultModeScores.add(score);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    void readItemModeScores() {
+        try {
+            JSONParser jsonParser = new JSONParser();
+
+            FileReader reader = new FileReader(ITEM_MODE_SCORE_PATH);
+            JSONArray itemScores = (JSONArray) jsonParser.parse(reader);
+
+            if (itemScores != null) {
+                for (int i = 0; i < itemScores.size(); i++) {
+                    JSONObject score = (JSONObject) itemScores.get(i);
+                    this.itemModeScores.add(score);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 }

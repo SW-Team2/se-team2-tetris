@@ -184,20 +184,24 @@ public class SettingData {
         return blindnessMode;
     }
 
-    public void resetSetting() throws IOException {
+    public void resetSetting() {
         DefaultSetting defaultSetting = DefaultSetting.getInstance();
-        JSONObject setting = new JSONObject();
+        try {
+            JSONObject setting = new JSONObject();
 
-        setting.put("windowSize", new JSONObject(defaultSetting.getWindowSize()));
-        setting.put("gameKey", new JSONObject(defaultSetting.getGameKeyMap()));
-        setting.put("blindnessMode", defaultSetting.getBlindnessMode());
+            setting.put("windowSize", new JSONObject(defaultSetting.getWindowSize()));
+            setting.put("gameKey", new JSONObject(defaultSetting.getGameKeyMap()));
+            setting.put("blindnessMode", defaultSetting.getBlindnessMode());
 
-        this.windowSize = defaultSetting.getWindowSize();
-        this.gameKey = defaultSetting.getGameKeyMap();
-        this.blindnessMode = defaultSetting.getBlindnessMode();
+            this.windowSize = defaultSetting.getWindowSize();
+            this.gameKey = defaultSetting.getGameKeyMap();
+            this.blindnessMode = defaultSetting.getBlindnessMode();
 
-        FileWriter writer = new FileWriter(PATH);
-        writer.write(setting.toJSONString());
-        writer.flush();
+            FileWriter writer = new FileWriter(PATH);
+            writer.write(setting.toJSONString());
+            writer.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }
