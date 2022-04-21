@@ -171,6 +171,7 @@ public class ScoreBoardData {
             FileReader reader = new FileReader(DEFAULT_MODE_SCORE_PATH);
             JSONArray defaultScores = (JSONArray) jsonParser.parse(reader);
 
+            this.defaultModeScores.clear();
             if (defaultScores != null) {
                 Collections.sort(defaultScores, comparator);
                 for (int i = 0; i < NUMBER_OF_SCORES && i < defaultScores.size(); i++) {
@@ -190,6 +191,7 @@ public class ScoreBoardData {
             FileReader reader = new FileReader(ITEM_MODE_SCORE_PATH);
             JSONArray itemScores = (JSONArray) jsonParser.parse(reader);
 
+            this.itemModeScores.clear();
             if (itemScores != null) {
                 Collections.sort(itemScores, comparator);
                 for (int i = 0; i < NUMBER_OF_SCORES && i < itemScores.size(); i++) {
