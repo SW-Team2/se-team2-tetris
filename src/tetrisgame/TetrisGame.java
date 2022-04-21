@@ -32,6 +32,7 @@ public class TetrisGame implements Runnable {
 
 	private volatile boolean mbGameOverFlag;
 	private boolean mbPauseFlag;
+	private int mPausePanBtnIndex;
 	private boolean mbItemMode;
 	private static final int VAR_ITEMS = 5;
 
@@ -73,6 +74,9 @@ public class TetrisGame implements Runnable {
 		mCurrKeyCode = -1;
 		mKeyReactTimeTick = 0.f;
 		mbKeyReactFlag = true;
+
+		mbPauseFlag = false;
+		mPausePanBtnIndex = 0;
 	}
 
 	public void broadcast(eMsg msg) {
@@ -198,13 +202,26 @@ public class TetrisGame implements Runnable {
 	}
 
 	public synchronized void getUserInput(KeyEvent e) {
-		if (mCurrKeyCode == KeyEvent.VK_ESCAPE) {
+		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			if (mbPauseFlag == false) {
 				mbPauseFlag = true;
 				mTimer.pause();
-			} else {
-				mbPauseFlag = false;
-				mTimer.unPause();
+			}
+			mCurrKeyCode = -1;
+			return;
+		}
+		if (mbPauseFlag == true) {
+			if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+				mPausePanBtnIndex = mPausePanBtnIndex == 1 ? mPausePanBtnIndex : mPausePanBtnIndex + 1;
+			} else if (e.getKeyCode() == KeyEvent.VK_UP) {
+				mPausePanBtnIndex = mPausePanBtnIndex == 0 ? mPausePanBtnIndex : mPausePanBtnIndex - 1;
+			} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+				if (mPausePanBtnIndex == 0) {
+					mTimer.unPause();
+					mbPauseFlag = false;
+				} else if (mPausePanBtnIndex == 1) {
+					this.broadcast(eMsg.GAME_OVER);
+				}
 			}
 		}
 
