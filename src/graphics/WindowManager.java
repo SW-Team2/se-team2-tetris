@@ -75,6 +75,15 @@ public class WindowManager {
                 case SCOREBOARD:
                     showScore();
                     break;
+                case SET_SCREEN_SIZE:
+                    // TODO:
+                    break;
+                case SET_GAME_KEY:
+                    // TODO:
+                    break;
+                case SET_COLOR_BLIND_MODE:
+                    // TODO:
+                    break;
                 case EXIT:
                     if (JOptionPane.showConfirmDialog(mWindow,
                             "Are you sure you want to close this window?", "Close Window?",

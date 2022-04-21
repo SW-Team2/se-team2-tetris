@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
-import data.setting.SettingData;
 import gamestarter.GameStarter;
 import graphics.eScreenInfo;
 import tetrisgame.enumerations.eDifficulty;
