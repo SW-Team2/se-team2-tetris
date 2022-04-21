@@ -4,12 +4,11 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
-import data.score.ScoreBoardData;
 import data.setting.SettingData;
 import graphics.eScreenInfo;
 import tetrisgame.util.ImageLoader;
 
-public class SettingMenuScreen extends Screen {
+public class ColorBlindModeScreen extends Screen {
     private BufferedImage mCurrButtonImage[];
     private BufferedImage mButtonImages[];
     private BufferedImage mFocusButtonImages[];
@@ -17,30 +16,25 @@ public class SettingMenuScreen extends Screen {
     private BufferedImage mBackButtonImage;
     private Image mBackgroundImage;
 
-    private static final int NUM_BUTTONS = 5;
+    private static final int NUM_BUTTONS = 3;
 
-    public SettingMenuScreen() {
+    public ColorBlindModeScreen() {
+        // TODO:
         ImageLoader img = ImageLoader.getInstance();
         mButtonImages = new BufferedImage[NUM_BUTTONS];
-        mButtonImages[0] = img.getTexture("btn_screen_size");
-        mButtonImages[1] = img.getTexture("btn_game_key");
-        mButtonImages[2] = img.getTexture("btn_reset_scoreboard");
-        mButtonImages[3] = img.getTexture("btn_color_blind_mode");
-        mButtonImages[4] = img.getTexture("btn_reset_setting");
+        mButtonImages[0] = img.getTexture("btn_normal");
+        mButtonImages[1] = img.getTexture("btn_red_green");
+        mButtonImages[2] = img.getTexture("btn_blue_yellow");
 
         mFocusButtonImages = new BufferedImage[NUM_BUTTONS];
-        mFocusButtonImages[0] = img.getTexture("btn_screen_size_focus");
-        mFocusButtonImages[1] = img.getTexture("btn_game_key_focus");
-        mFocusButtonImages[2] = img.getTexture("btn_reset_scoreboard_focus");
-        mFocusButtonImages[3] = img.getTexture("btn_color_blind_mode_focus");
-        mFocusButtonImages[4] = img.getTexture("btn_reset_setting_focus");
+        mFocusButtonImages[0] = img.getTexture("btn_normal_focus");
+        mFocusButtonImages[1] = img.getTexture("btn_red_green_focus");
+        mFocusButtonImages[2] = img.getTexture("btn_blue_yellow_focus");
 
         mCurrButtonImage = new BufferedImage[NUM_BUTTONS];
         mCurrButtonImage[0] = mFocusButtonImages[0];
         mCurrButtonImage[1] = mButtonImages[1];
         mCurrButtonImage[2] = mButtonImages[2];
-        mCurrButtonImage[3] = mButtonImages[3];
-        mCurrButtonImage[4] = mButtonImages[4];
 
         super.setNumButtons(NUM_BUTTONS);
         super.setButtonWidthAndHeight(1249, 193);
@@ -102,28 +96,20 @@ public class SettingMenuScreen extends Screen {
             case KeyEvent.VK_ENTER:
                 switch (mButtonIndex) {
                     case 0:
-                        sr = eScreenInfo.SET_SCREEN_SIZE;
+                        SettingData.getInstance().setBlindnessMode(0);
                         break;
                     case 1:
-                        sr = eScreenInfo.SET_GAME_KEY;
+                        SettingData.getInstance().setBlindnessMode(1);
                         break;
                     case 2:
-                        ScoreBoardData.getInstance().resetScoreBoard();
-                        sr = eScreenInfo.SCOREBOARD;
-                        break;
-                    case 3:
-                        sr = eScreenInfo.SET_COLOR_BLIND_MODE;
-                        break;
-                    case 4:
-                        SettingData.getInstance().resetSetting();
-                        sr = eScreenInfo.MAIN;
+                        SettingData.getInstance().setBlindnessMode(2);
                         break;
                     default:
                         assert (false) : "Button index out of bounds";
                 }
-                break;
+                // intentinal fall through
             case KeyEvent.VK_ESCAPE:
-                sr = eScreenInfo.MAIN;
+                sr = eScreenInfo.SETTING;
                 break;
             default:
                 break;

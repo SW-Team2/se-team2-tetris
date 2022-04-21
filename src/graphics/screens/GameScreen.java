@@ -115,6 +115,7 @@ public class GameScreen extends Screen {
 
     @Override
     public void paint(Graphics g) {
+        refreshSetting();
         Graphics2D g2d = (Graphics2D) g;
         super.paint(g2d);
 
@@ -252,14 +253,6 @@ public class GameScreen extends Screen {
             mTetrisGame.getUserInput(e);
         } else {
             startGame();
-        }
-        return sr;
-    }
-
-    public eScreenInfo getUserInputKeyRealease(KeyEvent e) {
-        eScreenInfo sr = eScreenInfo.NONE;
-        if (GameStarter.getState()) {
-            mTetrisGame.getUserInputKeyRealease(e);
         }
         return sr;
     }

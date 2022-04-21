@@ -12,6 +12,9 @@ public abstract class Screen extends JPanel {
     protected int mBtnHeight;
     protected int mBtnWidth;
 
+    private static int mEmptyButtonWidth = 327;
+    private static int mEmptyButtonHeight = 193;
+
     private static final int ESC_BUTTON_X = 50;
     private static final int ESC_BUTTON_Y = 50;
 
@@ -83,6 +86,14 @@ public abstract class Screen extends JPanel {
 
     public static int getEscButtonHeight() {
         return (int) (ESC_BUTTON_HEIGHT * SettingData.getInstance().getHeight() / (double) FIXED_SCREEN_LEN);
+    }
+
+    public static int getEmptyButtonWidth() {
+        return (int) (mEmptyButtonWidth * SettingData.getInstance().getHeight() / (double) FIXED_SCREEN_LEN);
+    }
+
+    public static int getEmptyButtonHeight() {
+        return (int) (mEmptyButtonHeight * SettingData.getInstance().getHeight() / (double) FIXED_SCREEN_LEN);
     }
 
     public abstract eScreenInfo getUserInput(KeyEvent e);

@@ -52,7 +52,7 @@ public class TetrisGame implements Runnable {
 
 	private Timer mTimer;
 
-	private int mCurrKeyCode;
+	private int mCurrInput;
 	private float mKeyReactTimeTick;
 	private boolean mbKeyReactFlag;
 	private static final float KEY_REACT_TIME = 0.1f;
@@ -76,12 +76,10 @@ public class TetrisGame implements Runnable {
 
 		mRemoveColArr = new int[4];
 
-		mCurrKeyCode = -1;
-		mKeyReactTimeTick = 0.f;
-		mbKeyReactFlag = true;
-
 		mbPauseFlag = false;
 		mPausePanBtnIndex = 0;
+
+		mCurrInput = -1;
 	}
 
 	public void broadcast(eMsg msg) {
@@ -114,7 +112,7 @@ public class TetrisGame implements Runnable {
 				mFocusAnim = new LineEraserItemAnim(this, mBoard, mCurrTetromino);
 				break;
 			case SLOWING_ITEM_ERASED:
-				mFocusAnim = new SlowingItemAnim(this);
+				// mFocusAnim = new SlowingItemAnim(this);
 				break;
 			case BONUSSCORE_ITEM_ERASED:
 				mFocusAnim = new BounusScoreItemAnim(this);
@@ -212,29 +210,19 @@ public class TetrisGame implements Runnable {
 		float deltaTime = mTimer.getDeltaTime();
 		mKeyReactTimeTick += deltaTime;
 
-		// React at input
-		int userInput = -1;
-		if (mKeyReactTimeTick >= KEY_REACT_TIME && mbKeyReactFlag == false) {
-			userInput = mCurrKeyCode;
-			if (mCurrKeyCode != KeyEvent.VK_DOWN && mCurrKeyCode != KeyEvent.VK_RIGHT
-					&& mCurrKeyCode != KeyEvent.VK_LEFT) {
-				mbKeyReactFlag = true;
-			}
-			mKeyReactTimeTick = 0.f;
-		}
-
-		mCurrTetromino.update(deltaTime, userInput);
+		mCurrTetromino.update(deltaTime, mCurrInput);
 		if (mFocusAnim != null) {
-			mFocusAnim.update(deltaTime, userInput);
+			mFocusAnim.update(deltaTime, mCurrInput);
 		}
-		mScore.update(deltaTime, userInput);
+		mScore.update(deltaTime, mCurrInput);
 		for (Tile tileLine[] : mBoard) {
 			for (Tile tile : tileLine) {
 				if (tile != null) {
-					tile.update(deltaTime, userInput);
+					tile.update(deltaTime, mCurrInput);
 				}
 			}
 		}
+		mCurrInput = -1;
 	}
 
 	public synchronized void getUserInput(KeyEvent e) {
@@ -243,7 +231,7 @@ public class TetrisGame implements Runnable {
 				mbPauseFlag = true;
 				mTimer.pause();
 			}
-			mCurrKeyCode = -1;
+			mCurrInput = -1;
 			return;
 		}
 		if (mbPauseFlag == true) {
@@ -261,25 +249,11 @@ public class TetrisGame implements Runnable {
 			}
 		}
 
-		if (mCurrKeyCode == e.getKeyCode()) {
-			return;
-		}
-
-		mCurrKeyCode = e.getKeyCode();
+		mCurrInput = e.getKeyCode();
 		mKeyReactTimeTick = KEY_REACT_TIME;
 		mbKeyReactFlag = false;
-		if (mTimer.getPauseState()) {
-			mCurrKeyCode &= KeyEvent.VK_U;
-		}
 
 		update();
-	}
-
-	public void getUserInputKeyRealease(KeyEvent e) {
-		if (mCurrKeyCode == e.getKeyCode()) {
-			mCurrKeyCode = -1;
-			mbKeyReactFlag = false;
-		}
 	}
 
 	public Tile[][] getGameBoard() {

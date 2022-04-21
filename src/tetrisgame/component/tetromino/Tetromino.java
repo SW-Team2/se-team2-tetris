@@ -118,17 +118,9 @@ public class Tetromino extends IGameComponent {
 		this.setRandomShapeAndColor();
 	}
 
-	public static void refreshSetting() {
-		SettingData setting = SettingData.getInstance();
-		mMoveRightKey = setting.getGameMoveRight();
-		mMoveLeftKey = setting.getGameMoveLeft();
-		mMoveDownKey = setting.getGameMoveDown();
-		mRotateKey = setting.getRotateKey();
-		mHardDownKey = setting.getGameMoveToFloor();
-	}
-
 	@Override
 	public void update(float deltaTime, int userInput) {
+		refreshSetting();
 		boolean bCollWithFloor = false;
 		if (userInput == mRotateKey) {
 			rotateOrIgnore();
@@ -259,6 +251,15 @@ public class Tetromino extends IGameComponent {
 				}
 			}
 		}
+	}
+
+	protected static void refreshSetting() {
+		SettingData setting = SettingData.getInstance();
+		mMoveRightKey = setting.getGameMoveRight();
+		mMoveLeftKey = setting.getGameMoveLeft();
+		mMoveDownKey = setting.getGameMoveDown();
+		mRotateKey = setting.getRotateKey();
+		mHardDownKey = setting.getGameMoveToFloor();
 	}
 
 	protected void rotateOrIgnore() {

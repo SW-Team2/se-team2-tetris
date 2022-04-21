@@ -3,16 +3,13 @@ package graphics;
 import java.awt.CardLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.WindowAdapter;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import data.score.ScoreBoardData;
 import data.setting.SettingData;
-import gamestarter.GameStarter;
 import graphics.screens.*;
-import tetrisgame.enumerations.eDifficulty;
 
 public class WindowManager {
     private JFrame mWindow;
@@ -22,6 +19,9 @@ public class WindowManager {
     private GameScreen mGame;
     private ItemModeGameScreen mItemGame;
     private SettingMenuScreen mSetting;
+    private ScreenSizeScreen mScreenSize;
+    private ColorBlindModeScreen mColorBlindMode;
+    private KeySettingScreen mKeySetting;
     private ScoreBoardScreen mScore;
     private eScreenInfo meCurrScreen;
 
@@ -46,6 +46,15 @@ public class WindowManager {
                     break;
                 case SETTING:
                     switchScreenTo = mSetting.getUserInput(e);
+                    break;
+                case SET_SCREEN_SIZE:
+                    switchScreenTo = mScreenSize.getUserInput(e);
+                    break;
+                case SET_COLOR_BLIND_MODE:
+                    switchScreenTo = mColorBlindMode.getUserInput(e);
+                    break;
+                case SET_GAME_KEY:
+                    switchScreenTo = mKeySetting.getUserInput(e);
                     break;
                 case SCOREBOARD:
                     switchScreenTo = mScore.getUserInput(e);
@@ -76,13 +85,13 @@ public class WindowManager {
                     showScore();
                     break;
                 case SET_SCREEN_SIZE:
-                    // TODO:
+                    showScreenSize();
                     break;
                 case SET_GAME_KEY:
-                    // TODO:
+                    showKeySetting();
                     break;
                 case SET_COLOR_BLIND_MODE:
-                    // TODO:
+                    showColorBlind();
                     break;
                 case EXIT:
                     if (JOptionPane.showConfirmDialog(mWindow,
@@ -97,20 +106,11 @@ public class WindowManager {
                     break;
 
             }
+            refreshSetting();
         }
 
         @Override
         public void keyReleased(KeyEvent e) {
-            switch (meCurrScreen) {
-                case GAME:
-                    mGame.getUserInputKeyRealease(e);
-                    break;
-                case ITEMGAME:
-                    mItemGame.getUserInputKeyRealease(e);
-                    break;
-                default:
-                    break;
-            }
         }
 
         @Override
@@ -120,13 +120,9 @@ public class WindowManager {
     }
 
     public WindowManager() {
-        SettingData mSettingInfoDesc = SettingData.getInstance();
-        ScoreBoardData scoreBoardInfo = ScoreBoardData.getInstance();
         mWindow = new JFrame();
 
-        int width = mSettingInfoDesc.getWidth();
-        int height = mSettingInfoDesc.getHeight();
-        mWindow.setSize(width, height);
+        refreshSetting();
         mWindow.setLocation(200, 200);
         mCards = new CardLayout(0, 0);
         mWindow.getContentPane().setLayout(mCards);
@@ -138,12 +134,18 @@ public class WindowManager {
         mGame = new GameScreen();
         mItemGame = new ItemModeGameScreen();
         mSetting = new SettingMenuScreen();
+        mScreenSize = new ScreenSizeScreen();
+        mColorBlindMode = new ColorBlindModeScreen();
+        mKeySetting = new KeySettingScreen();
         mScore = new ScoreBoardScreen();
         mWindow.getContentPane().add("main", mMain);
         mWindow.getContentPane().add("difficulty", mDifficulty);
         mWindow.getContentPane().add("game", mGame);
         mWindow.getContentPane().add("itemgame", mItemGame);
         mWindow.getContentPane().add("setting", mSetting);
+        mWindow.getContentPane().add("screensize", mScreenSize);
+        mWindow.getContentPane().add("colorblind", mColorBlindMode);
+        mWindow.getContentPane().add("keysetting", mKeySetting);
         mWindow.getContentPane().add("score", mScore);
 
         meCurrScreen = eScreenInfo.MAIN;
@@ -152,6 +154,12 @@ public class WindowManager {
 
         this.showMain();
         mWindow.setVisible(true);
+    }
+
+    public void refreshSetting() {
+        int width = SettingData.getInstance().getWidth();
+        int height = SettingData.getInstance().getHeight();
+        mWindow.setSize(width, height);
     }
 
     public void showMain() {
@@ -179,7 +187,22 @@ public class WindowManager {
         meCurrScreen = eScreenInfo.SETTING;
     }
 
-    private void showScore() {
+    private void showScreenSize() {
+        mCards.show(mWindow.getContentPane(), "screensize");
+        meCurrScreen = eScreenInfo.SET_SCREEN_SIZE;
+    }
+
+    private void showColorBlind() {
+        mCards.show(mWindow.getContentPane(), "colorblind");
+        meCurrScreen = eScreenInfo.SET_COLOR_BLIND_MODE;
+    }
+
+    private void showKeySetting() {
+        mCards.show(mWindow.getContentPane(), "keysetting");
+        meCurrScreen = eScreenInfo.SET_GAME_KEY;
+    }
+
+    public void showScore() {
         mCards.show(mWindow.getContentPane(), "score");
         meCurrScreen = eScreenInfo.SCOREBOARD;
     }

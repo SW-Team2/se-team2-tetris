@@ -16,6 +16,7 @@ public class SlowingItemTetromino extends ItemTetromino {
 
     @Override
     public void update(float deltaTime, int userInput) {
+        refreshSetting();
         boolean bCollWithFloor = false;
         if (userInput == mRotateKey) {
             rotateOrIgnore();
