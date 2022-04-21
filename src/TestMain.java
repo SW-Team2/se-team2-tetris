@@ -1,7 +1,3 @@
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
-
 import gamestarter.GameStarter;
 import graphics.WindowManager;
 import tetrisgame.TetrisGame;
