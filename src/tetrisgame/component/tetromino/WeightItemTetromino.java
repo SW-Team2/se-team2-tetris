@@ -21,6 +21,7 @@ public class WeightItemTetromino extends ItemTetromino {
 
     @Override
     public void update(float deltaTime, int userInput) {
+        refreshSetting();
         boolean bCollWithFloor = false;
         if (userInput == mMoveDownKey) {
             bCollWithFloor = moveOrIgnore(eDirection.DOWN);
