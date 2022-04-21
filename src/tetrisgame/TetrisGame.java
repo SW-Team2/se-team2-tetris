@@ -262,6 +262,10 @@ public class TetrisGame implements Runnable {
 		return mScore.getScore();
 	}
 
+	public int getPauseBtnIndex() {
+		return mPausePanBtnIndex;
+	}
+
 	public boolean getPauseFlag() {
 		return mbPauseFlag;
 	}
