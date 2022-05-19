@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 import graphics.eScreenInfo;
 import tetrisgame.util.ImageLoader;
 
-public class MainMenuScreen extends Screen {
+public class MainMenuScreen extends IScreen {
     private BufferedImage mCurrButtonImage[];
     private BufferedImage mButtonImages[];
     private BufferedImage mFocusButtonImages[];

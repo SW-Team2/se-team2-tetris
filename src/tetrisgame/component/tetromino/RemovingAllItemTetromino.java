@@ -9,8 +9,8 @@ import tetrisgame.enumerations.eMsg;
 public class RemovingAllItemTetromino extends ItemTetromino {
     private static final String REMOVINGALL_TEX_NAME = "item_tile_removingall";
 
-    public RemovingAllItemTetromino(TetrisGame game, Tile gb[][]) {
-        super(game, gb);
+    public RemovingAllItemTetromino(TetrisGame game, Tile gb[][], boolean bPlayer2) {
+        super(game, gb, bPlayer2);
         super.genTetWithOneItemTile(new RemovingAllItemTile(game, gb, REMOVINGALL_TEX_NAME));
     }
 

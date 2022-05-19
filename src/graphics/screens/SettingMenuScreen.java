@@ -9,7 +9,7 @@ import data.setting.SettingData;
 import graphics.eScreenInfo;
 import tetrisgame.util.ImageLoader;
 
-public class SettingMenuScreen extends Screen {
+public class SettingMenuScreen extends IScreen {
     private BufferedImage mCurrButtonImage[];
     private BufferedImage mButtonImages[];
     private BufferedImage mFocusButtonImages[];
@@ -77,10 +77,10 @@ public class SettingMenuScreen extends Screen {
         }
 
         g.drawImage(mBackButtonImage,
-                Screen.getEscPosX(),
-                Screen.getEscPosY(),
-                Screen.getEscButtonWidth(),
-                Screen.getEscButtonHeight(), null);
+                IScreen.getEscPosX(),
+                IScreen.getEscPosY(),
+                IScreen.getEscButtonWidth(),
+                IScreen.getEscButtonHeight(), null);
     }
 
     @Override

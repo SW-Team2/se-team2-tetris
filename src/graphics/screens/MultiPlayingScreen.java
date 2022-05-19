@@ -13,13 +13,18 @@ import graphics.eScreenInfo;
 import tetrisgame.TetrisGame;
 import tetrisgame.component.tetromino.Tetromino;
 import tetrisgame.component.tile.Tile;
+import tetrisgame.enumerations.eDifficulty;
 import tetrisgame.util.ImageCVDConverter;
 import tetrisgame.util.ImageLoader;
 import tetrisgame.util.Position;
 
-public class GameScreen extends IScreen {
-    protected TetrisGame mTetrisGame;
-    protected Tile mGameBoard[][];
+public class MultiPlayingScreen extends IScreen {
+    protected TetrisGame mGame1;
+    protected Tile mBoard1[][];
+    protected boolean mbAttackBoard1[][];
+    protected TetrisGame mGame2;
+    protected Tile mBoard2[][];
+    protected boolean mbAttackBoard2[][];
 
     private int mCVDMode;
 
@@ -29,14 +34,16 @@ public class GameScreen extends IScreen {
     protected Font mScoreBoardFont;
     protected Color mScoreFontColor;
 
-    private int mScreenWidth;
-    private int mScreenHeight;
+    protected int mScreenWidth;
+    protected int mScreenHeight;
     private int mGameBoardWidth;
     private int mGameBoardHeight;
     private int mNextTetBoardWidth;
     private int mNextTetBoardHeight;
     private int mPausePanelWidth;
     private int mPuasePanelHeight;
+    private int mAttackBoardWidth;
+    private int mAttackBoardHeight;
 
     private int mGameBoardPosX;
     private int mGameBoardPosY;
@@ -46,6 +53,8 @@ public class GameScreen extends IScreen {
     private int mScoreBoardPosY;
     private int mPausePanelPosX;
     private int mPausePanelPosY;
+    private int mAttackBoardPosX;
+    private int mAttackBoardPosY;
 
     private int mExitBtnWidth;
     private int mExitBtnHeight;
@@ -58,7 +67,7 @@ public class GameScreen extends IScreen {
 
     private SettingData mSettingInfo;
 
-    public GameScreen() {
+    public MultiPlayingScreen() {
         this.init();
         this.refreshSetting();
     }
@@ -86,6 +95,10 @@ public class GameScreen extends IScreen {
         mNextTetBoardPosX = mGameBoardPosX + mGameBoardWidth + mGameBoardPosX;
         mScoreBoardPosY = mNextTetBoardPosY + mNextTetBoardHeight + mNextTetBoardPosY * 2;
         mScoreBoardPosX = mNextTetBoardPosX;
+        mAttackBoardWidth = mNextTetBoardWidth / 10 * 10;
+        mAttackBoardHeight = mAttackBoardWidth * 2;
+        mAttackBoardPosX = mNextTetBoardPosX;
+        mAttackBoardPosY = mScoreBoardPosY;
 
         mPausePanelWidth = mScreenWidth / 2;
         mPausePanelPosX = mScreenWidth / 2 - mPausePanelWidth / 2;
@@ -128,15 +141,38 @@ public class GameScreen extends IScreen {
         {
             g2d.drawImage(mPanelBackGroundImage,
                     0, 0,
-                    mScreenWidth, mScreenHeight,
+                    mScreenWidth * 2, mScreenHeight,
                     null);
             g2d.drawImage(mGameBoardBackGroundImage,
                     mGameBoardPosX, mGameBoardPosY,
                     mGameBoardWidth, mGameBoardHeight,
                     null);
+            g2d.drawImage(mGameBoardBackGroundImage,
+                    mGameBoardPosX + mScreenWidth, mGameBoardPosY,
+                    mGameBoardWidth, mGameBoardHeight,
+                    null);
             g2d.drawImage(mNextTetBoardBackGroundImage,
                     mNextTetBoardPosX, mNextTetBoardPosY,
                     mNextTetBoardWidth, mNextTetBoardHeight,
+                    null);
+
+            g2d.drawImage(mNextTetBoardBackGroundImage,
+                    mNextTetBoardPosX
+                            + mScreenWidth,
+                    mNextTetBoardPosY,
+                    mNextTetBoardWidth, mNextTetBoardHeight,
+                    null);
+            g2d.drawImage(
+                    mGameBoardBackGroundImage,
+                    mAttackBoardPosX,
+                    mAttackBoardPosY,
+                    mAttackBoardWidth, mAttackBoardHeight,
+                    null);
+            g2d.drawImage(
+                    mGameBoardBackGroundImage,
+                    mAttackBoardPosX + mScreenWidth,
+                    mAttackBoardPosY,
+                    mAttackBoardWidth, mAttackBoardHeight,
                     null);
         }
         // Draw board frames
@@ -145,6 +181,15 @@ public class GameScreen extends IScreen {
                 for (int row = 0; row < TetrisGame.BOARD_ROW; row++) {
                     image = frameImage;
                     int posX = mGameBoardPosX + row * tileSize;
+                    int posY = mGameBoardPosY + col * tileSize;
+                    g2d.drawImage(image, posX, posY, tileSize, tileSize, null);
+                }
+            }
+
+            for (int col = 0; col < TetrisGame.BOARD_COL; col++) {
+                for (int row = 0; row < TetrisGame.BOARD_ROW; row++) {
+                    image = frameImage;
+                    int posX = mGameBoardPosX + row * tileSize + mScreenWidth;
                     int posY = mGameBoardPosY + col * tileSize;
                     g2d.drawImage(image, posX, posY, tileSize, tileSize, null);
                 }
@@ -160,8 +205,8 @@ public class GameScreen extends IScreen {
             // Draw static blocks
             for (int col = 0; col < TetrisGame.BOARD_COL; col++) {
                 for (int row = 0; row < TetrisGame.BOARD_ROW; row++) {
-                    if (mGameBoard[col][row] != null) {
-                        image = mGameBoard[col][row].getTexture();
+                    if (mBoard1[col][row] != null) {
+                        image = mBoard1[col][row].getTexture();
                         //
                         image = ImageCVDConverter.convert(image, mCVDMode);
                         //
@@ -171,8 +216,22 @@ public class GameScreen extends IScreen {
                     }
                 }
             }
+
+            for (int col = 0; col < TetrisGame.BOARD_COL; col++) {
+                for (int row = 0; row < TetrisGame.BOARD_ROW; row++) {
+                    if (mBoard2[col][row] != null) {
+                        image = mBoard2[col][row].getTexture();
+                        //
+                        image = ImageCVDConverter.convert(image, mCVDMode);
+                        //
+                        int posX = mGameBoardPosX + row * tileSize + mScreenWidth;
+                        int posY = mGameBoardPosY + col * tileSize;
+                        g2d.drawImage(image, posX, posY, tileSize, tileSize, null);
+                    }
+                }
+            }
             // Map the focused tetromino
-            Tetromino tet = mTetrisGame.getCurrTetromino();
+            Tetromino tet = mGame1.getCurrTetromino();
             for (int col = 0; col < Tetromino.SHAPE_COL; col++) {
                 for (int row = 0; row < Tetromino.SHAPE_ROW; row++) {
                     Position pos = tet.getPosition();
@@ -187,15 +246,46 @@ public class GameScreen extends IScreen {
                     }
                 }
             }
+
+            tet = mGame2.getCurrTetromino();
+            for (int col = 0; col < Tetromino.SHAPE_COL; col++) {
+                for (int row = 0; row < Tetromino.SHAPE_ROW; row++) {
+                    Position pos = tet.getPosition();
+                    if (tet.mShape[col][row] != null) {
+                        image = tet.mShape[col][row].getTexture();
+                        //
+                        image = ImageCVDConverter.convert(image, mCVDMode);
+                        //
+                        int posX = mGameBoardPosX + (row + pos.mRow) * tileSize + mScreenWidth;
+                        int posY = mGameBoardPosY + (col + pos.mCol) * tileSize;
+                        g2d.drawImage(image, posX, posY, tileSize, tileSize, null);
+                    }
+                }
+            }
         }
         // Draw next tetromino board
         {
             tileSize *= 0.85;
-            Tetromino tet = mTetrisGame.getNextTetromion();
+            Tetromino tet = mGame1.getNextTetromion();
             for (int col = 0; col < Tetromino.SHAPE_COL; col++) {
                 for (int row = 0; row < Tetromino.SHAPE_ROW; row++) {
                     if (tet.mShape[col][row] != null) {
                         int posX = mNextTetBoardPosX + row * tileSize + 5;
+                        int posY = mNextTetBoardPosY + col * tileSize + 5;
+                        image = tet.mShape[col][row].getTexture();
+                        //
+                        image = ImageCVDConverter.convert(image, mCVDMode);
+                        //
+                        g2d.drawImage(image, posX, posY, tileSize, tileSize, null);
+                    }
+                }
+            }
+
+            tet = mGame2.getNextTetromion();
+            for (int col = 0; col < Tetromino.SHAPE_COL; col++) {
+                for (int row = 0; row < Tetromino.SHAPE_ROW; row++) {
+                    if (tet.mShape[col][row] != null) {
+                        int posX = mNextTetBoardPosX + row * tileSize + 5 + mScreenWidth;
                         int posY = mNextTetBoardPosY + col * tileSize + 5;
                         image = tet.mShape[col][row].getTexture();
                         //
@@ -210,19 +300,59 @@ public class GameScreen extends IScreen {
         {
             StringBuffer scoreStrBuf = new StringBuffer();
             scoreStrBuf.append("SCORE: ");
-            scoreStrBuf.append(String.valueOf(mTetrisGame.getCurrScore()));
+            scoreStrBuf.append(String.valueOf(mGame1.getCurrScore()));
             g2d.setFont(mScoreBoardFont);
             g2d.setColor(mScoreFontColor);
             g2d.drawString(scoreStrBuf.toString(), mScoreBoardPosX, mScoreBoardPosY);
+
+            scoreStrBuf = new StringBuffer();
+            scoreStrBuf.append("SCORE: ");
+            scoreStrBuf.append(String.valueOf(mGame2.getCurrScore()));
+            g2d.setFont(mScoreBoardFont);
+            g2d.setColor(mScoreFontColor);
+            g2d.drawString(scoreStrBuf.toString(), mScoreBoardPosX + mScreenWidth, mScoreBoardPosY);
+        }
+        // Draw attack board
+        {
+            int attackTileSize = mAttackBoardWidth / 10;
+            image = ImageLoader.getInstance().getTexture("tile_white");
+
+            for (int col = 9; col >= 0; col--) {
+                for (int row = 0; row < TetrisGame.BOARD_ROW; row++) {
+                    if (mbAttackBoard1[9 - col][row] == true) {
+                        int posX = mAttackBoardPosX + row * attackTileSize;
+                        int posY = mAttackBoardPosY + (col + 10) * attackTileSize;
+                        //
+                        image = ImageCVDConverter.convert(image, mCVDMode);
+                        //
+                        g2d.drawImage(image, posX, posY, attackTileSize,
+                                attackTileSize, null);
+                    }
+                }
+            }
+
+            for (int col = 9; col >= 0; col--) {
+                for (int row = 0; row < TetrisGame.BOARD_ROW; row++) {
+                    if (mbAttackBoard2[9 - col][row] == true) {
+                        int posX = mAttackBoardPosX + row * attackTileSize + mScreenWidth;
+                        int posY = mAttackBoardPosY + (col + 10) * attackTileSize;
+                        //
+                        image = ImageCVDConverter.convert(image, mCVDMode);
+                        //
+                        g2d.drawImage(image, posX, posY, attackTileSize,
+                                attackTileSize, null);
+                    }
+                }
+            }
         }
 
         // Draw pause screen
         {
-            if (mTetrisGame.getPauseFlag() == true) {
+            if (mGame1.getPauseFlag() == true) {
                 image = ImageLoader.getInstance().getTexture("pause_panel");
                 g2d.drawImage(image, mPausePanelPosX, mPausePanelPosY, mPausePanelWidth, mPuasePanelHeight, null);
 
-                int focusBtnIndex = mTetrisGame.getPauseBtnIndex();
+                int focusBtnIndex = mGame1.getPauseBtnIndex();
                 if (focusBtnIndex == 0) {
                     image = ImageLoader.getInstance().getTexture("btn_continue_focus");
                 } else {
@@ -240,20 +370,27 @@ public class GameScreen extends IScreen {
     }
 
     protected void startGame() {
-        mTetrisGame = new TetrisGame(this, false, GameManager.getDifficulty(), false);
-        mGameBoard = mTetrisGame.getGameBoard();
-        GameManager.setGame(mTetrisGame);
+        GameManager.setDifficulty(eDifficulty.NORMAL);
+        GameManager.setMulti(true);
+        mGame1 = new TetrisGame(this, false, GameManager.getDifficulty(), false);
+        mGame2 = new TetrisGame(this, false, GameManager.getDifficulty(), true);
+        mBoard1 = mGame1.getGameBoard();
+        mBoard2 = mGame2.getGameBoard();
+        mbAttackBoard1 = mGame1.getAttackBoard();
+        mbAttackBoard2 = mGame2.getAttackBoard();
+        GameManager.setGame(mGame1, mGame2);
         GameManager.setStart();
     }
 
-    @Override
     public eScreenInfo getUserInput(KeyEvent e) {
         eScreenInfo sr = eScreenInfo.NONE;
         if (GameManager.getState()) {
-            mTetrisGame.getUserInput(e);
+            mGame1.getUserInput(e);
+            mGame2.getUserInput(e);
         } else {
-            startGame();
+            this.startGame();
         }
+
         return sr;
     }
 }

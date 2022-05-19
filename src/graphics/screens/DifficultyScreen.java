@@ -4,12 +4,12 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
-import gamestarter.GameStarter;
+import gamemanager.GameManager;
 import graphics.eScreenInfo;
 import tetrisgame.enumerations.eDifficulty;
 import tetrisgame.util.ImageLoader;
 
-public class DifficultyScreen extends Screen {
+public class DifficultyScreen extends IScreen {
     private BufferedImage mCurrButtonImage[];
     private BufferedImage mButtonImages[];
     private BufferedImage mFocusButtonImages[];
@@ -71,10 +71,10 @@ public class DifficultyScreen extends Screen {
         }
 
         g.drawImage(mBackButtonImage,
-                Screen.getEscPosX(),
-                Screen.getEscPosY(),
-                Screen.getEscButtonWidth(),
-                Screen.getEscButtonHeight(), null);
+                IScreen.getEscPosX(),
+                IScreen.getEscPosY(),
+                IScreen.getEscButtonWidth(),
+                IScreen.getEscButtonHeight(), null);
     }
 
     @Override
@@ -97,13 +97,13 @@ public class DifficultyScreen extends Screen {
                 sr = eScreenInfo.GAME;
                 switch (mButtonIndex) {
                     case 0:
-                        GameStarter.setDifficulty(eDifficulty.EASY);
+                        GameManager.setDifficulty(eDifficulty.EASY);
                         break;
                     case 1:
-                        GameStarter.setDifficulty(eDifficulty.NORMAL);
+                        GameManager.setDifficulty(eDifficulty.NORMAL);
                         break;
                     case 2:
-                        GameStarter.setDifficulty(eDifficulty.HARD);
+                        GameManager.setDifficulty(eDifficulty.HARD);
                         break;
                 }
                 break;

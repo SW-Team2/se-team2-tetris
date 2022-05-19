@@ -6,8 +6,8 @@ import tetrisgame.component.tile.Tile;
 import tetrisgame.enumerations.eMsg;
 
 public class ItemTetromino extends Tetromino {
-    public ItemTetromino(TetrisGame game, Tile gb[][]) {
-        super(game, gb);
+    public ItemTetromino(TetrisGame game, Tile gb[][], boolean bPlayer2) {
+        super(game, gb, bPlayer2);
     }
 
     @Override

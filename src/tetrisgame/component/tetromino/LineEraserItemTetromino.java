@@ -9,8 +9,8 @@ import tetrisgame.enumerations.eMsg;
 public class LineEraserItemTetromino extends ItemTetromino {
     private static final String ERASER_TEX_NAME = "item_tile_lineeraser";
 
-    public LineEraserItemTetromino(TetrisGame game, Tile gb[][]) {
-        super(game, gb);
+    public LineEraserItemTetromino(TetrisGame game, Tile gb[][], boolean bPlayer2) {
+        super(game, gb, bPlayer2);
         super.genTetWithOneItemTile(new LineEraserItemTile(game, gb, ERASER_TEX_NAME));
     }
 
