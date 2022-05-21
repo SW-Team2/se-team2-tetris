@@ -8,11 +8,15 @@ public class DefaultSetting {
 
     private HashMap<String, Integer> windowSize;
     private HashMap<String, Integer> gameKeyMap;
+    private HashMap<String, Integer> playerFirstKey;
+    private HashMap<String, Integer> playerSecondKey;
     private final int blindnessMode;
 
     private DefaultSetting() {
         windowSize = new HashMap<>();
         gameKeyMap = new HashMap<>();
+        playerFirstKey = new HashMap<>();
+        playerSecondKey = new HashMap<>();
 
         windowSize.put("width", 720);
         windowSize.put("height", 720);
@@ -25,6 +29,18 @@ public class DefaultSetting {
         gameKeyMap.put("pause", KeyEvent.VK_P);
 
         this.blindnessMode = BlindMode.NONE.ordinal();
+
+        playerFirstKey.put("moveDown", KeyEvent.VK_DOWN);
+        playerFirstKey.put("moveRight", KeyEvent.VK_RIGHT);
+        playerFirstKey.put("moveLeft", KeyEvent.VK_LEFT);
+        playerFirstKey.put("moveToFloor", KeyEvent.VK_UP);
+        playerFirstKey.put("rotate", KeyEvent.VK_SLASH);
+
+        playerSecondKey.put("moveDown", KeyEvent.VK_S);
+        playerSecondKey.put("moveRight", KeyEvent.VK_A);
+        playerSecondKey.put("moveLeft", KeyEvent.VK_D);
+        playerSecondKey.put("moveToFloor", KeyEvent.VK_W);
+        playerSecondKey.put("rotate", KeyEvent.VK_T);
     }
 
     public static DefaultSetting getInstance() {
@@ -44,5 +60,13 @@ public class DefaultSetting {
 
     public int getBlindnessMode() {
         return blindnessMode;
+    }
+
+    public HashMap<String, Integer> getPlayerFirstKeyMap() {
+        return playerFirstKey;
+    }
+
+    public HashMap<String, Integer> getPlayerSecondKeyMap() {
+        return playerSecondKey;
     }
 }
