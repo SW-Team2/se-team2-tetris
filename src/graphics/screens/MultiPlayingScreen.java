@@ -361,7 +361,7 @@ public class MultiPlayingScreen extends IScreen {
             scoreStrBuf.append("Player 2");
             g2d.setFont(mFont);
             g2d.setColor(mFontColor);
-            g2d.drawString(scoreStrBuf.toString(), mPlayerInfoPosX, mPlayerInfoPosY);
+            g2d.drawString(scoreStrBuf.toString(), mPlayerInfoPosX + mScreenWidth, mPlayerInfoPosY);
         }
 
         // Draw pause screen
