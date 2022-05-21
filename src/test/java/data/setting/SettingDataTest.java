@@ -266,33 +266,33 @@ class SettingDataTest {
 
     private static Stream<Arguments> providePlayerMoveDownKey() {
         return Stream.of(
-                Arguments.of(KeyEvent.VK_DOWN, Player.SECOND),
-                Arguments.of(KeyEvent.VK_X, Player.SECOND)
+                Arguments.of(KeyEvent.VK_DOWN, Player.FIRST),
+                Arguments.of(KeyEvent.VK_X, Player.FIRST)
                 );
     }
 
     private static Stream<Arguments> providePlayerMoveRightKey() {
         return Stream.of(
-                Arguments.of(KeyEvent.VK_RIGHT, Player.SECOND),
-                Arguments.of(KeyEvent.VK_C, Player.SECOND)
+                Arguments.of(KeyEvent.VK_RIGHT, Player.FIRST),
+                Arguments.of(KeyEvent.VK_C, Player.FIRST)
                 );
     }
     private static Stream<Arguments> providePlayerMoveLeftKey() {
         return Stream.of(
-                Arguments.of(KeyEvent.VK_LEFT, Player.SECOND),
-                Arguments.of(KeyEvent.VK_Z, Player.SECOND)
+                Arguments.of(KeyEvent.VK_LEFT, Player.FIRST),
+                Arguments.of(KeyEvent.VK_Z, Player.FIRST)
                 );
     }
     private static Stream<Arguments> providePlayerMoveToFloorKey() {
         return Stream.of(
-                Arguments.of(KeyEvent.VK_UP, Player.SECOND),
-                Arguments.of(KeyEvent.VK_S, Player.SECOND)
+                Arguments.of(KeyEvent.VK_UP, Player.FIRST),
+                Arguments.of(KeyEvent.VK_S, Player.FIRST)
                 );
     }
     private static Stream<Arguments> providePlayerRotateKey() {
         return Stream.of(
-                Arguments.of(KeyEvent.VK_SLASH, Player.SECOND),
-                Arguments.of(KeyEvent.VK_G, Player.SECOND)
+                Arguments.of(KeyEvent.VK_SLASH, Player.FIRST),
+                Arguments.of(KeyEvent.VK_G, Player.FIRST)
         );
     }
     @ParameterizedTest

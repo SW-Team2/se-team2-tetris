@@ -13,8 +13,8 @@ public class DefaultSetting {
     private final int blindnessMode;
 
     private DefaultSetting() {
-        windowSize = new HashMap<>();
-        gameKeyMap = new HashMap<>();
+            windowSize = new HashMap<>();
+            gameKeyMap = new HashMap<>();
         playerFirstKey = new HashMap<>();
         playerSecondKey = new HashMap<>();
 
@@ -30,17 +30,17 @@ public class DefaultSetting {
 
         this.blindnessMode = BlindMode.NONE.ordinal();
 
-        playerFirstKey.put("moveDown", KeyEvent.VK_DOWN);
-        playerFirstKey.put("moveRight", KeyEvent.VK_RIGHT);
-        playerFirstKey.put("moveLeft", KeyEvent.VK_LEFT);
-        playerFirstKey.put("moveToFloor", KeyEvent.VK_UP);
-        playerFirstKey.put("rotate", KeyEvent.VK_SLASH);
+        playerFirstKey.put("moveDown", KeyEvent.VK_S);
+        playerFirstKey.put("moveRight", KeyEvent.VK_A);
+        playerFirstKey.put("moveLeft", KeyEvent.VK_D);
+        playerFirstKey.put("moveToFloor", KeyEvent.VK_W);
+        playerFirstKey.put("rotate", KeyEvent.VK_T);
 
-        playerSecondKey.put("moveDown", KeyEvent.VK_S);
-        playerSecondKey.put("moveRight", KeyEvent.VK_A);
-        playerSecondKey.put("moveLeft", KeyEvent.VK_D);
-        playerSecondKey.put("moveToFloor", KeyEvent.VK_W);
-        playerSecondKey.put("rotate", KeyEvent.VK_T);
+        playerSecondKey.put("moveDown", KeyEvent.VK_DOWN);
+        playerSecondKey.put("moveRight", KeyEvent.VK_RIGHT);
+        playerSecondKey.put("moveLeft", KeyEvent.VK_LEFT);
+        playerSecondKey.put("moveToFloor", KeyEvent.VK_UP);
+        playerSecondKey.put("rotate", KeyEvent.VK_SLASH);
     }
 
     public static DefaultSetting getInstance() {
