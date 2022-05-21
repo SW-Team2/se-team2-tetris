@@ -9,8 +9,8 @@ import tetrisgame.enumerations.eMsg;
 public class SlowingItemTetromino extends ItemTetromino {
     private static final String SLOWING_TEX_NAME = "item_tile_slowing";
 
-    public SlowingItemTetromino(TetrisGame game, Tile gb[][]) {
-        super(game, gb);
+    public SlowingItemTetromino(TetrisGame game, Tile gb[][], boolean bPlayer2) {
+        super(game, gb, bPlayer2);
         super.genTetWithOneItemTile(new SlowingItemTile(game, gb, SLOWING_TEX_NAME));
     }
 

@@ -7,8 +7,8 @@ import tetrisgame.enumerations.eDirection;
 import tetrisgame.enumerations.eMsg;
 
 public class BonusScoreItemTetroino extends ItemTetromino {
-    public BonusScoreItemTetroino(TetrisGame game, Tile gb[][]) {
-        super(game, gb);
+    public BonusScoreItemTetroino(TetrisGame game, Tile gb[][], boolean bPlayer2) {
+        super(game, gb, bPlayer2);
         super.genTetWithOneItemTile(new BonusScoreItemTile(game, gb, "tile_item_bonusscore"));
     }
 

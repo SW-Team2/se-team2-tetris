@@ -11,6 +11,7 @@ public enum eMsg {
     FOCUS_ANIM_OVER,
     GAME_OVER,
     ERASE_10xN_LINES,
+    TIMELIMITEND,
 
     LINE_REMOVE_0,
     LINE_REMOVE_1,
