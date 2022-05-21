@@ -44,8 +44,8 @@ public class TimeLimitMultiPlayingScreen extends MultiPlayingScreen {
 
         StringBuffer scoreStrBuf = new StringBuffer();
         scoreStrBuf.append(GameManager.getCurrTime());
-        g2d.setFont(mScoreBoardFont);
-        g2d.setColor(mScoreFontColor);
+        g2d.setFont(mFont);
+        g2d.setColor(mFontColor);
         g2d.drawString(scoreStrBuf.toString(), timerPosX, timerPosY);
     }
 }
