@@ -43,6 +43,8 @@ public class TetrisGame implements Runnable {
 	private eDifficulty meDifficulty;
 	private static final int VAR_ITEMS = 5;
 
+	private boolean mbRBFlag;
+
 	public Tile mBoard[][];
 	protected Tetromino mCurrTetromino;
 	protected Tetromino mNextTetromino;
@@ -145,24 +147,49 @@ public class TetrisGame implements Runnable {
 				break;
 			case WEIGHT_ITEM_COLL_WITH_FLOOR:
 				mFocusAnim = new WeightItemAnim(this, mBoard, mCurrTetromino.getPosition());
+				mCurrTetromino = mNextTetromino;
+				mNextTetromino = new Tetromino(this, mBoard, mbPlayer2);
+				if (checkGameOver()) {
+					this.broadcast(eMsg.GAME_OVER);
+				}
 				break;
 			case LINEERASER_ITEM_COLL_WITH_FLOOR:
 				mFocusAnim = new LineEraserItemAnim(this, mBoard, mCurrTetromino);
+				mCurrTetromino = mNextTetromino;
+				mNextTetromino = new Tetromino(this, mBoard, mbPlayer2);
+				if (checkGameOver()) {
+					this.broadcast(eMsg.GAME_OVER);
+				}
 				break;
 			case SLOWING_ITEM_ERASED:
 				// mFocusAnim = new SlowingItemAnim(this);
 				break;
 			case BONUSSCORE_ITEM_ERASED:
 				mFocusAnim = new BounusScoreItemAnim(this);
+				mCurrTetromino = mNextTetromino;
+				mNextTetromino = new Tetromino(this, mBoard, mbPlayer2);
+				if (checkGameOver()) {
+					this.broadcast(eMsg.GAME_OVER);
+				}
 				break;
 			case REMOVINGALL_ITEM_ERASED:
+				mbRBFlag = true;
 				mFocusAnim = new RemovingAllItemAnim(this, mBoard);
+				mCurrTetromino = mNextTetromino;
+				mNextTetromino = new Tetromino(this, mBoard, mbPlayer2);
+				if (checkGameOver()) {
+					this.broadcast(eMsg.GAME_OVER);
+				}
 				break;
 			case FOCUS_ANIM_OVER:
 				removeLines();
 				fallDownLines();
 				mNumRemovableLines = 0;
-				mFocusAnim = null;
+				if (mbRBFlag == false) {
+					mFocusAnim = null;
+				} else {
+					mbRBFlag = false;
+				}
 				beAttacked();
 				break;
 			case ERASE_10xN_LINES:
@@ -374,8 +401,10 @@ public class TetrisGame implements Runnable {
 		for (int index = 0; index < mNumRemovableLines; index++) {
 			int col = mRemoveColArr[index];
 			for (int row = 0; row < BOARD_ROW; row++) {
-				mBoard[col][row].eraseAct();
-				mBoard[col][row] = null;
+				if (mBoard[col][row] != null) {
+					mBoard[col][row].eraseAct();
+					mBoard[col][row] = null;
+				}
 			}
 		}
 	}

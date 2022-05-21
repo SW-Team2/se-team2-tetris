@@ -20,10 +20,12 @@ public class WindowManager {
     private MultiPlayingScreen mMultiGame;
     private ItemModeMultiPlayingScreen mItemMultiGame;
     private TimeLimitMultiPlayingScreen mTimeLimitGame;
+    private MultiModeSelectScreen mMultiModeSelect;
     private SettingMenuScreen mSetting;
     private ScreenSizeScreen mScreenSize;
     private ColorBlindModeScreen mColorBlindMode;
     private KeySettingScreen mKeySetting;
+    private MultiKeySettingScreen mMultiKeySetting;
     private ScoreBoardScreen mScore;
     private eScreenInfo meCurrScreen;
 
@@ -60,6 +62,9 @@ public class WindowManager {
                 case SETTING:
                     switchScreenTo = mSetting.getUserInput(e);
                     break;
+                case MULTI_MODE_SELECT:
+                    switchScreenTo = mMultiModeSelect.getUserInput(e);
+                    break;
                 case SET_SCREEN_SIZE:
                     switchScreenTo = mScreenSize.getUserInput(e);
                     break;
@@ -68,6 +73,9 @@ public class WindowManager {
                     break;
                 case SET_GAME_KEY:
                     switchScreenTo = mKeySetting.getUserInput(e);
+                    break;
+                case SET_MULTI_GAME_KEY:
+                    switchScreenTo = mMultiKeySetting.getUserInput(e);
                     break;
                 case SCOREBOARD:
                     switchScreenTo = mScore.getUserInput(e);
@@ -100,6 +108,9 @@ public class WindowManager {
                 case TIMELIMIT:
                     showTimeLimitGame();
                     break;
+                case MULTI_MODE_SELECT:
+                    showMultiModeSelect();
+                    break;
                 case SETTING:
                     showSetting();
                     break;
@@ -111,6 +122,9 @@ public class WindowManager {
                     break;
                 case SET_GAME_KEY:
                     showKeySetting();
+                    break;
+                case SET_MULTI_GAME_KEY:
+                    showMultiKeySetting();
                     break;
                 case SET_COLOR_BLIND_MODE:
                     showColorBlind();
@@ -159,10 +173,12 @@ public class WindowManager {
         mMultiGame = new MultiPlayingScreen();
         mItemMultiGame = new ItemModeMultiPlayingScreen();
         mTimeLimitGame = new TimeLimitMultiPlayingScreen();
+        mMultiModeSelect = new MultiModeSelectScreen();
         mSetting = new SettingMenuScreen();
         mScreenSize = new ScreenSizeScreen();
         mColorBlindMode = new ColorBlindModeScreen();
         mKeySetting = new KeySettingScreen();
+        mMultiKeySetting = new MultiKeySettingScreen();
         mScore = new ScoreBoardScreen();
         mWindow.getContentPane().add("main", mMain);
         mWindow.getContentPane().add("difficulty", mDifficulty);
@@ -171,10 +187,12 @@ public class WindowManager {
         mWindow.getContentPane().add("multigame", mMultiGame);
         mWindow.getContentPane().add("itemmultigame", mItemMultiGame);
         mWindow.getContentPane().add("timelimitgame", mTimeLimitGame);
+        mWindow.getContentPane().add("multimode", mMultiModeSelect);
         mWindow.getContentPane().add("setting", mSetting);
         mWindow.getContentPane().add("screensize", mScreenSize);
         mWindow.getContentPane().add("colorblind", mColorBlindMode);
         mWindow.getContentPane().add("keysetting", mKeySetting);
+        mWindow.getContentPane().add("multikeysetting", mMultiKeySetting);
         mWindow.getContentPane().add("score", mScore);
 
         meCurrScreen = eScreenInfo.MAIN;
@@ -196,72 +214,98 @@ public class WindowManager {
 
     public void showMain() {
         mbMulti = false;
+        refreshSetting();
         mCards.show(mWindow.getContentPane(), "main");
         meCurrScreen = eScreenInfo.MAIN;
     }
 
     public void showDifficulty() {
         mbMulti = false;
+        refreshSetting();
         mCards.show(mWindow.getContentPane(), "difficulty");
         meCurrScreen = eScreenInfo.DIFFICULTY;
     }
 
     private void showGame() {
         mbMulti = false;
+        refreshSetting();
         mCards.show(mWindow.getContentPane(), "game");
         meCurrScreen = eScreenInfo.GAME;
     }
 
     private void showItemGame() {
         mbMulti = false;
+        refreshSetting();
         mCards.show(mWindow.getContentPane(), "itemgame");
         meCurrScreen = eScreenInfo.ITEMGAME;
     }
 
     private void showMultiGame() {
         mbMulti = true;
+        refreshSetting();
         mCards.show(mWindow.getContentPane(), "multigame");
         meCurrScreen = eScreenInfo.MULTIGAME;
     }
 
     private void showItemMultiGame() {
         mbMulti = true;
+        refreshSetting();
         mCards.show(mWindow.getContentPane(), "itemmultigame");
         meCurrScreen = eScreenInfo.ITEMMULT;
     }
 
     private void showTimeLimitGame() {
         mbMulti = true;
+        refreshSetting();
         mCards.show(mWindow.getContentPane(), "timelimitgame");
         meCurrScreen = eScreenInfo.TIMELIMIT;
     }
 
+    private void showMultiModeSelect() {
+        mbMulti = false;
+        refreshSetting();
+        mCards.show(mWindow.getContentPane(), "multimode");
+        meCurrScreen = eScreenInfo.MULTI_MODE_SELECT;
+    }
+
     private void showSetting() {
         mbMulti = false;
+        refreshSetting();
         mCards.show(mWindow.getContentPane(), "setting");
         meCurrScreen = eScreenInfo.SETTING;
     }
 
     private void showScreenSize() {
         mbMulti = false;
+        refreshSetting();
         mCards.show(mWindow.getContentPane(), "screensize");
         meCurrScreen = eScreenInfo.SET_SCREEN_SIZE;
     }
 
     private void showColorBlind() {
         mbMulti = false;
+        refreshSetting();
         mCards.show(mWindow.getContentPane(), "colorblind");
         meCurrScreen = eScreenInfo.SET_COLOR_BLIND_MODE;
     }
 
     private void showKeySetting() {
         mbMulti = false;
+        refreshSetting();
         mCards.show(mWindow.getContentPane(), "keysetting");
         meCurrScreen = eScreenInfo.SET_GAME_KEY;
     }
 
+    private void showMultiKeySetting() {
+        mbMulti = false;
+        refreshSetting();
+        mCards.show(mWindow.getContentPane(), "multikeysetting");
+        meCurrScreen = eScreenInfo.SET_MULTI_GAME_KEY;
+    }
+
     public void showScore() {
         mbMulti = false;
+        refreshSetting();
         mCards.show(mWindow.getContentPane(), "score");
         meCurrScreen = eScreenInfo.SCOREBOARD;
     }

@@ -12,6 +12,7 @@ public enum eMsg {
     GAME_OVER,
     ERASE_10xN_LINES,
     TIMELIMITEND,
+    DOWN_1L,
 
     LINE_REMOVE_0,
     LINE_REMOVE_1,

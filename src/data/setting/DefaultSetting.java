@@ -13,8 +13,8 @@ public class DefaultSetting {
     private final int blindnessMode;
 
     private DefaultSetting() {
-            windowSize = new HashMap<>();
-            gameKeyMap = new HashMap<>();
+        windowSize = new HashMap<>();
+        gameKeyMap = new HashMap<>();
         playerFirstKey = new HashMap<>();
         playerSecondKey = new HashMap<>();
 
@@ -51,11 +51,11 @@ public class DefaultSetting {
     }
 
     public HashMap<String, Integer> getWindowSize() {
-        return windowSize;
+        return (HashMap<String, Integer>) windowSize.clone();
     }
 
     public HashMap<String, Integer> getGameKeyMap() {
-        return gameKeyMap;
+        return (HashMap<String, Integer>) gameKeyMap.clone();
     }
 
     public int getBlindnessMode() {
@@ -63,10 +63,10 @@ public class DefaultSetting {
     }
 
     public HashMap<String, Integer> getPlayerFirstKeyMap() {
-        return playerFirstKey;
+        return (HashMap<String, Integer>) playerFirstKey.clone();
     }
 
     public HashMap<String, Integer> getPlayerSecondKeyMap() {
-        return playerSecondKey;
+        return (HashMap<String, Integer>) playerSecondKey.clone();
     }
 }
