@@ -49,13 +49,12 @@ public class TestMain {
                     timer.initialize();
                     int timeLimit = 100;
                     float currTime = 0.f;
-                    while (timeLimit >= currTime) {
+                    while (timeLimit >= currTime && GameManager.getState()) {
                         timer.tick();
                         currTime += timer.getDeltaTime();
                         GameManager.setCurrTime(timeLimit - (int) currTime);
                     }
 
-                    GameManager.getGame().broadcast(eMsg.TIMELIMITEND);
                     GameManager.getGame2().broadcast(eMsg.TIMELIMITEND);
                     GameManager.setTimeLimitMode(false);
                 }

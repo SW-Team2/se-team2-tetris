@@ -31,8 +31,8 @@ public class MultiPlayingScreen extends IScreen {
     protected BufferedImage mPanelBackGroundImage;
     protected BufferedImage mGameBoardBackGroundImage;
     protected BufferedImage mNextTetBoardBackGroundImage;
-    protected Font mScoreBoardFont;
-    protected Color mScoreFontColor;
+    protected Font mFont;
+    protected Color mFontColor;
 
     protected int mScreenWidth;
     protected int mScreenHeight;
@@ -55,6 +55,8 @@ public class MultiPlayingScreen extends IScreen {
     private int mPausePanelPosY;
     private int mAttackBoardPosX;
     private int mAttackBoardPosY;
+    private int mPlayerInfoPosX;
+    private int mPlayerInfoPosY;
 
     private int mExitBtnWidth;
     private int mExitBtnHeight;
@@ -77,8 +79,8 @@ public class MultiPlayingScreen extends IScreen {
         mGameBoardBackGroundImage = ImageLoader.getInstance().getTexture("background_board");
         mNextTetBoardBackGroundImage = ImageLoader.getInstance().getTexture("background_nextboard");
 
-        mScoreBoardFont = new Font("Consolas", Font.BOLD, 30);
-        mScoreFontColor = Color.WHITE;
+        mFont = new Font("Consolas", Font.BOLD, 30);
+        mFontColor = Color.WHITE;
     }
 
     public void refreshSetting() {
@@ -91,14 +93,16 @@ public class MultiPlayingScreen extends IScreen {
         mGameBoardPosX = mGameBoardPosY;
         mNextTetBoardHeight = mGameBoardHeight / 5;
         mNextTetBoardWidth = mNextTetBoardHeight;
-        mNextTetBoardPosY = mGameBoardPosY;
+        mNextTetBoardPosY = (int) (mGameBoardPosY + mScreenHeight * 0.1);
         mNextTetBoardPosX = mGameBoardPosX + mGameBoardWidth + mGameBoardPosX;
-        mScoreBoardPosY = mNextTetBoardPosY + mNextTetBoardHeight + mNextTetBoardPosY * 2;
+        mScoreBoardPosY = mNextTetBoardPosY + mNextTetBoardHeight + mNextTetBoardHeight / 3;
         mScoreBoardPosX = mNextTetBoardPosX;
         mAttackBoardWidth = mNextTetBoardWidth / 10 * 10;
         mAttackBoardHeight = mAttackBoardWidth * 2;
         mAttackBoardPosX = mNextTetBoardPosX;
-        mAttackBoardPosY = mScoreBoardPosY;
+        mAttackBoardPosY = mScoreBoardPosY + (int) (mScreenHeight * 0.02);
+        mPlayerInfoPosX = mNextTetBoardPosX;
+        mPlayerInfoPosY = mNextTetBoardPosY / 2;
 
         mPausePanelWidth = mScreenWidth / 2;
         mPausePanelPosX = mScreenWidth / 2 - mPausePanelWidth / 2;
@@ -301,15 +305,15 @@ public class MultiPlayingScreen extends IScreen {
             StringBuffer scoreStrBuf = new StringBuffer();
             scoreStrBuf.append("SCORE: ");
             scoreStrBuf.append(String.valueOf(mGame1.getCurrScore()));
-            g2d.setFont(mScoreBoardFont);
-            g2d.setColor(mScoreFontColor);
+            g2d.setFont(mFont);
+            g2d.setColor(mFontColor);
             g2d.drawString(scoreStrBuf.toString(), mScoreBoardPosX, mScoreBoardPosY);
 
             scoreStrBuf = new StringBuffer();
             scoreStrBuf.append("SCORE: ");
             scoreStrBuf.append(String.valueOf(mGame2.getCurrScore()));
-            g2d.setFont(mScoreBoardFont);
-            g2d.setColor(mScoreFontColor);
+            g2d.setFont(mFont);
+            g2d.setColor(mFontColor);
             g2d.drawString(scoreStrBuf.toString(), mScoreBoardPosX + mScreenWidth, mScoreBoardPosY);
         }
         // Draw attack board
@@ -344,6 +348,20 @@ public class MultiPlayingScreen extends IScreen {
                     }
                 }
             }
+        }
+        // Draw Player 1,2
+        {
+            StringBuffer scoreStrBuf = new StringBuffer();
+            scoreStrBuf.append("Player 1");
+            g2d.setFont(mFont);
+            g2d.setColor(mFontColor);
+            g2d.drawString(scoreStrBuf.toString(), mPlayerInfoPosX, mPlayerInfoPosY);
+
+            scoreStrBuf = new StringBuffer();
+            scoreStrBuf.append("Player 2");
+            g2d.setFont(mFont);
+            g2d.setColor(mFontColor);
+            g2d.drawString(scoreStrBuf.toString(), mPlayerInfoPosX, mPlayerInfoPosY);
         }
 
         // Draw pause screen
