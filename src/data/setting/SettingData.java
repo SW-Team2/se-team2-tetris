@@ -4,11 +4,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
+import java.util.Objects;
+import java.util.Set;
 
 public class SettingData {
     private static SettingData uniqueInstance = null;
@@ -16,6 +15,8 @@ public class SettingData {
     private HashMap<String, Integer> windowSize;
     private HashMap<String, Integer> gameKey;
     private int blindnessMode;
+    private HashMap<String, Integer> playerFirstKey;
+    private HashMap<String, Integer> playerSecondKey;
 
     private final String PATH = System.getProperty("user.dir") + "/database/Setting.json";
 
@@ -38,18 +39,16 @@ public class SettingData {
             if (file.createNewFile()) {
                 resetSetting();
             } else {
-                System.out.println("File already exists.");
-
                 JSONParser jsonParser = new JSONParser();
 
                 FileReader reader = new FileReader(PATH);
                 JSONObject obj = (JSONObject) jsonParser.parse(reader);
 
-                Object windowSizeMap = obj.get("windowSize");
-                Object gameKeyMap = obj.get("gameKey");
-                this.windowSize = (HashMap<String, Integer>) windowSizeMap;
-                this.gameKey = (HashMap<String, Integer>) gameKeyMap;
+                this.windowSize = (HashMap<String, Integer>) obj.get("windowSize");
+                this.gameKey = (HashMap<String, Integer>) obj.get("gameKey");
                 this.blindnessMode = Integer.parseInt(String.valueOf(obj.get("blindnessMode")));
+                this.playerFirstKey = (HashMap<String, Integer>) obj.get("player1Key");
+                this.playerSecondKey = (HashMap<String, Integer>) obj.get("player2Key");
             }
         } catch (IOException | ParseException e) {
             e.printStackTrace();
@@ -71,6 +70,7 @@ public class SettingData {
             FileWriter writer = new FileWriter(PATH);
             writer.write(setting.toJSONString());
             writer.flush();
+            writer.close();
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
@@ -124,6 +124,7 @@ public class SettingData {
             FileWriter writer = new FileWriter(PATH);
             writer.write(setting.toJSONString());
             writer.flush();
+            writer.close();
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
@@ -143,6 +144,141 @@ public class SettingData {
             FileWriter writer = new FileWriter(PATH);
             writer.write(setting.toJSONString());
             writer.flush();
+            writer.close();
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+//    Setting Multi mode game key
+
+    void storeMultiModeMoveDownKey(int moveDown, Player player) {
+        if (player == Player.FIRST) {
+            Set<String> keySet = playerSecondKey.keySet();
+            for (String key : keySet) {
+                if (Objects.equals(playerSecondKey.get(key), playerFirstKey.get("moveDown"))) {
+                    return;
+                }
+            }
+            this.playerFirstKey.put("moveDown", moveDown);
+        } else if (player == Player.SECOND) {
+            Set<String> keySet = playerFirstKey.keySet();
+            for (String key : keySet) {
+                if (Objects.equals(playerFirstKey.get(key), playerSecondKey.get("moveDown"))) {
+                    return;
+                }
+            }
+            this.playerSecondKey.put("moveDown", moveDown);
+        }
+
+        storeMultiModeKey(player);
+    }
+
+    void storeMultiModeMoveRightKey(int moveRight, Player player) {
+        if (player == Player.FIRST) {
+            Set<String> keySet = playerSecondKey.keySet();
+            for (String key : keySet) {
+                if (Objects.equals(playerSecondKey.get(key), playerFirstKey.get("moveRight"))) {
+                    return;
+                }
+            }
+            this.playerFirstKey.put("moveRight", moveRight);
+        } else if (player == Player.SECOND) {
+            Set<String> keySet = playerFirstKey.keySet();
+            for (String key : keySet) {
+                if (Objects.equals(playerFirstKey.get(key), playerSecondKey.get("moveRight"))) {
+                    return;
+                }
+            }
+            this.playerSecondKey.put("moveRight", moveRight);
+        }
+
+        storeMultiModeKey(player);
+    }
+
+    void storeMultiModeMoveLeftKey(int moveLeft, Player player) {
+        if (player == Player.FIRST) {
+            Set<String> keySet = playerSecondKey.keySet();
+            for (String key : keySet) {
+                if (Objects.equals(playerSecondKey.get(key), playerFirstKey.get("moveLeft"))) {
+                    return;
+                }
+            }
+            this.playerFirstKey.put("moveLeft", moveLeft);
+        } else if (player == Player.SECOND) {
+            Set<String> keySet = playerFirstKey.keySet();
+            for (String key : keySet) {
+                if (Objects.equals(playerFirstKey.get(key), playerSecondKey.get("moveLeft"))) {
+                    return;
+                }
+            }
+            this.playerSecondKey.put("moveLeft", moveLeft);
+        }
+
+        storeMultiModeKey(player);
+    }
+
+    void storeMultiModeMoveToFloorKey(int moveToFloor, Player player) {
+        if (player == Player.FIRST) {
+            Set<String> keySet = playerSecondKey.keySet();
+            for (String key : keySet) {
+                if (Objects.equals(playerSecondKey.get(key), playerFirstKey.get("moveToFloor"))) {
+                    return;
+                }
+            }
+            this.playerFirstKey.put("moveToFloor", moveToFloor);
+        } else if (player == Player.SECOND) {
+            Set<String> keySet = playerFirstKey.keySet();
+            for (String key : keySet) {
+                if (Objects.equals(playerFirstKey.get(key), playerSecondKey.get("moveToFloor"))) {
+                    return;
+                }
+            }
+            this.playerSecondKey.put("moveToFloor", moveToFloor);
+        }
+
+        storeMultiModeKey(player);
+    }
+
+    void storeMultiModeRotateKey(int rotate, Player player) {
+        if (player == Player.FIRST) {
+            Set<String> keySet = playerSecondKey.keySet();
+            for (String key : keySet) {
+                if (Objects.equals(playerSecondKey.get(key), playerFirstKey.get("rotate"))) {
+                    return;
+                }
+            }
+            this.playerFirstKey.put("rotate", rotate);
+        } else if (player == Player.SECOND) {
+            Set<String> keySet = playerFirstKey.keySet();
+            for (String key : keySet) {
+                if (Objects.equals(playerFirstKey.get(key), playerSecondKey.get("rotate"))) {
+                    return;
+                }
+            }
+            this.playerSecondKey.put("rotate", rotate);
+        }
+
+        storeMultiModeKey(player);
+    }
+
+    void storeMultiModeKey(Player player) {
+        try {
+            JSONParser jsonParser = new JSONParser();
+
+            FileReader reader = new FileReader(PATH);
+            JSONObject setting = (JSONObject) jsonParser.parse(reader);
+
+            if (player == Player.FIRST) {
+                setting.put(String.format("player%dKey", player.getValue()), this.playerFirstKey);
+            } else if (player == Player.SECOND) {
+                setting.put(String.format("player%dKey", player.getValue()), this.playerSecondKey);
+            }
+
+            FileWriter writer = new FileWriter(PATH);
+            writer.write(setting.toJSONString());
+            writer.flush();
+            writer.close();
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
@@ -184,6 +320,46 @@ public class SettingData {
         return blindnessMode;
     }
 
+    public int getPlayerFirstMoveDown() {
+        return Integer.parseInt(String.valueOf(playerFirstKey.get("moveDown")));
+    }
+
+    public int getPlayerFirstMoveRight() {
+        return Integer.parseInt(String.valueOf(playerFirstKey.get("moveRight")));
+    }
+
+    public int getPlayerFirstMoveLeft() {
+        return Integer.parseInt(String.valueOf(playerFirstKey.get("moveLeft")));
+    }
+
+    public int getPlayerFirstMoveToFloor() {
+        return Integer.parseInt(String.valueOf(playerFirstKey.get("moveToFloor")));
+    }
+
+    public int getPlayerFirstRotate() {
+        return Integer.parseInt(String.valueOf(playerFirstKey.get("rotate")));
+    }
+
+    public int getPlayerSecondMoveDown() {
+        return Integer.parseInt(String.valueOf(playerSecondKey.get("moveDown")));
+    }
+
+    public int getPlayerSecondMoveRight() {
+        return Integer.parseInt(String.valueOf(playerSecondKey.get("moveRight")));
+    }
+
+    public int getPlayerSecondMoveLeft() {
+        return Integer.parseInt(String.valueOf(playerSecondKey.get("moveLeft")));
+    }
+
+    public int getPlayerSecondMoveToFloor() {
+        return Integer.parseInt(String.valueOf(playerSecondKey.get("moveToFloor")));
+    }
+
+    public int getPlayerSecondRotate() {
+        return Integer.parseInt(String.valueOf(playerSecondKey.get("rotate")));
+    }
+
     public void resetSetting() {
         DefaultSetting defaultSetting = DefaultSetting.getInstance();
         try {
@@ -192,14 +368,19 @@ public class SettingData {
             setting.put("windowSize", new JSONObject(defaultSetting.getWindowSize()));
             setting.put("gameKey", new JSONObject(defaultSetting.getGameKeyMap()));
             setting.put("blindnessMode", defaultSetting.getBlindnessMode());
+            setting.put("player1Key", new JSONObject(defaultSetting.getPlayerFirstKeyMap()));
+            setting.put("player2Key", new JSONObject(defaultSetting.getPlayerSecondKeyMap()));
 
             this.windowSize = defaultSetting.getWindowSize();
             this.gameKey = defaultSetting.getGameKeyMap();
             this.blindnessMode = defaultSetting.getBlindnessMode();
+            this.playerFirstKey = defaultSetting.getPlayerFirstKeyMap();
+            this.playerSecondKey = defaultSetting.getPlayerSecondKeyMap();
 
             FileWriter writer = new FileWriter(PATH);
             writer.write(setting.toJSONString());
             writer.flush();
+            writer.close();
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }
