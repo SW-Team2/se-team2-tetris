@@ -1,7 +1,6 @@
 package tetrisgame;
 
 import java.awt.event.KeyEvent;
-import java.sql.SQLException;
 import java.util.Random;
 
 import javax.swing.JOptionPane;
@@ -9,14 +8,13 @@ import javax.swing.JOptionPane;
 import data.score.Difficulty;
 import data.score.Mode;
 import data.score.ScoreBoardData;
-import gamestarter.GameStarter;
-import graphics.screens.GameScreen;
+import gamemanager.GameManager;
+import graphics.screens.IScreen;
 import tetrisgame.component.animation.BounusScoreItemAnim;
 import tetrisgame.component.animation.IAnim;
 import tetrisgame.component.animation.LineEraserItemAnim;
 import tetrisgame.component.animation.LineRemovingAnim;
 import tetrisgame.component.animation.RemovingAllItemAnim;
-import tetrisgame.component.animation.SlowingItemAnim;
 import tetrisgame.component.animation.WeightItemAnim;
 import tetrisgame.component.score.Score;
 import tetrisgame.component.tetromino.BonusScoreItemTetroino;
@@ -32,7 +30,11 @@ import tetrisgame.util.Position;
 import tetrisgame.util.Timer;
 
 public class TetrisGame implements Runnable {
-	protected GameScreen mScreen;
+	protected IScreen mScreen;
+
+	private TetrisGame mMultGame;
+	private boolean mbAttackBoard[][];
+	private int mABIndex;
 
 	private volatile boolean mbGameOverFlag;
 	private boolean mbPauseFlag;
@@ -47,28 +49,34 @@ public class TetrisGame implements Runnable {
 	private IAnim mFocusAnim;
 	protected Score mScore;
 
+	private boolean mbPlayer2;
+
 	private int mRemoveColArr[];
 	private int mNumRemovableLines;
 
 	private Timer mTimer;
 
 	private int mCurrInput;
-	private float mKeyReactTimeTick;
-	private boolean mbKeyReactFlag;
-	private static final float KEY_REACT_TIME = 0.1f;
 
 	public static final int BOARD_COL = 20;
 	public static final int BOARD_ROW = 10;
 
-	public TetrisGame(GameScreen gameScreen, boolean bItemMode, eDifficulty diff) {
+	public TetrisGame(IScreen gameScreen, boolean bItemMode, eDifficulty diff, boolean bPlayer2) {
 		mScreen = gameScreen;
+		mMultGame = null;
 		mbItemMode = bItemMode;
 		mBoard = new Tile[BOARD_COL][BOARD_ROW];
+		mbPlayer2 = bPlayer2;
+
+		mbAttackBoard = new boolean[10][10];
+		for (int i = 0; i < BOARD_ROW; i++) {
+			mbAttackBoard[i] = new boolean[10];
+		}
 
 		meDifficulty = diff;
 		Tetromino.setDifficulty(meDifficulty);
-		mCurrTetromino = new Tetromino(this, mBoard);
-		mNextTetromino = new Tetromino(this, mBoard);
+		mCurrTetromino = new Tetromino(this, mBoard, mbPlayer2);
+		mNextTetromino = new Tetromino(this, mBoard, mbPlayer2);
 		mScore = new Score(this);
 
 		mTimer = new Timer();
@@ -84,7 +92,6 @@ public class TetrisGame implements Runnable {
 
 	public void broadcast(eMsg msg) {
 		// Send msg
-		// TODO: Convert to IGameComponent array
 		mCurrTetromino.react(msg);
 		if (mFocusAnim != null) {
 			mFocusAnim.react(msg);
@@ -101,8 +108,39 @@ public class TetrisGame implements Runnable {
 			case GAME_OVER:
 				mbGameOverFlag = true;
 				return;
+			case TIMELIMITEND:
+				if (mbPlayer2 == false) {
+					int p1Score = mScore.getScore();
+					int p2Score = GameManager.getGame2().mScore.getScore();
+
+					if (p1Score == p2Score) {
+						JOptionPane.showMessageDialog(null,
+								"Draw",
+								"",
+								JOptionPane.INFORMATION_MESSAGE);
+						GameManager.setOver();
+						return;
+					}
+
+					StringBuffer str = new StringBuffer();
+					str.append("Winner is Player");
+					if (p1Score > p2Score) {
+						str.append(1);
+					} else {
+						str.append(2);
+					}
+					JOptionPane.showMessageDialog(null,
+							str.toString(),
+							"",
+							JOptionPane.INFORMATION_MESSAGE);
+					GameManager.setOver();
+				}
+				return;
 			case COLL_WITH_FLOOR:
 				findRemovableLines();
+
+				beAttacked();
+
 				broadRemoveLine();
 				break;
 			case WEIGHT_ITEM_COLL_WITH_FLOOR:
@@ -121,15 +159,11 @@ public class TetrisGame implements Runnable {
 				mFocusAnim = new RemovingAllItemAnim(this, mBoard);
 				break;
 			case FOCUS_ANIM_OVER:
-				mCurrTetromino = mNextTetromino;
-				mNextTetromino = new Tetromino(this, mBoard);
-				mFocusAnim = null;
-				if (checkGameOver()) {
-					this.broadcast(eMsg.GAME_OVER);
-				}
 				removeLines();
 				fallDownLines();
 				mNumRemovableLines = 0;
+				mFocusAnim = null;
+				beAttacked();
 				break;
 			case ERASE_10xN_LINES:
 				if (mbItemMode) {
@@ -137,19 +171,19 @@ public class TetrisGame implements Runnable {
 					int itemIndex = random.nextInt(VAR_ITEMS);
 					switch (itemIndex) {
 						case 0:
-							mNextTetromino = new WeightItemTetromino(this, mBoard);
+							mNextTetromino = new WeightItemTetromino(this, mBoard, mbPlayer2);
 							break;
 						case 1:
-							mNextTetromino = new LineEraserItemTetromino(this, mBoard);
+							mNextTetromino = new LineEraserItemTetromino(this, mBoard, mbPlayer2);
 							break;
 						case 2:
-							mNextTetromino = new SlowingItemTetromino(this, mBoard);
+							mNextTetromino = new SlowingItemTetromino(this, mBoard, mbPlayer2);
 							break;
 						case 3:
-							mNextTetromino = new RemovingAllItemTetromino(this, mBoard);
+							mNextTetromino = new RemovingAllItemTetromino(this, mBoard, mbPlayer2);
 							break;
 						case 4:
-							mNextTetromino = new BonusScoreItemTetroino(this, mBoard);
+							mNextTetromino = new BonusScoreItemTetroino(this, mBoard, mbPlayer2);
 							break;
 					}
 				}
@@ -165,10 +199,37 @@ public class TetrisGame implements Runnable {
 			this.update();
 			this.draw();
 		}
+
+		// Pause -> Exit
+		if (mbPauseFlag == true) {
+			GameManager.setOver();
+			return;
+		}
+
+		if (mMultGame != null) {
+			StringBuffer str = new StringBuffer();
+			str.append("Winner is Player");
+			if (mbPlayer2 == false) {
+				str.append(2);
+			} else if (mbPlayer2 == true) {
+				str.append(1);
+			}
+			JOptionPane.showMessageDialog(null,
+					str.toString(),
+					"",
+					JOptionPane.INFORMATION_MESSAGE);
+			GameManager.setOver();
+			return;
+		}
+
 		// Save user record
 		String userName;
 		do {
 			userName = JOptionPane.showInputDialog("Enter your name");
+			if (userName == null) {
+				GameManager.setOver();
+				return;
+			}
 		} while (userName.equals(""));
 
 		if (mbItemMode == true) {
@@ -201,19 +262,20 @@ public class TetrisGame implements Runnable {
 					break;
 			}
 		}
-		GameStarter.setOver();
+		GameManager.setOver();
 	}
 
 	protected synchronized void update() {
 		mTimer.tick();
 
 		float deltaTime = mTimer.getDeltaTime();
-		mKeyReactTimeTick += deltaTime;
 
-		mCurrTetromino.update(deltaTime, mCurrInput);
 		if (mFocusAnim != null) {
 			mFocusAnim.update(deltaTime, mCurrInput);
+			return;
 		}
+
+		mCurrTetromino.update(deltaTime, mCurrInput);
 		mScore.update(deltaTime, mCurrInput);
 		for (Tile tileLine[] : mBoard) {
 			for (Tile tile : tileLine) {
@@ -247,11 +309,10 @@ public class TetrisGame implements Runnable {
 					this.broadcast(eMsg.GAME_OVER);
 				}
 			}
+			return;
 		}
 
 		mCurrInput = e.getKeyCode();
-		mKeyReactTimeTick = KEY_REACT_TIME;
-		mbKeyReactFlag = false;
 
 		update();
 	}
@@ -420,12 +481,90 @@ public class TetrisGame implements Runnable {
 						this.broadcast(eMsg.LINE_REMOVE_19);
 						break;
 				}
+
+				// if mult
+				if (mMultGame != null) {
+					if (mNumRemovableLines >= 2) {
+						boolean bLine[] = new boolean[BOARD_ROW];
+						for (int i = 0; i < BOARD_ROW; i++) {
+							int tetCol = col - mCurrTetromino.getPosition().mCol;
+							int tetRow = i - mCurrTetromino.getPosition().mRow;
+							if (tetRow >= 0 && tetRow < 4 && mCurrTetromino.mShape[tetCol][tetRow] != null) {
+								bLine[i] = false;
+							} else {
+								bLine[i] = true;
+							}
+						}
+
+						mMultGame.attack(bLine);
+					}
+				}
 			}
-		} else {
-			mCurrTetromino = mNextTetromino;
-			mNextTetromino = new Tetromino(this, mBoard);
-			if (checkGameOver()) {
-				this.broadcast(eMsg.GAME_OVER);
+		}
+		mCurrTetromino = mNextTetromino;
+		mNextTetromino = new Tetromino(this, mBoard, mbPlayer2);
+		if (checkGameOver()) {
+			this.broadcast(eMsg.GAME_OVER);
+		}
+	}
+
+	public void setMultGame(TetrisGame g) {
+		mMultGame = g;
+	}
+
+	public synchronized void attack(boolean bLine[]) {
+		if (mABIndex > 10) {
+			return;
+		}
+		for (int r = 0; r < BOARD_ROW; r++) {
+			mbAttackBoard[mABIndex][r] = bLine[r];
+		}
+		mABIndex++;
+	}
+
+	public boolean[][] getAttackBoard() {
+		return mbAttackBoard;
+	}
+
+	private void beAttacked() {
+		if (mNumRemovableLines == 0) {
+			boolean bGameOver = false;
+			if (mABIndex > 0) {
+				for (int c = 0; c < BOARD_COL; c++) {
+					int destCol = c - mABIndex;
+					if (destCol < 0) {
+						for (int r = 0; r < BOARD_ROW; r++) {
+							if (mBoard[c][r] != null) {
+								bGameOver = true;
+								break;
+							}
+						}
+					} else {
+						mBoard[destCol] = mBoard[c];
+					}
+				}
+				Tile attackTile = new Tile(this, mBoard, "tile_white");
+				for (int i = 0; i < mABIndex; i++) {
+					mBoard[BOARD_COL - 1 - i] = new Tile[BOARD_ROW];
+					for (int r = 0; r < BOARD_ROW; r++) {
+						if (mbAttackBoard[i][r] == true) {
+							mBoard[BOARD_COL - 1 - i][r] = attackTile;
+						} else {
+							mBoard[BOARD_COL - 1 - i][r] = null;
+						}
+					}
+				}
+
+				for (int c = 0; c < 10; c++) {
+					for (int r = 0; r < BOARD_ROW; r++) {
+						mbAttackBoard[c][r] = false;
+					}
+				}
+				mABIndex = 0;
+
+				if (bGameOver) {
+					this.broadcast(eMsg.GAME_OVER);
+				}
 			}
 		}
 	}

@@ -13,7 +13,6 @@ public class RemovingAllItemAnim extends IAnim {
     }
 
     public void update(float deltaTime, int userInput) {
-        // TODO: Add anim
         for (int c = 0; c < TetrisGame.BOARD_COL; c++) {
             for (int r = 0; r < TetrisGame.BOARD_ROW; r++) {
                 if (mPubBoard[c][r] != null) {

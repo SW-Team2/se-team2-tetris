@@ -5,7 +5,7 @@ import javax.swing.JPanel;
 import data.setting.SettingData;
 import graphics.eScreenInfo;
 
-public abstract class Screen extends JPanel {
+public abstract class IScreen extends JPanel {
     private static final int FIXED_SCREEN_LEN = 1920;
     private static final int FIXED_BTN_GAP = 10;
     protected int mNumBtns;

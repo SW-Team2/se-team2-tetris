@@ -1,8 +1,9 @@
 package tetrisgame.component.tetromino;
 
 import java.util.Random;
-
+import java.awt.event.KeyEvent;
 import data.setting.SettingData;
+import gamemanager.GameManager;
 import tetrisgame.TetrisGame;
 import tetrisgame.component.IGameComponent;
 import tetrisgame.component.tile.Tile;
@@ -18,12 +19,14 @@ public class Tetromino extends IGameComponent {
 	public Tile mShape[][];
 	protected int mShapeNColorIndex;
 
-	protected static int mMoveRightKey;
-	protected static int mMoveLeftKey;
-	protected static int mMoveDownKey;
-	protected static int mRotateKey;
-	protected static int mHardDownKey;
-	protected static int mPauseKey;
+	protected boolean mbPlayer2;
+
+	protected int mMoveRightKey;
+	protected int mMoveLeftKey;
+	protected int mMoveDownKey;
+	protected int mRotateKey;
+	protected int mHardDownKey;
+	protected int mPauseKey;
 
 	protected static float mAutoDownTime;
 	protected float mAutoDownTimeTick;
@@ -105,17 +108,17 @@ public class Tetromino extends IGameComponent {
 		TILE_TEX_NAME_ARR[4] = "tile_orange";
 		TILE_TEX_NAME_ARR[5] = "tile_blue";
 		TILE_TEX_NAME_ARR[6] = "tile_purple";
-
-		refreshSetting();
 	}
 
-	public Tetromino(TetrisGame game, Tile gb[][]) {
+	public Tetromino(TetrisGame game, Tile gb[][], boolean bPlayer2) {
 		super(game);
 		mPubBoard = gb;
+		mbPlayer2 = bPlayer2;
 		mPosition = new Position(START_POS.mCol, START_POS.mRow);
 		mShape = new Tile[SHAPE_COL][SHAPE_ROW];
 		mAutoDownTime = START_AUTO_DOWN_TIME;
 		this.setRandomShapeAndColor();
+		refreshSetting();
 	}
 
 	@Override
@@ -145,12 +148,6 @@ public class Tetromino extends IGameComponent {
 		}
 
 		if (bCollWithFloor) {
-			// Set empty
-			for (int col = 0; col < SHAPE_COL; col++) {
-				for (int row = 0; row < SHAPE_ROW; row++) {
-					mShape[col][row] = null;
-				}
-			}
 			mPubGame.broadcast(eMsg.COLL_WITH_FLOOR);
 		}
 	}
@@ -253,13 +250,30 @@ public class Tetromino extends IGameComponent {
 		}
 	}
 
-	protected static void refreshSetting() {
+	protected void refreshSetting() {
 		SettingData setting = SettingData.getInstance();
-		mMoveRightKey = setting.getGameMoveRight();
-		mMoveLeftKey = setting.getGameMoveLeft();
-		mMoveDownKey = setting.getGameMoveDown();
-		mRotateKey = setting.getRotateKey();
-		mHardDownKey = setting.getGameMoveToFloor();
+		// TODO: Reflect setting
+		if (GameManager.isMulti()) {
+			if (mbPlayer2 == false) {
+				mMoveRightKey = KeyEvent.VK_D;
+				mMoveLeftKey = KeyEvent.VK_A;
+				mMoveDownKey = KeyEvent.VK_S;
+				mRotateKey = KeyEvent.VK_SPACE;
+				mHardDownKey = KeyEvent.VK_W;
+			} else {
+				mMoveRightKey = KeyEvent.VK_RIGHT;
+				mMoveLeftKey = KeyEvent.VK_LEFT;
+				mMoveDownKey = KeyEvent.VK_DOWN;
+				mRotateKey = KeyEvent.VK_M;
+				mHardDownKey = KeyEvent.VK_UP;
+			}
+		} else {
+			mMoveRightKey = setting.getGameMoveRight();
+			mMoveLeftKey = setting.getGameMoveLeft();
+			mMoveDownKey = setting.getGameMoveDown();
+			mRotateKey = setting.getRotateKey();
+			mHardDownKey = setting.getGameMoveToFloor();
+		}
 	}
 
 	protected void rotateOrIgnore() {

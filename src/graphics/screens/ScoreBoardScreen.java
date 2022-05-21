@@ -13,7 +13,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ScoreBoardScreen extends Screen {
+public class ScoreBoardScreen extends IScreen {
     private BufferedImage mDefaultButtonImage;
     private BufferedImage mFocusDefaultButtonImage;
     private BufferedImage mCurrDefaultButtonImage;
@@ -83,10 +83,10 @@ public class ScoreBoardScreen extends Screen {
                 mCurrItemButtonImage.getHeight() * 7 / 20 * ScreenHeight / 720, null);
 
         g.drawImage(mBackButtonImage,
-                Screen.getEscPosX(),
-                Screen.getEscPosY(),
-                Screen.getEscButtonWidth(),
-                Screen.getEscButtonHeight(), null);
+                IScreen.getEscPosX(),
+                IScreen.getEscPosY(),
+                IScreen.getEscButtonWidth(),
+                IScreen.getEscButtonHeight(), null);
 
         ArrayList<String> resultList = new ArrayList<>();
         StringBuffer str = new StringBuffer();
@@ -104,9 +104,10 @@ public class ScoreBoardScreen extends Screen {
 
                 resultList.add(String.format("%-7s\t%-7s\t%-7s\t%-15s", i + 1, name, score, difficulty));
             }
-            g.drawString(String.format("%-7s\t%-7s\t%-7s\t%-15s", "Rank", "name", "score", "difficulty"), 50 * ScreenWidth / 720, 200* ScreenWidth / 720);
+            g.drawString(String.format("%-7s\t%-7s\t%-7s\t%-15s", "Rank", "name", "score", "difficulty"),
+                    50 * ScreenWidth / 720, 200 * ScreenWidth / 720);
             for (int i = 0; i < resultList.size(); i++) {
-                g.drawString(resultList.get(i), 50* ScreenWidth / 720, (200 + (i + 1) * 50)* ScreenWidth / 720);
+                g.drawString(resultList.get(i), 50 * ScreenWidth / 720, (200 + (i + 1) * 50) * ScreenWidth / 720);
             }
         } else {
             scoreArr = itemModeScores;
@@ -117,9 +118,10 @@ public class ScoreBoardScreen extends Screen {
 
                 resultList.add(String.format("%-7s\t%-7s\t%-7s\t", i + 1, name, score));
             }
-            g.drawString(String.format("%-7s\t%-7s\t%-7s\t", "Rank", "name", "score"), 50* ScreenWidth / 720, 200* ScreenWidth / 720);
+            g.drawString(String.format("%-7s\t%-7s\t%-7s\t", "Rank", "name", "score"), 50 * ScreenWidth / 720,
+                    200 * ScreenWidth / 720);
             for (int i = 0; i < resultList.size(); i++) {
-                g.drawString(resultList.get(i), 50* ScreenWidth / 720, (200 + (i + 1) * 50)* ScreenWidth / 720);
+                g.drawString(resultList.get(i), 50 * ScreenWidth / 720, (200 + (i + 1) * 50) * ScreenWidth / 720);
             }
         }
 

@@ -8,7 +8,7 @@ import data.setting.SettingData;
 import graphics.eScreenInfo;
 import tetrisgame.util.ImageLoader;
 
-public class ScreenSizeScreen extends Screen {
+public class ScreenSizeScreen extends IScreen {
     private BufferedImage mCurrButtonImage[];
     private BufferedImage mButtonImages[];
     private BufferedImage mFocusButtonImages[];
@@ -70,10 +70,10 @@ public class ScreenSizeScreen extends Screen {
         }
 
         g.drawImage(mBackButtonImage,
-                Screen.getEscPosX(),
-                Screen.getEscPosY(),
-                Screen.getEscButtonWidth(),
-                Screen.getEscButtonHeight(), null);
+                IScreen.getEscPosX(),
+                IScreen.getEscPosY(),
+                IScreen.getEscButtonWidth(),
+                IScreen.getEscButtonHeight(), null);
     }
 
     @Override

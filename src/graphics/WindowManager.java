@@ -7,7 +7,6 @@ import java.awt.event.KeyListener;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import data.score.ScoreBoardData;
 import data.setting.SettingData;
 import graphics.screens.*;
 
@@ -18,12 +17,17 @@ public class WindowManager {
     private DifficultyScreen mDifficulty;
     private GameScreen mGame;
     private ItemModeGameScreen mItemGame;
+    private MultiPlayingScreen mMultiGame;
+    private ItemModeMultiPlayingScreen mItemMultiGame;
+    private TimeLimitMultiPlayingScreen mTimeLimitGame;
     private SettingMenuScreen mSetting;
     private ScreenSizeScreen mScreenSize;
     private ColorBlindModeScreen mColorBlindMode;
     private KeySettingScreen mKeySetting;
     private ScoreBoardScreen mScore;
     private eScreenInfo meCurrScreen;
+
+    private boolean mbMulti;
 
     static final String BAR = new String("Bar");
 
@@ -43,6 +47,15 @@ public class WindowManager {
                     break;
                 case ITEMGAME:
                     switchScreenTo = mItemGame.getUserInput(e);
+                    break;
+                case MULTIGAME:
+                    switchScreenTo = mMultiGame.getUserInput(e);
+                    break;
+                case ITEMMULT:
+                    switchScreenTo = mItemMultiGame.getUserInput(e);
+                    break;
+                case TIMELIMIT:
+                    switchScreenTo = mTimeLimitGame.getUserInput(e);
                     break;
                 case SETTING:
                     switchScreenTo = mSetting.getUserInput(e);
@@ -77,6 +90,15 @@ public class WindowManager {
                     break;
                 case ITEMGAME:
                     showItemGame();
+                    break;
+                case MULTIGAME:
+                    showMultiGame();
+                    break;
+                case ITEMMULT:
+                    showItemMultiGame();
+                    break;
+                case TIMELIMIT:
+                    showTimeLimitGame();
                     break;
                 case SETTING:
                     showSetting();
@@ -134,6 +156,9 @@ public class WindowManager {
         mDifficulty = new DifficultyScreen();
         mGame = new GameScreen();
         mItemGame = new ItemModeGameScreen();
+        mMultiGame = new MultiPlayingScreen();
+        mItemMultiGame = new ItemModeMultiPlayingScreen();
+        mTimeLimitGame = new TimeLimitMultiPlayingScreen();
         mSetting = new SettingMenuScreen();
         mScreenSize = new ScreenSizeScreen();
         mColorBlindMode = new ColorBlindModeScreen();
@@ -143,6 +168,9 @@ public class WindowManager {
         mWindow.getContentPane().add("difficulty", mDifficulty);
         mWindow.getContentPane().add("game", mGame);
         mWindow.getContentPane().add("itemgame", mItemGame);
+        mWindow.getContentPane().add("multigame", mMultiGame);
+        mWindow.getContentPane().add("itemmultigame", mItemMultiGame);
+        mWindow.getContentPane().add("timelimitgame", mTimeLimitGame);
         mWindow.getContentPane().add("setting", mSetting);
         mWindow.getContentPane().add("screensize", mScreenSize);
         mWindow.getContentPane().add("colorblind", mColorBlindMode);
@@ -159,51 +187,81 @@ public class WindowManager {
 
     public void refreshSetting() {
         int width = SettingData.getInstance().getWidth();
+        if (mbMulti) {
+            width *= 2;
+        }
         int height = SettingData.getInstance().getHeight();
         mWindow.setSize(width, height);
     }
 
     public void showMain() {
+        mbMulti = false;
         mCards.show(mWindow.getContentPane(), "main");
         meCurrScreen = eScreenInfo.MAIN;
     }
 
     public void showDifficulty() {
+        mbMulti = false;
         mCards.show(mWindow.getContentPane(), "difficulty");
         meCurrScreen = eScreenInfo.DIFFICULTY;
     }
 
     private void showGame() {
+        mbMulti = false;
         mCards.show(mWindow.getContentPane(), "game");
         meCurrScreen = eScreenInfo.GAME;
     }
 
     private void showItemGame() {
+        mbMulti = false;
         mCards.show(mWindow.getContentPane(), "itemgame");
         meCurrScreen = eScreenInfo.ITEMGAME;
     }
 
+    private void showMultiGame() {
+        mbMulti = true;
+        mCards.show(mWindow.getContentPane(), "multigame");
+        meCurrScreen = eScreenInfo.MULTIGAME;
+    }
+
+    private void showItemMultiGame() {
+        mbMulti = true;
+        mCards.show(mWindow.getContentPane(), "itemmultigame");
+        meCurrScreen = eScreenInfo.ITEMMULT;
+    }
+
+    private void showTimeLimitGame() {
+        mbMulti = true;
+        mCards.show(mWindow.getContentPane(), "timelimitgame");
+        meCurrScreen = eScreenInfo.TIMELIMIT;
+    }
+
     private void showSetting() {
+        mbMulti = false;
         mCards.show(mWindow.getContentPane(), "setting");
         meCurrScreen = eScreenInfo.SETTING;
     }
 
     private void showScreenSize() {
+        mbMulti = false;
         mCards.show(mWindow.getContentPane(), "screensize");
         meCurrScreen = eScreenInfo.SET_SCREEN_SIZE;
     }
 
     private void showColorBlind() {
+        mbMulti = false;
         mCards.show(mWindow.getContentPane(), "colorblind");
         meCurrScreen = eScreenInfo.SET_COLOR_BLIND_MODE;
     }
 
     private void showKeySetting() {
+        mbMulti = false;
         mCards.show(mWindow.getContentPane(), "keysetting");
         meCurrScreen = eScreenInfo.SET_GAME_KEY;
     }
 
     public void showScore() {
+        mbMulti = false;
         mCards.show(mWindow.getContentPane(), "score");
         meCurrScreen = eScreenInfo.SCOREBOARD;
     }

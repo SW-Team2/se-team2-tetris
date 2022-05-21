@@ -8,7 +8,7 @@ import data.setting.SettingData;
 import graphics.eScreenInfo;
 import tetrisgame.util.ImageLoader;
 
-public class KeySettingScreen extends Screen {
+public class KeySettingScreen extends IScreen {
     private BufferedImage mCurrButtonImage[];
     private BufferedImage mButtonImages[];
     private BufferedImage mFocusButtonImages[];
@@ -27,7 +27,6 @@ public class KeySettingScreen extends Screen {
     private static final int NUM_BUTTONS = 5;
 
     public KeySettingScreen() {
-        // TODO:
         ImageLoader img = ImageLoader.getInstance();
         mButtonImages = new BufferedImage[NUM_BUTTONS];
         mButtonImages[0] = img.getTexture("btn_left");
@@ -122,10 +121,10 @@ public class KeySettingScreen extends Screen {
         }
 
         g.drawImage(mBackButtonImage,
-                Screen.getEscPosX(),
-                Screen.getEscPosY(),
-                Screen.getEscButtonWidth(),
-                Screen.getEscButtonHeight(), null);
+                IScreen.getEscPosX(),
+                IScreen.getEscPosY(),
+                IScreen.getEscButtonWidth(),
+                IScreen.getEscButtonHeight(), null);
     }
 
     @Override
