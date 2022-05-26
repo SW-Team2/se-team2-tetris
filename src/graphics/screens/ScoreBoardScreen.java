@@ -125,10 +125,10 @@ public class ScoreBoardScreen extends IScreen {
             for (int i = 0; i < resultList.size(); i++) {
                 if(bNewRank && rank - 1 == i) {
                         g.setColor(Color.red);
-                        g.drawString(resultList.get(i), 50 * ScreenWidth / 720, (200 + (i + 1) * 50) * ScreenWidth / 720);
+                        g.drawString(resultList.get(i), 50 * ScreenWidth / 720, (200 + (i + 1) * 40) * ScreenWidth / 720);
                         g.setColor(Color.white);
                 }else{
-                    g.drawString(resultList.get(i), 50 * ScreenWidth / 720, (200 + (i + 1) * 50) * ScreenWidth / 720);
+                    g.drawString(resultList.get(i), 50 * ScreenWidth / 720, (200 + (i + 1) * 40) * ScreenWidth / 720);
                 }
             }
         } else {
@@ -145,10 +145,10 @@ public class ScoreBoardScreen extends IScreen {
                     for (int i = 0; i < resultList.size(); i++) {
                         if(bNewRank && rank - 1 == i) {
                                 g.setColor(Color.red);
-                                g.drawString(resultList.get(i), 50 * ScreenWidth / 720, (200 + (i + 1) * 50) * ScreenWidth / 720);
+                                g.drawString(resultList.get(i), 50 * ScreenWidth / 720, (200 + (i + 1) * 40) * ScreenWidth / 720);
                                 g.setColor(Color.white);
                         }else{
-                            g.drawString(resultList.get(i), 50 * ScreenWidth / 720, (200 + (i + 1) * 50) * ScreenWidth / 720);
+                            g.drawString(resultList.get(i), 50 * ScreenWidth / 720, (200 + (i + 1) * 40) * ScreenWidth / 720);
                         }
                     }
         }
