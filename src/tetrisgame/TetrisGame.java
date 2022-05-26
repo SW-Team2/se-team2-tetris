@@ -280,6 +280,9 @@ public class TetrisGame implements Runnable {
 			if(scores.size() == 0) {
 				rank = 1;
 			}
+			if(rank == 11 && scores.size() < 10){
+				rank = scores.size();
+			}
 			if(rank != 11 || scores.size() == 0){
 				GameManager.setNewRank(rank, true);
 			}
@@ -305,6 +308,9 @@ public class TetrisGame implements Runnable {
 					}
 					if(scores.size() == 0) {
 						rank = 1;
+					}
+					if(rank == 11 && scores.size() < 10){
+						rank = scores.size();
 					}
 					if(rank != 11 || scores.size() == 0){
 						GameManager.setNewRank(rank, false);

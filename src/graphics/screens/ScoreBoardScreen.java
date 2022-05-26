@@ -89,6 +89,7 @@ public class ScoreBoardScreen extends IScreen {
                 IScreen.getEscButtonWidth(),
                 IScreen.getEscButtonHeight(), null);
 
+
         boolean bItem = GameManager.mbItemMode;
         int rank = GameManager.getNewRank();
         boolean bNewRank = false;
@@ -175,6 +176,7 @@ public class ScoreBoardScreen extends IScreen {
                 this.repaint();
                 break;
             case KeyEvent.VK_ESCAPE:
+                GameManager.initRank();
                 sr = eScreenInfo.MAIN;
                 break;
             default:

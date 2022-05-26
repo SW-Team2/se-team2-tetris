@@ -26,12 +26,15 @@ public class GameManager {
 
     public static int getNewRank() {
         if(mbShowNewScore) {
-            mbShowNewScore = false;
-            mbItemMode = false;
             return mNewRank;
         } else {
             return -1;
         }
+    }
+
+    public static void initRank(){
+        mbShowNewScore = false;
+        mbItemMode = false;
     }
     
     public static void setStart() {
