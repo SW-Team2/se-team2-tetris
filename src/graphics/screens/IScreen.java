@@ -46,15 +46,15 @@ public abstract class IScreen extends JPanel {
     public int getButtonY(int index) {
         assert (0 <= index && index < mNumBtns);
         int y = FIXED_SCREEN_LEN / 2;
-        if (mNumBtns % 2 == 0) { // 짝수
-            if (index < mNumBtns / 2) { // 중간보다 위
+        if (mNumBtns % 2 == 0) {
+            if (index < mNumBtns / 2) {
                 y += FIXED_BTN_GAP / 2;
-            } else { // 중간보다 아래
+            } else {
                 y -= FIXED_BTN_GAP / 2;
             }
             int count = index - mNumBtns / 2;
             y += count * (mBtnHeight + FIXED_BTN_GAP);
-        } else { // 홀수
+        } else {
             y -= mBtnHeight / 2;
             int count = index - mNumBtns / 2;
             y += count * (mBtnHeight + FIXED_BTN_GAP);
