@@ -30,9 +30,7 @@ public class WeightItemAnim extends IAnim {
         if (mCurrCol == mEndCol) {
             for (int col = mCurrCol; col <= 19; col++) {
                 for (int row = mStartRow; row < mRowLen; row++) {
-                    if (mPubBoard[col][row]
-
-                            != null) {
+                    if (mPubBoard[col][row] != null) {
                         mPubBoard[col][row].setName("tile_white");
                     }
                 }

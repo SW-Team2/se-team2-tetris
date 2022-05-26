@@ -7,44 +7,39 @@ import java.awt.image.BufferedImage;
 import graphics.eScreenInfo;
 import tetrisgame.util.ImageLoader;
 
-public class MainMenuScreen extends IScreen {
+public class MultiModeSelectScreen extends IScreen {
     private BufferedImage mCurrButtonImage[];
     private BufferedImage mButtonImages[];
     private BufferedImage mFocusButtonImages[];
     private int mButtonIndex;
+    private BufferedImage mBackButtonImage;
     private Image mBackgroundImage;
 
-    private static final int NUM_BUTTONS = 6;
+    private static final int NUM_BUTTONS = 3;
 
-    public MainMenuScreen() {
+    public MultiModeSelectScreen() {
         ImageLoader img = ImageLoader.getInstance();
         mButtonImages = new BufferedImage[NUM_BUTTONS];
-        mButtonImages[0] = img.getTexture("btn_start");
+        mButtonImages[0] = img.getTexture("btn_original");
         mButtonImages[1] = img.getTexture("btn_item_mode");
-        mButtonImages[2] = img.getTexture("btn_battle");
-        mButtonImages[3] = img.getTexture("btn_setting");
-        mButtonImages[4] = img.getTexture("btn_score_board");
-        mButtonImages[5] = img.getTexture("btn_exit");
+        mButtonImages[2] = img.getTexture("btn_timelimit");
 
         mFocusButtonImages = new BufferedImage[NUM_BUTTONS];
-        mFocusButtonImages[0] = img.getTexture("btn_start_focus");
+        mFocusButtonImages[0] = img.getTexture("btn_original_focus");
         mFocusButtonImages[1] = img.getTexture("btn_item_mode_focus");
-        mFocusButtonImages[2] = img.getTexture("btn_battle_focus");
-        mFocusButtonImages[3] = img.getTexture("btn_setting_focus");
-        mFocusButtonImages[4] = img.getTexture("btn_score_board_focus");
-        mFocusButtonImages[5] = img.getTexture("btn_exit_focus");
+        mFocusButtonImages[2] = img.getTexture("btn_timelimit_focus");
 
         mCurrButtonImage = new BufferedImage[NUM_BUTTONS];
         mCurrButtonImage[0] = mFocusButtonImages[0];
         mCurrButtonImage[1] = mButtonImages[1];
         mCurrButtonImage[2] = mButtonImages[2];
-        mCurrButtonImage[3] = mButtonImages[3];
-        mCurrButtonImage[4] = mButtonImages[4];
-        mCurrButtonImage[5] = mButtonImages[5];
-        super.setNumButtons(NUM_BUTTONS);
-        super.setButtonWidthAndHeight(470, 103);
 
-        mBackgroundImage = img.getTexture("main_background");
+        super.setNumButtons(NUM_BUTTONS);
+        super.setButtonWidthAndHeight(752, 165);
+
+        mBackButtonImage = img.getTexture("btn_back");
+
+        mBackgroundImage = img.getTexture("tetris_background");
         mButtonIndex = 0;
     }
 
@@ -72,6 +67,12 @@ public class MainMenuScreen extends IScreen {
             int h = super.getButtonHeight();
             g.drawImage(image, x, y, w, h, null);
         }
+
+        g.drawImage(mBackButtonImage,
+                IScreen.getEscPosX(),
+                IScreen.getEscPosY(),
+                IScreen.getEscButtonWidth(),
+                IScreen.getEscButtonHeight(), null);
     }
 
     @Override
@@ -91,28 +92,21 @@ public class MainMenuScreen extends IScreen {
                 this.repaint();
                 break;
             case KeyEvent.VK_ENTER:
+                sr = eScreenInfo.GAME;
                 switch (mButtonIndex) {
                     case 0:
-                        sr = eScreenInfo.DIFFICULTY;
+                        sr = eScreenInfo.MULTIGAME;
                         break;
                     case 1:
-                        sr = eScreenInfo.ITEMGAME;
+                        sr = eScreenInfo.ITEMMULT;
                         break;
                     case 2:
-                        sr = eScreenInfo.MULTI_MODE_SELECT;
+                        sr = eScreenInfo.TIMELIMIT;
                         break;
-                    case 3:
-                        sr = eScreenInfo.SETTING;
-                        break;
-                    case 4:
-                        sr = eScreenInfo.SCOREBOARD;
-                        break;
-                    case 5:
-                        sr = eScreenInfo.EXIT;
-                        break;
-                    default:
-                        assert (false) : "Undefined eScreenInfo";
                 }
+                break;
+            case KeyEvent.VK_ESCAPE:
+                sr = eScreenInfo.MAIN;
                 break;
             default:
                 break;

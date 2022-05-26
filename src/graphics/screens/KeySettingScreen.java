@@ -9,22 +9,22 @@ import graphics.eScreenInfo;
 import tetrisgame.util.ImageLoader;
 
 public class KeySettingScreen extends IScreen {
-    private BufferedImage mCurrButtonImage[];
-    private BufferedImage mButtonImages[];
-    private BufferedImage mFocusButtonImages[];
-    private BufferedImage mCurrKeyButtonImage[];
+    protected BufferedImage mCurrButtonImage[];
+    protected BufferedImage mButtonImages[];
+    protected BufferedImage mFocusButtonImages[];
+    protected BufferedImage mCurrKeyButtonImage[];
 
-    private BufferedImage mEmptyImage;
-    private BufferedImage mFocusEmptyImage;
-    private boolean mbNowKeySetting;
+    protected BufferedImage mEmptyImage;
+    protected BufferedImage mFocusEmptyImage;
+    protected boolean mbNowKeySetting;
 
-    private String mCurrKeyName[];
+    protected String mCurrKeyName[];
 
-    private int mButtonIndex;
-    private BufferedImage mBackButtonImage;
-    private Image mBackgroundImage;
+    protected int mButtonIndex;
+    protected BufferedImage mBackButtonImage;
+    protected Image mBackgroundImage;
 
-    private static final int NUM_BUTTONS = 5;
+    protected static final int NUM_BUTTONS = 5;
 
     public KeySettingScreen() {
         ImageLoader img = ImageLoader.getInstance();

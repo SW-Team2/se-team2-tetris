@@ -42,12 +42,6 @@ public class LineEraserItemTetromino extends ItemTetromino {
 
         if (bCollWithFloor) {
             mPubGame.broadcast(eMsg.LINEERASER_ITEM_COLL_WITH_FLOOR);
-            // Set empty
-            for (int col = 0; col < SHAPE_COL; col++) {
-                for (int row = 0; row < SHAPE_ROW; row++) {
-                    mShape[col][row] = null;
-                }
-            }
         }
     }
 

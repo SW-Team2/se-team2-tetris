@@ -20,7 +20,6 @@ public class SettingData {
 
     private final String PATH = System.getProperty("user.dir") + "/database/Setting.json";
 
-
     private SettingData() {
         initialize();
     }
@@ -150,9 +149,9 @@ public class SettingData {
         }
     }
 
-//    Setting Multi mode game key
+    // Setting Multi mode game key
 
-    void storeMultiModeMoveDownKey(int moveDown, Player player) {
+    public void storeMultiModeMoveDownKey(int moveDown, Player player) {
         if (player == Player.FIRST) {
             Set<String> keySet = playerSecondKey.keySet();
             for (String key : keySet) {
@@ -174,7 +173,7 @@ public class SettingData {
         storeMultiModeKey(player);
     }
 
-    void storeMultiModeMoveRightKey(int moveRight, Player player) {
+    public void storeMultiModeMoveRightKey(int moveRight, Player player) {
         if (player == Player.FIRST) {
             Set<String> keySet = playerSecondKey.keySet();
             for (String key : keySet) {
@@ -196,7 +195,7 @@ public class SettingData {
         storeMultiModeKey(player);
     }
 
-    void storeMultiModeMoveLeftKey(int moveLeft, Player player) {
+    public void storeMultiModeMoveLeftKey(int moveLeft, Player player) {
         if (player == Player.FIRST) {
             Set<String> keySet = playerSecondKey.keySet();
             for (String key : keySet) {
@@ -218,7 +217,7 @@ public class SettingData {
         storeMultiModeKey(player);
     }
 
-    void storeMultiModeMoveToFloorKey(int moveToFloor, Player player) {
+    public void storeMultiModeMoveToFloorKey(int moveToFloor, Player player) {
         if (player == Player.FIRST) {
             Set<String> keySet = playerSecondKey.keySet();
             for (String key : keySet) {
@@ -240,7 +239,7 @@ public class SettingData {
         storeMultiModeKey(player);
     }
 
-    void storeMultiModeRotateKey(int rotate, Player player) {
+    public void storeMultiModeRotateKey(int rotate, Player player) {
         if (player == Player.FIRST) {
             Set<String> keySet = playerSecondKey.keySet();
             for (String key : keySet) {
@@ -262,7 +261,7 @@ public class SettingData {
         storeMultiModeKey(player);
     }
 
-    void storeMultiModeKey(Player player) {
+    public void storeMultiModeKey(Player player) {
         try {
             JSONParser jsonParser = new JSONParser();
 

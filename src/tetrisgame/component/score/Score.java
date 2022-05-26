@@ -11,10 +11,10 @@ public class Score extends IGameComponent {
     private int mTenLineCount;
     private int mBonusCount;
 
-    private static final int SCORE_UNIT = 100;
-    private static final int MULTIPLE_BREAK_BONUS_2L = 30;
-    private static final int MULTIPLE_BREAK_BONUS_3L = 60;
-    private static final int MULTIPLE_BREAK_BONUS_4L = 100;
+    private static final int SCORE_UNIT = 300;
+    private static final int MULTIPLE_BREAK_BONUS_2L = 50;
+    private static final int MULTIPLE_BREAK_BONUS_3L = 150;
+    private static final int MULTIPLE_BREAK_BONUS_4L = 300;
 
     public Score(TetrisGame g) {
         super(g);
@@ -38,6 +38,10 @@ public class Score extends IGameComponent {
                 break;
             case BONUSSCORE_ITEM_ERASED:
                 mBonusCount = 10;
+            case DOWN_1L:
+                int addedScore = 5;
+                addedScore += addedScore * (mTotalRemoveLineCount / 10) / 10.f;
+                mScore += addedScore;
                 break;
             case LINE_REMOVE_0:
             case LINE_REMOVE_1:

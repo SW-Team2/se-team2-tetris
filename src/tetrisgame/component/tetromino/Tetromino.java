@@ -31,7 +31,7 @@ public class Tetromino extends IGameComponent {
 	protected static float mAutoDownTime;
 	protected float mAutoDownTimeTick;
 	private static final float START_AUTO_DOWN_TIME = 1.0f;
-	protected static float GAME_SPEED_ACCEL_UNIT = 0.1f;
+	protected static float GAME_SPEED_ACCEL_UNIT = 0.2f;
 
 	protected static Random mRandom;
 	private static int mProbWeightArr[];
@@ -255,17 +255,17 @@ public class Tetromino extends IGameComponent {
 		// TODO: Reflect setting
 		if (GameManager.isMulti()) {
 			if (mbPlayer2 == false) {
-				mMoveRightKey = KeyEvent.VK_D;
-				mMoveLeftKey = KeyEvent.VK_A;
-				mMoveDownKey = KeyEvent.VK_S;
-				mRotateKey = KeyEvent.VK_SPACE;
-				mHardDownKey = KeyEvent.VK_W;
+				mMoveRightKey = setting.getPlayerFirstMoveRight();
+				mMoveLeftKey = setting.getPlayerFirstMoveLeft();
+				mMoveDownKey = setting.getPlayerFirstMoveDown();
+				mRotateKey = setting.getPlayerFirstRotate();
+				mHardDownKey = setting.getPlayerFirstMoveToFloor();
 			} else {
-				mMoveRightKey = KeyEvent.VK_RIGHT;
-				mMoveLeftKey = KeyEvent.VK_LEFT;
-				mMoveDownKey = KeyEvent.VK_DOWN;
-				mRotateKey = KeyEvent.VK_M;
-				mHardDownKey = KeyEvent.VK_UP;
+				mMoveRightKey = setting.getPlayerSecondMoveRight();
+				mMoveLeftKey = setting.getPlayerSecondMoveLeft();
+				mMoveDownKey = setting.getPlayerSecondMoveDown();
+				mRotateKey = setting.getPlayerSecondRotate();
+				mHardDownKey = setting.getPlayerSecondMoveToFloor();
 			}
 		} else {
 			mMoveRightKey = setting.getGameMoveRight();
@@ -289,6 +289,9 @@ public class Tetromino extends IGameComponent {
 
 		this.move(dir);
 		boolean collResult = checkCollision();
+		if (dir == eDirection.DOWN) {
+			mPubGame.broadcast(eMsg.DOWN_1L);
+		}
 		if (collResult) {
 			this.moveBack(dir);
 			if (dir == eDirection.DOWN) {

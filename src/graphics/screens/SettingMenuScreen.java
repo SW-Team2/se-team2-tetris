@@ -17,23 +17,25 @@ public class SettingMenuScreen extends IScreen {
     private BufferedImage mBackButtonImage;
     private Image mBackgroundImage;
 
-    private static final int NUM_BUTTONS = 5;
+    private static final int NUM_BUTTONS = 6;
 
     public SettingMenuScreen() {
         ImageLoader img = ImageLoader.getInstance();
         mButtonImages = new BufferedImage[NUM_BUTTONS];
         mButtonImages[0] = img.getTexture("btn_screen_size");
         mButtonImages[1] = img.getTexture("btn_game_key");
-        mButtonImages[2] = img.getTexture("btn_reset_scoreboard");
-        mButtonImages[3] = img.getTexture("btn_color_blind_mode");
-        mButtonImages[4] = img.getTexture("btn_reset_setting");
+        mButtonImages[2] = img.getTexture("btn_multi_game_key");
+        mButtonImages[3] = img.getTexture("btn_reset_scoreboard");
+        mButtonImages[4] = img.getTexture("btn_color_blind_mode");
+        mButtonImages[5] = img.getTexture("btn_reset_setting");
 
         mFocusButtonImages = new BufferedImage[NUM_BUTTONS];
         mFocusButtonImages[0] = img.getTexture("btn_screen_size_focus");
         mFocusButtonImages[1] = img.getTexture("btn_game_key_focus");
-        mFocusButtonImages[2] = img.getTexture("btn_reset_scoreboard_focus");
-        mFocusButtonImages[3] = img.getTexture("btn_color_blind_mode_focus");
-        mFocusButtonImages[4] = img.getTexture("btn_reset_setting_focus");
+        mFocusButtonImages[2] = img.getTexture("btn_multi_game_key_focus");
+        mFocusButtonImages[3] = img.getTexture("btn_reset_scoreboard_focus");
+        mFocusButtonImages[4] = img.getTexture("btn_color_blind_mode_focus");
+        mFocusButtonImages[5] = img.getTexture("btn_reset_setting_focus");
 
         mCurrButtonImage = new BufferedImage[NUM_BUTTONS];
         mCurrButtonImage[0] = mFocusButtonImages[0];
@@ -41,7 +43,7 @@ public class SettingMenuScreen extends IScreen {
         mCurrButtonImage[2] = mButtonImages[2];
         mCurrButtonImage[3] = mButtonImages[3];
         mCurrButtonImage[4] = mButtonImages[4];
-
+        mCurrButtonImage[5] = mButtonImages[5];
         super.setNumButtons(NUM_BUTTONS);
         super.setButtonWidthAndHeight(1249, 193);
 
@@ -108,13 +110,16 @@ public class SettingMenuScreen extends IScreen {
                         sr = eScreenInfo.SET_GAME_KEY;
                         break;
                     case 2:
+                        sr = eScreenInfo.SET_MULTI_GAME_KEY;
+                        break;
+                    case 3:
                         ScoreBoardData.getInstance().resetScoreBoard();
                         sr = eScreenInfo.SCOREBOARD;
                         break;
-                    case 3:
+                    case 4:
                         sr = eScreenInfo.SET_COLOR_BLIND_MODE;
                         break;
-                    case 4:
+                    case 5:
                         SettingData.getInstance().resetSetting();
                         sr = eScreenInfo.MAIN;
                         break;
