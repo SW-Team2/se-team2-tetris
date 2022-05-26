@@ -44,6 +44,7 @@ public class ScoreBoardData {
                 FileWriter writer = new FileWriter(DEFAULT_MODE_SCORE_PATH);
                 writer.write(emptyList.toJSONString());
                 writer.flush();
+                writer.close();
             } else {
                 System.out.println("File already exists.");
                 readDefaultModeScores();
@@ -64,6 +65,7 @@ public class ScoreBoardData {
                 FileWriter writer = new FileWriter(ITEM_MODE_SCORE_PATH);
                 writer.write(emptyList.toJSONString());
                 writer.flush();
+                writer.close();
             } else {
                 System.out.println("File already exists.");
                 readItemModeScores();
@@ -108,6 +110,7 @@ public class ScoreBoardData {
             FileWriter writer = new FileWriter(DEFAULT_MODE_SCORE_PATH);
             writer.write(defaultScores.toJSONString());
             writer.flush();
+            writer.close();
         } catch (IOException | ParseException e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -131,6 +134,7 @@ public class ScoreBoardData {
             FileWriter writer = new FileWriter(ITEM_MODE_SCORE_PATH);
             writer.write(itemScores.toJSONString());
             writer.flush();
+            writer.close();
         } catch (IOException | ParseException e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -159,6 +163,8 @@ public class ScoreBoardData {
 
             defaultScoreWriter.flush();
             itemScoreWriter.flush();
+            defaultScoreWriter.close();
+            itemScoreWriter.close();
         } catch (IOException | ParseException e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -204,7 +210,7 @@ public class ScoreBoardData {
         }
     }
 
-    private Comparator<HashMap<String, Object>> comparator = (n1, n2) -> {
+    private final Comparator<HashMap<String, Object>> comparator = (n1, n2) -> {
         Integer a = Integer.parseInt(String.valueOf(n1.get("score")));
         Integer b = Integer.parseInt(String.valueOf(n2.get("score")));
         return Integer.compare(b, a);

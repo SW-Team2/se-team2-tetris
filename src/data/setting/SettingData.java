@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.Set;
 
+@SuppressWarnings("unchecked")
 public class SettingData {
     private static SettingData uniqueInstance = null;
 
@@ -51,6 +52,14 @@ public class SettingData {
             }
         } catch (IOException | ParseException e) {
             e.printStackTrace();
+        } catch (NullPointerException e) {
+            DefaultSetting defaultSetting = DefaultSetting.getInstance();
+
+            this.windowSize = defaultSetting.getWindowSize();
+            this.gameKey = defaultSetting.getGameKeyMap();
+            this.blindnessMode = defaultSetting.getBlindnessMode();
+            this.playerFirstKey = defaultSetting.getPlayerFirstKeyMap();
+            this.playerSecondKey = defaultSetting.getPlayerSecondKeyMap();
         }
     }
 
@@ -101,12 +110,6 @@ public class SettingData {
 
     public void storeGameRotateKey(int rotate) {
         this.gameKey.put("rotate", rotate);
-
-        storeGameKey();
-    }
-
-    public void storeGamePauseKey(int pause) {
-        this.gameKey.put("pause", pause);
 
         storeGameKey();
     }
