@@ -60,7 +60,12 @@ public class TestMain {
                 }
 
                 GameManager.waitForSignal(GAME_END);
-                if(!GameManager.isMulti() && GameManager.mbPauseExit == false){
+                if(!GameManager.isMulti() && GameManager.mbPauseExit == false && GameManager.getNewRank() != -1){
+                    try{
+                    Thread.sleep(50L);
+                    } catch (Exception e){
+                        
+                    }
                     win.showScore();
                 } else {
                     GameManager.setMulti(false);

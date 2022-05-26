@@ -251,18 +251,8 @@ public class TetrisGame implements Runnable {
 			return;
 		}
 
-		// Save user record
-		String userName;
-		do {
-			userName = JOptionPane.showInputDialog("Enter your name");
-			if (userName == null) {
-				GameManager.setOver();
-				return;
-			}
-		} while (userName.equals(""));
-
 		int score = mScore.getScore();
-		if (mbItemMode == true) {
+		if(mbItemMode){
 			ArrayList<HashMap<String, Object>> scores = ScoreBoardData.getInstance().getItemModeScore();
 			long scoreArr[] = new long[scores.size()];
 			for(int i=0;i<scores.size();i++) {
@@ -289,11 +279,6 @@ public class TetrisGame implements Runnable {
 			if(rank != 11 || scores.size() == 0){
 				GameManager.setNewRank(rank, true);
 			}
-
-			ScoreBoardData.getInstance()
-					.addItemModeScore(
-							new data.score.Score(userName, mScore.getScore(), Difficulty.NORMAL.getValue(),
-									Mode.ITEM_MODE.getValue()));
 		} else {
 			ArrayList<HashMap<String, Object>> scores = ScoreBoardData.getInstance().getDefaultModeScore();
 					long scoreArr[] = new long[scores.size()];
@@ -321,6 +306,26 @@ public class TetrisGame implements Runnable {
 					if(rank != 11 || scores.size() == 0){
 						GameManager.setNewRank(rank, false);
 					}
+		}
+
+		// Save user record
+		String userName = null;
+		if(GameManager.getNewRank() != -1){
+		do {
+			userName = JOptionPane.showInputDialog("Enter your name");
+			if (userName == null) {
+				GameManager.setOver();
+				return;
+			}
+		} while (userName.equals(""));
+	}
+		if (mbItemMode == true) {
+
+			ScoreBoardData.getInstance()
+					.addItemModeScore(
+							new data.score.Score(userName, mScore.getScore(), Difficulty.NORMAL.getValue(),
+									Mode.ITEM_MODE.getValue()));
+		} else {
 			switch (meDifficulty) {
 				case EASY:
 					ScoreBoardData.getInstance()
