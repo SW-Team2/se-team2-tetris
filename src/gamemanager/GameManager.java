@@ -11,7 +11,32 @@ public class GameManager {
     private static volatile boolean mbMulti;
     private static volatile boolean mbTimeLimitMode;
     private static volatile int mTimeLimitModeCurrTime;
+    private static volatile boolean mbShowNewScore;
+    private static volatile int mNewRank;
+    public static volatile boolean mbItemMode;
+    public static volatile boolean mbPauseExit;
 
+    public static void setNewRank(int r, boolean bItemMode) {
+        assert(r>0 && r<=10);
+
+        mNewRank = r;
+        mbShowNewScore = true;
+        mbItemMode = bItemMode;
+    }
+
+    public static int getNewRank() {
+        if(mbShowNewScore) {
+            return mNewRank;
+        } else {
+            return -1;
+        }
+    }
+
+    public static void initRank(){
+        mbShowNewScore = false;
+        mbItemMode = false;
+    }
+    
     public static void setStart() {
         mbStartFlag = true;
     }

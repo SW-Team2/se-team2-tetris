@@ -3,6 +3,7 @@ package graphics.screens;
 import data.score.Score;
 import data.score.ScoreBoardData;
 import data.setting.SettingData;
+import gamemanager.GameManager;
 import graphics.eScreenInfo;
 import tetrisgame.util.ImageLoader;
 
@@ -88,10 +89,25 @@ public class ScoreBoardScreen extends IScreen {
                 IScreen.getEscButtonWidth(),
                 IScreen.getEscButtonHeight(), null);
 
+
+        boolean bItem = GameManager.mbItemMode;
+        int rank = GameManager.getNewRank();
+        boolean bNewRank = false;
+        if(rank != -1) {
+            bNewRank = true;
+        }
+        if(bNewRank) {
+            if(bItem){
+                mButtonIndex = 1;
+            } else {
+                mButtonIndex = 0;
+            }
+        }
+
         ArrayList<String> resultList = new ArrayList<>();
         StringBuffer str = new StringBuffer();
         ArrayList<HashMap<String, Object>> scoreArr;
-        int bold = (int) (100 * SettingData.getInstance().getHeight() / (double) 1920);
+        int bold = (int) (100 * SettingData.getInstance().getHeight() / (double) 1920 * 0.9);
         g.setFont(new Font("S-Core_Dream_OTF", Font.BOLD, bold));
         g.setColor(Color.WHITE);
         if (mButtonIndex == 0) {
@@ -107,7 +123,13 @@ public class ScoreBoardScreen extends IScreen {
             g.drawString(String.format("%-7s\t%-7s\t%-7s\t%-15s", "Rank", "name", "score", "difficulty"),
                     50 * ScreenWidth / 720, 200 * ScreenWidth / 720);
             for (int i = 0; i < resultList.size(); i++) {
-                g.drawString(resultList.get(i), 50 * ScreenWidth / 720, (200 + (i + 1) * 50) * ScreenWidth / 720);
+                if(bNewRank && rank - 1 == i) {
+                        g.setColor(Color.red);
+                        g.drawString(resultList.get(i), 50 * ScreenWidth / 720, (200 + (i + 1) * 50) * ScreenWidth / 720);
+                        g.setColor(Color.white);
+                }else{
+                    g.drawString(resultList.get(i), 50 * ScreenWidth / 720, (200 + (i + 1) * 50) * ScreenWidth / 720);
+                }
             }
         } else {
             scoreArr = itemModeScores;
@@ -120,9 +142,15 @@ public class ScoreBoardScreen extends IScreen {
             }
             g.drawString(String.format("%-7s\t%-7s\t%-7s\t", "Rank", "name", "score"), 50 * ScreenWidth / 720,
                     200 * ScreenWidth / 720);
-            for (int i = 0; i < resultList.size(); i++) {
-                g.drawString(resultList.get(i), 50 * ScreenWidth / 720, (200 + (i + 1) * 50) * ScreenWidth / 720);
-            }
+                    for (int i = 0; i < resultList.size(); i++) {
+                        if(bNewRank && rank - 1 == i) {
+                                g.setColor(Color.red);
+                                g.drawString(resultList.get(i), 50 * ScreenWidth / 720, (200 + (i + 1) * 50) * ScreenWidth / 720);
+                                g.setColor(Color.white);
+                        }else{
+                            g.drawString(resultList.get(i), 50 * ScreenWidth / 720, (200 + (i + 1) * 50) * ScreenWidth / 720);
+                        }
+                    }
         }
 
     }
@@ -148,6 +176,7 @@ public class ScoreBoardScreen extends IScreen {
                 this.repaint();
                 break;
             case KeyEvent.VK_ESCAPE:
+                GameManager.initRank();
                 sr = eScreenInfo.MAIN;
                 break;
             default:
