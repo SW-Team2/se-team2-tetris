@@ -272,7 +272,10 @@ public class TetrisGame implements Runnable {
 
 			int rank = 11;
 			for(int i=scores.size() - 1;i >=0;i--) {
-				if(scoreArr[i] > score){
+				if(i==0 && scoreArr[i] < score){
+					rank = 1;
+				}
+				if(scoreArr[i] >= score){
 					rank = i+2;
 					break;
 				}
@@ -301,7 +304,10 @@ public class TetrisGame implements Runnable {
 		
 					int rank = 11;
 					for(int i=scores.size() - 1;i >=0;i--) {
-						if(scoreArr[i] > score){
+						if(i==0 && scoreArr[i] < score){
+							rank = 1;
+						}
+						if(scoreArr[i] >= score){
 							rank = i+2;
 							break;
 						}
