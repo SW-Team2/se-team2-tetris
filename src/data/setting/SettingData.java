@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.Set;
 
+@SuppressWarnings("unchecked")
 public class SettingData {
     private static SettingData uniqueInstance = null;
 
@@ -109,12 +110,6 @@ public class SettingData {
 
     public void storeGameRotateKey(int rotate) {
         this.gameKey.put("rotate", rotate);
-
-        storeGameKey();
-    }
-
-    public void storeGamePauseKey(int pause) {
-        this.gameKey.put("pause", pause);
 
         storeGameKey();
     }

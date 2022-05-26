@@ -44,6 +44,7 @@ public class ScoreBoardData {
                 FileWriter writer = new FileWriter(DEFAULT_MODE_SCORE_PATH);
                 writer.write(emptyList.toJSONString());
                 writer.flush();
+                writer.close();
             } else {
                 readDefaultModeScores();
             }
@@ -63,6 +64,7 @@ public class ScoreBoardData {
                 FileWriter writer = new FileWriter(ITEM_MODE_SCORE_PATH);
                 writer.write(emptyList.toJSONString());
                 writer.flush();
+                writer.close();
             } else {
                 readItemModeScores();
             }
@@ -106,6 +108,7 @@ public class ScoreBoardData {
             FileWriter writer = new FileWriter(DEFAULT_MODE_SCORE_PATH);
             writer.write(defaultScores.toJSONString());
             writer.flush();
+            writer.close();
         } catch (IOException | ParseException e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -129,6 +132,7 @@ public class ScoreBoardData {
             FileWriter writer = new FileWriter(ITEM_MODE_SCORE_PATH);
             writer.write(itemScores.toJSONString());
             writer.flush();
+            writer.close();
         } catch (IOException | ParseException e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -157,6 +161,8 @@ public class ScoreBoardData {
 
             defaultScoreWriter.flush();
             itemScoreWriter.flush();
+            defaultScoreWriter.close();
+            itemScoreWriter.close();
         } catch (IOException | ParseException e) {
             throw new RuntimeException(e.getMessage());
         }
