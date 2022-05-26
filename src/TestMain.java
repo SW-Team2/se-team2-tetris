@@ -60,8 +60,13 @@ public class TestMain {
                 }
 
                 GameManager.waitForSignal(GAME_END);
-                GameManager.setMulti(false);
-                win.showMain();
+                if(!GameManager.isMulti() && GameManager.mbPauseExit == false){
+                    win.showScore();
+                } else {
+                    GameManager.setMulti(false);
+                    GameManager.mbPauseExit = false;
+                    win.showMain();
+                }
             }
         } catch (RuntimeException re) {
             JOptionPane.showMessageDialog(new JFrame(), re.getMessage(),

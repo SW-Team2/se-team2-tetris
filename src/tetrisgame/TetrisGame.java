@@ -1,6 +1,8 @@
 package tetrisgame;
 
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 import javax.swing.JOptionPane;
@@ -259,12 +261,48 @@ public class TetrisGame implements Runnable {
 			}
 		} while (userName.equals(""));
 
+		int score = mScore.getScore();
 		if (mbItemMode == true) {
+			ArrayList<HashMap<String, Object>> scores = ScoreBoardData.getInstance().getItemModeScore();
+			long scoreArr[] = new long[scores.size()];
+			for(int i=0;i<scores.size();i++) {
+				Long l = (Long)scores.get(i).get("score");
+				scoreArr[i] = l;
+			}
+
+			int rank = 11;
+			for(int i=scores.size() - 1;i >=0;i--) {
+				if(scoreArr[i] > score){
+					rank = i+2;
+					break;
+				}
+			}
+			if(rank != 11){
+				GameManager.setNewRank(rank, true);
+			}
+
 			ScoreBoardData.getInstance()
 					.addItemModeScore(
 							new data.score.Score(userName, mScore.getScore(), Difficulty.NORMAL.getValue(),
 									Mode.ITEM_MODE.getValue()));
 		} else {
+			ArrayList<HashMap<String, Object>> scores = ScoreBoardData.getInstance().getDefaultModeScore();
+					long scoreArr[] = new long[scores.size()];
+					for(int i=0;i<scores.size();i++) {
+						Long l = (Long)scores.get(i).get("score");
+						scoreArr[i] = l;
+					}
+		
+					int rank = 11;
+					for(int i=scores.size() - 1;i >=0;i--) {
+						if(scoreArr[i] > score){
+							rank = i+2;
+							break;
+						}
+					}
+					if(rank != 11){
+						GameManager.setNewRank(rank, false);
+					}
 			switch (meDifficulty) {
 				case EASY:
 					ScoreBoardData.getInstance()
@@ -333,6 +371,7 @@ public class TetrisGame implements Runnable {
 					mTimer.unPause();
 					mbPauseFlag = false;
 				} else if (mPausePanBtnIndex == 1) {
+					GameManager.mbPauseExit = true;
 					this.broadcast(eMsg.GAME_OVER);
 				}
 			}
