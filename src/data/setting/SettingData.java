@@ -51,6 +51,14 @@ public class SettingData {
             }
         } catch (IOException | ParseException e) {
             e.printStackTrace();
+        } catch (NullPointerException e) {
+            DefaultSetting defaultSetting = DefaultSetting.getInstance();
+
+            this.windowSize = defaultSetting.getWindowSize();
+            this.gameKey = defaultSetting.getGameKeyMap();
+            this.blindnessMode = defaultSetting.getBlindnessMode();
+            this.playerFirstKey = defaultSetting.getPlayerFirstKeyMap();
+            this.playerSecondKey = defaultSetting.getPlayerSecondKeyMap();
         }
     }
 

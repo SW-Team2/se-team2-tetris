@@ -1,23 +1,17 @@
 package tetrisgame;
 
-import data.setting.SettingData;
 import gamemanager.GameManager;
 
+import graphics.screens.GameScreen;
 import org.junit.Test;
-import tetrisgame.TetrisGame;
-import tetrisgame.component.tile.Tile;
 import tetrisgame.enumerations.eDifficulty;
-import tetrisgame.enumerations.eDirection;
 import tetrisgame.enumerations.eMsg;
-import tetrisgame.util.Position;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-public class TetrominoTest {
+public class GameTest {
 
     @Test
     public void gameTest() {
-        TetrisGame game = new TetrisGame(this, false, GameManager.getDifficulty(), false);
+        TetrisGame game = new TetrisGame(new GameScreen(), false, GameManager.getDifficulty(), false);
         GameManager.setDifficulty(eDifficulty.NORMAL);
         GameManager.setGame(game);
         GameManager.setStart();

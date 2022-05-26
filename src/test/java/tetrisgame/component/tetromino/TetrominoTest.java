@@ -5,8 +5,6 @@ import org.junit.Test;
 import tetrisgame.TetrisGame;
 import tetrisgame.component.tile.Tile;
 import tetrisgame.enumerations.eDifficulty;
-import tetrisgame.enumerations.eDirection;
-import tetrisgame.util.Position;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,7 +18,7 @@ public class TetrominoTest {
             Tetromino.setDifficulty(eDifficulty.NORMAL);
             int countArr[] = new int[NUM_BLOCK_KIND];
             for (int i = 0; i < NUM_TESTING; i++) {
-                int index = new Tetromino(null, null).getRandomIndex();
+                int index = new Tetromino(null, null, false).getRandomIndex();
                 countArr[index]++;
             }
             for (int i = 0; i < 7; i++) {
@@ -36,7 +34,7 @@ public class TetrominoTest {
             Tetromino.setDifficulty(eDifficulty.EASY);
             int countArr[] = new int[NUM_BLOCK_KIND];
             for (int i = 0; i < NUM_TESTING; i++) {
-                int index = new Tetromino(null, null).getRandomIndex();
+                int index = new Tetromino(null, null,false).getRandomIndex();
                 countArr[index]++;
             }
             for (int i = 0; i < 7; i++) {
@@ -57,7 +55,7 @@ public class TetrominoTest {
             Tetromino.setDifficulty(eDifficulty.HARD);
             int countArr[] = new int[NUM_BLOCK_KIND];
             for (int i = 0; i < NUM_TESTING; i++) {
-                int index = new Tetromino(null, null).getRandomIndex();
+                int index = new Tetromino(null, null,false).getRandomIndex();
                 countArr[index]++;
             }
             for (int i = 0; i < 7; i++) {
@@ -82,7 +80,7 @@ public class TetrominoTest {
 
         Tile emptyBoard[][] = new Tile[TetrisGame.BOARD_COL][TetrisGame.BOARD_ROW];
         Tetromino.setDifficulty(eDifficulty.NORMAL);
-        Tetromino tet = new Tetromino(null,emptyBoard);
+        Tetromino tet = new Tetromino(null,emptyBoard,false);
         
         boolean saveShape[][] = new boolean[col][row];
         for(int i=0;i<row;i++) {
@@ -116,7 +114,7 @@ public class TetrominoTest {
     public void moveTest() {
         Tile emptyBoard[][] = new Tile[TetrisGame.BOARD_COL][TetrisGame.BOARD_ROW];
         Tetromino.setDifficulty(eDifficulty.NORMAL);
-        Tetromino tet = new Tetromino(null,emptyBoard);
+        Tetromino tet = new Tetromino(null,emptyBoard,false);
         int savePosCol = tet.getPosition().mCol;
         int savePosRow = tet.getPosition().mRow;
 
